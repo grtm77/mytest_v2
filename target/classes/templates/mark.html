@@ -11,7 +11,7 @@
     <script src="//unpkg.com/layui@2.6.4/dist/layui.js"></script>
     <script typet="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Marked</title>
+    <title>标记</title>
     <style type="text/css">
         html {
             height: 100%
@@ -41,13 +41,13 @@
 <div class="produce">
     <div class="layui-form layui-form-pane">
         <div class="layui-inline">
-            <label class="layui-form-label">Road</label>
+            <label class="layui-form-label">道路</label>
             <div class="layui-input-inline">
                 <input type="tel" id="roadName" lay-verify="required|phone" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">NodeType</label>
+            <label class="layui-form-label">节点类型</label>
             <div class="layui-input-inline">
                 <select lay-filter="nodeType" id="nodeType">
                     <option value="sensor" selected="">sensor</option>
@@ -58,17 +58,17 @@
         </div>
         <div class="layui-inline">
             <div class="layui-block layui-btn-container">
-                <button type="button" class="layui-btn layui-btn-normal" id="save">Save Data</button>
+                <button type="button" class="layui-btn layui-btn-normal" id="save">保存数据</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="cal" data-toggle="modal"
-                        data-target="#calModal">Calculation</button>
-                <button type="button" class="layui-btn" id="gshIt">Formatting</button>
+                        data-target="#calModal">计算比较</button>
+                <button type="button" class="layui-btn" id="gshIt">格式化</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
-                        data-target="#uploadModal">Files Upload
+                        data-target="#uploadModal">文件上传
                 </button>
                 <!--切换语言-->
-                <a href="http://localhost:8081/map" class="layui-btn layui-btn-warm">LanguageSwitch</a>
+                <a href="http://localhost:8081/switch" class="layui-btn layui-btn-warm">语言切换</a>
                 <!--转换成摄像头覆盖，定向传感器覆盖。。。。。-->
-                <a href="http://localhost:8081/covert" class="layui-btn layui-btn-warm">ModeSwitch</a>
+                <a href="http://localhost:8081/covert" class="layui-btn layui-btn-warm">模式切换</a>
             </div>
         </div>
     </div>
@@ -80,13 +80,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="calModalLabel">Calculation</h4>
+                <h4 class="modal-title" id="calModalLabel">计算比较</h4>
             </div>
             <div class="modal-body" align="center">
                 <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">Greedy</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calPulp">Pulp</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy withOutCros</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calPulpWithOutCros">Pulp withOutCros</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy(不计算路口)</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="calPulpWithOutCros">Pulp(不计算路口)</button>
             </div>
         </div>
     </div>
@@ -98,15 +98,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="uploadModalLabel">Files Upload</h4>
+                <h4 class="modal-title" id="uploadModalLabel">文件上传</h4>
             </div>
             <div class="modal-body" align="center">
-                <button type="button" class="btn btn-primary" id="sensorupload" data-toggle="modal" data-target="#sensorFileModal">Sensor Upload</button>
+                <button type="button" class="btn btn-primary" id="sensorupload" data-toggle="modal" data-target="#sensorFileModal">sensor上传</button>
                 <button type="button" class="btn btn-primary" id="gatewayupload" data-toggle="modal"
-                        data-target="#gatewayFileModal">Gateway Upload
+                        data-target="#gatewayFileModal">gateway上传
                 </button>
                 <button  type="button" class="btn btn-primary" id="crosupload" data-toggle="modal"
-                        data-target="#crossingFileModal">Crossing Upload
+                        data-target="#crossingFileModal">crossing上传
                 </button>
             </div>
         </div>
@@ -123,30 +123,30 @@
                     &times;
                 </button>
                 <h4 class="modal-title" id="gatewayModalLabel">
-                    Gateway Upload
+                    上传gateway文件
                 </h4>
             </div>
             <div class="produce">
                 <div class="layui-upload">
-                    <button type="button" class="layui-btn layui-btn-normal" id="gatewaytestList">Select File</button>
+                    <button type="button" class="layui-btn layui-btn-normal" id="gatewaytestList">选择文件</button>
                     <div class="layui-upload-list">
                         <table class="layui-table">
                             <thead>
                             <tr>
-                                <th>Filename</th>
-                                <th>Size</th>
-                                <th>Status</th>
-                                <th>Operation</th>
+                                <th>文件名</th>
+                                <th>大小</th>
+                                <th>状态</th>
+                                <th>操作</th>
                             </tr>
                             </thead>
                             <tbody id="gatewaydemoList"></tbody>
                         </table>
                     </div>
-                    <button type="button" class="layui-btn" id="gatewaytestListAction">To Upload</button>
+                    <button type="button" class="layui-btn" id="gatewaytestListAction">开始上传</button>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
             </div>
         </div><!-- /.modal-content -->
@@ -163,34 +163,34 @@
                     &times;
                 </button>
                 <h4 class="modal-title" id="sensorModalLabel">
-                    Sensor Upload
+                    上传sensor文件
                 </h4>
             </div>
             <div class="produce">
                 <div class="layui-upload">
-                    <button type="button" class="layui-btn layui-btn-normal" id="sensortestList">Select File</button>
+                    <button type="button" class="layui-btn layui-btn-normal" id="sensortestList">选择文件</button>
                     <div class="layui-upload-list">
                         <table class="layui-table">
                             <thead>
                             <tr>
-                                <th>Filename</th>
-                                <th>Size</th>
-                                <th>Status</th>
-                                <th>Operation</th>
+                                <th>文件名</th>
+                                <th>大小</th>
+                                <th>状态</th>
+                                <th>操作</th>
                             </tr>
                             </thead>
                             <tbody id="sensordemoList"></tbody>
                         </table>
                     </div>
-                    <button type="button" class="layui-btn" id="sensortestListAction">To Upload</button>
+                    <button type="button" class="layui-btn" id="sensortestListAction">开始上传</button>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
+        </div>
+    </div>
 </div>
 
 <!-- crossing模态框（Modal） -->
@@ -208,25 +208,25 @@
             </div>
             <div class="produce">
                 <div class="layui-upload">
-                    <button type="button" class="layui-btn layui-btn-normal" id="crossingtestList">Select File</button>
+                    <button type="button" class="layui-btn layui-btn-normal" id="crossingtestList">选择文件</button>
                     <div class="layui-upload-list">
                         <table class="layui-table">
                             <thead>
                             <tr>
-                                <th>Filename</th>
-                                <th>Size</th>
-                                <th>Status</th>
-                                <th>Operation</th>
+                                <th>文件名</th>
+                                <th>大小</th>
+                                <th>状态</th>
+                                <th>操作</th>
                             </tr>
                             </thead>
                             <tbody id="crossingdemoList"></tbody>
                         </table>
                     </div>
-                    <button type="button" class="layui-btn" id="crossingtestListAction">To Upload</button>
+                    <button type="button" class="layui-btn" id="crossingtestListAction">开始上传</button>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
             </div>
         </div><!-- /.modal-content -->
@@ -350,7 +350,7 @@
                 all.push(pts)
                 //pts = []//计算时需注释
                 // 删除已经标注的点
-                map.clearOverlays()
+               // map.clearOverlays()
                 //在地图上标注这些点
                 // for (let j = pts.length; j >1; j--) {
                 for (var j = 0; j < all.length; j++) {
@@ -383,14 +383,12 @@
             }
         });
 
-        // 生成数据，保存到数据库
+        // 生成数据，保存到文件
         $("#save").click(function () {
             var flag_cros = $("#nodeType").val() == "cros" ? 0 : 1;
 
             for (var i = flag_cros; i < pts.length; i++) {
-                var a = [];
-                a.push(pts[i].lng);
-                a.push(pts[i].lat);
+                var a = pts[i].lng + "," + pts[i].lat;
                 str.push(a);
             }
 
@@ -404,17 +402,17 @@
                 "type": "post",
                 "data": {
                     "roadName": roadName,
-                    "points": points,
+                    points: points,
                     "pointType": pointType
                 },
                 "dataType": "json",
                 "success": function (response) {
-                    layer.msg("Success!")
+                    layer.msg("请求成功")
                     pointArr = [];
                     str = [];
                 },
                 "error": function (response) {
-                    layer.msg("Error!")
+                    layer.msg("请求失败")
                 }
             });
         });
@@ -697,7 +695,8 @@
         layui.use(['layer', 'form', 'jquery'], function () {
             var form = layui.form;
             form.on('select(nodeType)', function (data) {
-                all = [];
+                all = [];//TODO
+                //pts = [];
                 map.clearOverlays();
             });
         });
@@ -749,6 +748,7 @@
                         , tds = tr.children();
                     tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
                     tds.eq(3).html(''); //清空操作
+
 
                     for(var i=0;i<res.data.length;i++){
                         var split = res.data[i].split(",");

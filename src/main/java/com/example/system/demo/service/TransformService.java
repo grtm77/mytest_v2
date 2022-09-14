@@ -1,6 +1,7 @@
 package com.example.system.demo.service;
 
 import com.example.system.demo.calculate.CountSet;
+import com.example.system.demo.calculate.DBRelation;
 import com.example.system.demo.calculate.FileRelation;
 import com.example.system.demo.calculate.PythonCal;
 import com.example.system.demo.config.RelatedProperties;
@@ -33,23 +34,21 @@ public class TransformService {
     FileRelation fileRelation;
 
     @Autowired
+    DBRelation dbRelation;
+
+    @Autowired
     RedisTemplate redisTemplate;
 
     @Autowired
     PythonCal pythonCal;
 
-    //保存文件数据
-    public void saveFile(Point points) {
+    //保存文件数据到数据库
+    public void saveDB(Point points) {
         String roadName = points.getRoadName();
         String pointType = points.getPointType();
-        String[] points1 = points.getPoints();
-        List<String> strings = Arrays.asList(points1);
-
-        try {
-            fileRelation.writeFile_new(roadName, strings, pointType);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String[][] points1 = points.getPoints();
+        List<String[]> strings = Arrays.asList(points1);
+        dbRelation.write_new(roadName, strings, pointType);
     }
 
     //生产python脚本计算所需的数据文件
@@ -210,7 +209,7 @@ public class TransformService {
         hs.put("gatewayList",all_gateway02);
 
         //生成分析结果
-        fileRelation.creatResult(all_sensor,resultTmp);
+//        dbRelation.creatResult(all_sensor,resultTmp);
         return hs;
     }
 

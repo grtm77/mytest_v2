@@ -18,18 +18,16 @@ public class MessageHandler {
     @Autowired
     TransformService transformService;
 
-    //保存数据,数据保存在txt
+    //保存数据
     @ResponseBody
     @RequestMapping(value = "/hha", method = RequestMethod.POST)
     public ResultEntity<String> save02(Point point){
-        // 将数据分别保存在txt 与 redis
+        // 将数据保存在数据库
         try {
             if(point.getPoints()==null){
-                return ResultEntity.failed("未标点！");
+                return ResultEntity.failed("You haven't set marks yet！");
             }else{
-                //用redis保存数据，已弃用
-                //transformService.saveByRedis(point);
-                transformService.saveFile(point);
+                transformService.saveDB(point);
                 return ResultEntity.successWithoutData();
             }
         } catch (Exception e) {

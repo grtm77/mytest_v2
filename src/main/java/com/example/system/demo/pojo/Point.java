@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class Point implements Serializable {
 
     private String roadName;
-    private String[] points;
+    private String[][] points;
     private String pointType;
 
 }
