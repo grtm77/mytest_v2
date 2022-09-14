@@ -62,13 +62,14 @@
                 <button type="button" class="layui-btn layui-btn-warm" id="cal" data-toggle="modal"
                         data-target="#calModal">Calculation</button>
                 <button type="button" class="layui-btn" id="gshIt">Formatting</button>
+                <button type="button" class="layui-btn" id="clear">Clear Database</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
                         data-target="#uploadModal">Files Upload
                 </button>
                 <!--切换语言-->
-                <a href="http://localhost:8081/map" class="layui-btn layui-btn-warm">LanguageSwitch</a>
+<!--                <a href="http://localhost:8081/map" class="layui-btn layui-btn-warm">LanguageSwitch</a>-->
                 <!--转换成摄像头覆盖，定向传感器覆盖。。。。。-->
-                <a href="http://localhost:8081/covert" class="layui-btn layui-btn-warm">ModeSwitch</a>
+<!--                <a href="http://localhost:8081/covert" class="layui-btn layui-btn-warm">ModeSwitch</a>-->
             </div>
         </div>
     </div>
@@ -674,15 +675,31 @@
         // 格式化文件夹,清空数据
         $("#gshIt").click(function () {
             //清空所有存放数据的数组
-            // all_sensor=[];
-            // all=[];
-            // pointArr=[];
-            // str=[];
-            // pts=[];
+            all_sensor=[];
+            all=[];
+            pointArr=[];
+            str=[];
+            pts=[];
             // 清楚地图上已经标记的点
             map.clearOverlays();
             $.ajax({
                 "url": "hho",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("请求成功");
+                },
+                "error": function (response) {
+                    layer.msg("请求失败")
+                }
+            });
+        });
+
+        //清空数据表
+        $("#clear").click(function () {
+            // 清楚地图上已经标记的点
+            map.clearOverlays();
+            $.ajax({
+                "url": "hhcl",
                 "type": "post",
                 "success": function (response) {
                     layer.msg("请求成功");

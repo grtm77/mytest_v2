@@ -21,12 +21,12 @@ public class MessageHandler {
     //保存数据
     @ResponseBody
     @RequestMapping(value = "/hha", method = RequestMethod.POST)
-    public ResultEntity<String> save02(Point point){
+    public ResultEntity<String> save02(Point point) {
         // 将数据保存在数据库
         try {
-            if(point.getPoints()==null){
+            if (point.getPoints() == null) {
                 return ResultEntity.failed("You haven't set marks yet！");
-            }else{
+            } else {
                 transformService.saveDB(point);
                 return ResultEntity.successWithoutData();
             }
@@ -35,15 +35,25 @@ public class MessageHandler {
         }
     }
 
+    //清空数据库
+    @ResponseBody
+    @RequestMapping(value = "/hhcl", method = RequestMethod.POST)
+    public ResultEntity<String> clear() {
+        // 将数据保存在数据库
+        transformService.clearDB();
+        return ResultEntity.successWithoutData();
+
+    }
+
     //用贪心算法计算，数据保存在txt，计算
     @ResponseBody
-    @RequestMapping(value = "/hhe",method = RequestMethod.POST)
-    public ResultEntity<HashMap<String,List<List<String>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag){
-        HashMap<String,List<List<String>>> strings = null;
+    @RequestMapping(value = "/hhe", method = RequestMethod.POST)
+    public ResultEntity<HashMap<String, List<List<String>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag) {
+        HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calByGreedy_upload(flag);
         } catch (Exception e) {
-            ResultEntity<HashMap<String,List<List<String>>>> listResultEntity = new ResultEntity<>();
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
             listResultEntity.setMessage(e.getMessage());
             return listResultEntity;
         }
@@ -101,13 +111,13 @@ public class MessageHandler {
 
     //使用python脚本计算
     @ResponseBody
-    @RequestMapping(value = "/calByPython",method = RequestMethod.POST)
-    public ResultEntity<HashMap<String,List<List<String>>>> calByPython(@RequestParam(value = "crosFlag") String flag){
-        HashMap<String,List<List<String>>> strings = null;
+    @RequestMapping(value = "/calByPython", method = RequestMethod.POST)
+    public ResultEntity<HashMap<String, List<List<String>>>> calByPython(@RequestParam(value = "crosFlag") String flag) {
+        HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calByPython_upload(flag);
         } catch (Exception e) {
-            ResultEntity<HashMap<String,List<List<String>>>> listResultEntity = new ResultEntity<>();
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
             listResultEntity.setMessage(e.getMessage());
             return listResultEntity;
         }
@@ -116,13 +126,13 @@ public class MessageHandler {
 
     //用贪心算法计算，数据保存在redis 摄像头
     @ResponseBody
-    @RequestMapping(value = "/calByGreedyCm",method = RequestMethod.POST)
-    public ResultEntity<HashMap<String,List<List<String>>>> calByGreedyCm(){
-        HashMap<String,List<List<String>>> strings = null;
+    @RequestMapping(value = "/calByGreedyCm", method = RequestMethod.POST)
+    public ResultEntity<HashMap<String, List<List<String>>>> calByGreedyCm() {
+        HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calByGreedyCm();
         } catch (Exception e) {
-            ResultEntity<HashMap<String,List<List<String>>>> listResultEntity = new ResultEntity<>();
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
             listResultEntity.setMessage(e.getMessage());
             return listResultEntity;
         }
@@ -131,13 +141,13 @@ public class MessageHandler {
 
     //使用python脚本计算 摄像头
     @ResponseBody
-    @RequestMapping(value = "/calByPythonCm",method = RequestMethod.POST)
-    public ResultEntity<HashMap<String,List<List<String>>>> calByPythonCm(){
-        HashMap<String,List<List<String>>> strings = null;
+    @RequestMapping(value = "/calByPythonCm", method = RequestMethod.POST)
+    public ResultEntity<HashMap<String, List<List<String>>>> calByPythonCm() {
+        HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calByPythonCm();
         } catch (Exception e) {
-            ResultEntity<HashMap<String,List<List<String>>>> listResultEntity = new ResultEntity<>();
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
             listResultEntity.setMessage(e.getMessage());
             return listResultEntity;
         }

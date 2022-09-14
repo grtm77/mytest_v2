@@ -51,6 +51,11 @@ public class TransformService {
         dbRelation.write_new(roadName, strings, pointType);
     }
 
+    //清空数据库
+    public void clearDB() {
+        dbRelation.clear();
+    }
+
     //生产python脚本计算所需的数据文件
     public void createListData(String flag) throws Exception {
         List<String> all_gateway = collectGatewayFile();

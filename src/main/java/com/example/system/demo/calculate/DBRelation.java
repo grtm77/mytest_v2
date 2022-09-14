@@ -63,4 +63,28 @@ public class DBRelation {
             }
         }
     }
+    public void clear(){
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            // 1.加载数据库驱动类
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // 2.创建连接
+            conn = DriverManager.getConnection
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=root&password=T197lyjZ148");
+            stmt = conn.createStatement();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.executeUpdate("TRUNCATE TABLE sensor");
+            stmt.executeUpdate("TRUNCATE TABLE gateway");
+            stmt.executeUpdate("TRUNCATE TABLE crossing");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

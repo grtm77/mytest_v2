@@ -10,17 +10,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
 
-        registry.addViewController("/map").setViewName("mark");
+        registry.addViewController("/map").setViewName("mark_en");
 
-        registry.addViewController("/switch").setViewName("mark_en");
+//        registry.addViewController("/switch").setViewName("mark_en");
 
-        registry.addViewController("/covert").setViewName("mark01");
+//        registry.addViewController("/covert").setViewName("mark01");
 
-        registry.addViewController("/test01").setViewName("index");
+//        registry.addViewController("/test01").setViewName("index");
 
-        registry.addViewController("/").setViewName("mark");
+        registry.addViewController("/").setViewName("mark_en");
 
-        registry.addViewController("/to/register").setViewName("register");
+//        registry.addViewController("/to/register").setViewName("register");
 
     }
 }
