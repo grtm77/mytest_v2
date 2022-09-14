@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="icon" href="../icon/bcar.png" type="image/x-icon"/>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.4/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.4/dist/layui.js"></script>
+    <script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <title>标记</title>
+    <style type="text/css">
+        html {
+            height: 100%
+        }
+
+        body {
+            height: 90%;
+            margin: 0px;
+            padding: 0px
+        }
+
+        .layui-btn-container {
+            margin-top: 11px;
+            margin-left: 10px;
+        }
+        #container {
+            height: 100%
+        }
+    </style>
+    <!--百度地图SDK密钥-->
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=9nGWZvruVhORFbBRonwmEfgU1ax4Drrp">
+    </script>
+</head>
+<body>
+<div id="container"></div>
+<div class="produce">
+    <div class="layui-form layui-form-pane">
+        <div class="layui-inline">
+            <label class="layui-form-label">街道</label>
+            <div class="layui-input-inline">
+                <input type="tel" id="roadName" lay-verify="required|phone" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">节点类型</label>
+            <div class="layui-input-inline">
+                <select id="nodeType">
+                    <option value="sensor" selected="">sensor</option>
+                    <option value="gateway2">gateway</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-block layui-btn-container">
+                <button type="button" class="layui-btn layui-btn-normal" id="save">保存</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="cal">计算</button>
+                <button type="button" class="layui-btn" id="gshIt">格式化</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+    $(function () {
+        // 。。。
+        var pointArr = [];
+        var pts = [];
+        var str = [];
+        var pointIndex = 0;
+        var all = [];
+        var map = new BMap.Map("container");// 创建地图实例
+        var point = new BMap.Point(112.884, 22.909);// 创建点坐标
+        map.centerAndZoom(point, 21);// 初始化地图，设置中心点坐标和地图级别
+        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        map.addControl(new BMap.MapTypeControl({
+            mapTypes: [
+                BMAP_NORMAL_MAP,//正常
+                BMAP_HYBRID_MAP//混合
+            ]
+        }));
+        // 创建自定义网关图标
+        var myIcon = new BMap.Icon("../icon/jian.png", new BMap.Size(32, 42));
+
+        map.addEventListener('click', function (e) {
+            pointArr.push(e.point);
+
+            var start = new BMap.Point(pointArr[0].lng, pointArr[0].lat);
+            map.addOverlay(new BMap.Marker(start));
+            // pts.push(start);
+
+            var end = new BMap.Point(pointArr[1].lng, pointArr[1].lat);
+            map.addOverlay(new BMap.Marker(end));
+            // pts.push(end);
+            pointArr = []
+
+            var x1 = start.lng;
+            var y1 = start.lat;
+            var x2 = end.lng;
+            var y2 = end.lat;
+
+            var bool = $("#nodeType").val();
+            if (bool == "sensor") {
+                pointIndex = 5;
+            } else {
+                pointIndex = 15;
+            }
+
+            var chang = map.getDistance(start, end).toFixed(2);
+
+            for (var i = pointIndex; i < chang; i += pointIndex) {
+                var x3 = i / chang * (x1 - x2) + x2;
+                x3 = x3.toFixed(6);
+                var y3 = i / chang * (y1 - y2) + y2;
+                y3 = y3.toFixed(6);
+                var point = new BMap.Point(x3, y3);
+                pts.push(point);
+            }
+
+            //二维数组，存放多条街道的坐标点
+            all.push(pts)
+            console.log(all)
+
+            // 删除已经标注的点
+            map.clearOverlays()
+            //在地图上标注这些点
+            // for (let j = pts.length; j >1; j--) {
+            for (var j = 0; j < all.length; j++) {
+                for (var k = 0; k < all[j].length; k++) {
+                    var point1 = new BMap.Point(all[j][k].lng, all[j][k].lat);
+                    var myNode = $("#nodeType").val();
+                    if (myNode == "sensor") {
+                        var marker1 = new BMap.Marker(point1);
+                    } else {
+                        marker1 = new BMap.Marker(point1, {
+                            icon: myIcon
+                        });
+                    }
+                        // var  marker1 = new BMap.Marker(point1)
+                        map.addOverlay(marker1)
+                }
+            }
+            console.log(pts);
+        });
+        // 生成数据，保存到文件
+        $("#save").click(function () {
+            for (var i = 1; i < pts.length; i++) {
+                var a = pts[i].lng + "," + pts[i].lat;
+                str.push(a);
+            }
+            console.log(str);
+
+            var roadName = $("#roadName").val();
+            var points = str;
+            var pointType = $("#nodeType").val();
+
+            $.ajax({
+                "url": "hha",
+                "type": "post",
+                "data": {
+                    "roadName": roadName,
+                    points: points,
+                    "pointType": pointType
+                },
+                "dataType": "json",
+                "success": function (response) {
+                    layer.msg("请求成功")
+                    pointArr=[];
+                },
+                "error": function (response) {
+                    layer.msg("请求失败")
+                }
+            });
+        });
+
+        // 生成完数据后，发送请求计算
+        $("#cal").click(function () {
+            // 清楚地图上已经标记的点
+            map.clearOverlays();
+            $.ajax({
+                "url": "hhe",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("请求成功");
+                    var data = response.data;
+                    for (var j = 0; j < data.length; j++) {
+                        var temp = data[j].split(",");
+                        var point1 = new BMap.Point(temp[0], temp[1]);
+                        var  marker1 = new BMap.Marker(point1,{
+                            icon:myIcon
+                        });
+                        map.addOverlay(marker1)
+                    }
+                },
+                "error": function (response) {
+                    layer.msg("请求失败")
+                }
+            });
+        });
+
+    })
+</script>
+</html>
