@@ -1,5 +1,6 @@
 package com.example.system.demo.handler;
 
+import com.example.system.demo.calculate.DBRelation;
 import com.example.system.demo.config.RelatedProperties;
 import com.example.system.demo.pojo.User;
 import com.example.system.demo.service.BaseService;
@@ -18,6 +19,9 @@ import java.util.List;
 public class BaseHandler {
     @Autowired
     TransformService transformService;
+
+    @Autowired
+    DBRelation dbRelation;
 
     @Autowired
     RelatedProperties relatedProperties;
@@ -60,6 +64,13 @@ public class BaseHandler {
             System.out.println(e.toString());
         }
         return ResultEntity.failed("上传失败");
+    }
+
+    @RequestMapping("/sup")
+    @ResponseBody
+    public ResultEntity<List<List<String>>> sensorUpload() {
+        List<List<String>> sensorList = dbRelation.readSensor();
+        return ResultEntity.sucessWithData(sensorList);
     }
 
     @RequestMapping("/uploadGateway")

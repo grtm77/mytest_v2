@@ -39,7 +39,6 @@ public class MessageHandler {
     @ResponseBody
     @RequestMapping(value = "/hhcl", method = RequestMethod.POST)
     public ResultEntity<String> clear() {
-        // 将数据保存在数据库
         transformService.clearDB();
         return ResultEntity.successWithoutData();
 
@@ -66,48 +65,8 @@ public class MessageHandler {
     @RequestMapping(value = "/hho", method = RequestMethod.POST)
     public ResultEntity<List<String>> tets04() {
         transformService.deleteFile();
-        //transformService.clearRedisData();
         return ResultEntity.successWithoutData();
     }
-
-    //把数据保存至redis
-//    @ResponseBody
-//    @RequestMapping(value = "/saveByRedis",method = RequestMethod.POST)
-//    public ResultEntity<String> tets05(Point point){
-//        try {
-//            if(point.getPoints()==null){
-//                return ResultEntity.failed("未标点！");
-//            }else{
-//                transformService.saveByRedis(point);
-//                return ResultEntity.successWithoutData();
-//            }
-//        } catch (Exception e) {
-//            return ResultEntity.failed(e.getMessage());
-//        }
-//    }
-
-    //用贪心算法计算，数据保存在redis
-//    @ResponseBody
-//    @RequestMapping(value = "/calByGreedy02",method = RequestMethod.POST)
-//    public ResultEntity<List<String>> calByGreedy02(){
-//        List<String> strings;
-//        try {
-//            strings = transformService.calByGreedy02();
-//        } catch (Exception e) {
-//            ResultEntity<List<String>> listResultEntity = new ResultEntity<>();
-//            listResultEntity.setMessage(e.getMessage());
-//            return listResultEntity;
-//        }
-//        return ResultEntity.successWithData(strings,"请求成功！");
-//    }
-
-    //清空redis数据
-//    @ResponseBody
-//    @RequestMapping(value = "/clearRedisData", method = RequestMethod.POST)
-//    public ResultEntity<List<String>> clearRediaData() {
-//        transformService.clearRedisData();
-//        return ResultEntity.successWithoutData();
-//    }
 
     //使用python脚本计算
     @ResponseBody
