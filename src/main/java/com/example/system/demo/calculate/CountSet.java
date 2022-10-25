@@ -424,7 +424,7 @@ public class CountSet {
         }
 
         //TODO
-        //计算数据（与贪心计算有关）， 这里分包含路口的计算和不包含路口的计算,路口集合在367行
+        //计算数据（与贪心计算有关），这里分包含路口的计算和不包含路口的计算
         Map<String, Map<String, Vector<Double>>> stringMapMap = null;
         if("withoutCros".equals(flag)){
             stringMapMap = countSet(hs1, hs2, raius);

@@ -18,7 +18,7 @@ public class MessageHandler {
     @Autowired
     TransformService transformService;
 
-    //保存数据
+    //保存数据 实现
     @ResponseBody
     @RequestMapping(value = "/hha", method = RequestMethod.POST)
     public ResultEntity<String> save02(Point point) {
@@ -35,7 +35,7 @@ public class MessageHandler {
         }
     }
 
-    //清空数据库
+    //清空数据库 新增
     @ResponseBody
     @RequestMapping(value = "/hhcl", method = RequestMethod.POST)
     public ResultEntity<String> clear() {
@@ -44,7 +44,7 @@ public class MessageHandler {
 
     }
 
-    //用贪心算法计算，数据保存在txt，计算
+    //用贪心算法计算，数据保存在txt 实现
     @ResponseBody
     @RequestMapping(value = "/hhe", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag) {
@@ -61,15 +61,7 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
-
-    //将txt文件,与redis的数据删除掉
-    @ResponseBody
-    @RequestMapping(value = "/hho", method = RequestMethod.POST)
-    public ResultEntity<List<String>> tets04() {
-        return ResultEntity.successWithoutData();
-    }
-
-    //使用python脚本计算
+    //使用python脚本计算 正在实现
     @ResponseBody
     @RequestMapping(value = "/calByPython", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByPython(@RequestParam(value = "crosFlag") String flag) {
@@ -84,7 +76,7 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
-    //用贪心算法计算，数据保存在redis 摄像头
+    //用贪心算法计算，数据保存在redis 摄像头 废弃
     @ResponseBody
     @RequestMapping(value = "/calByGreedyCm", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByGreedyCm() {
@@ -99,7 +91,7 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
-    //使用python脚本计算 摄像头
+    //使用python脚本计算 摄像头 废弃
     @ResponseBody
     @RequestMapping(value = "/calByPythonCm", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByPythonCm() {

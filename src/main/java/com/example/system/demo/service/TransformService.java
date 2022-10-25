@@ -36,7 +36,7 @@ public class TransformService {
     @Autowired
     PythonCal pythonCal;
 
-    //保存文件数据到数据库
+    //保存文件数据到数据库 新增
     public void saveDB(Point points) {
         String roadName = points.getRoadName();
         String pointType = points.getPointType();
@@ -45,19 +45,19 @@ public class TransformService {
         dbRelation.write_new(roadName, strings, pointType);
     }
 
-    //清空数据库
+    //清空数据库 新增
     public void clearDB() {
         dbRelation.clear();
     }
 
-    //生产python脚本计算所需的数据文件
+    //生产python脚本计算所需的数据文件 无法实现
     public void createListData(String flag) throws Exception {
         List<String> all_gateway = collectGatewayFile();
         List<String> all_sensor = collectSensorFile();
         countSet.createPyData(all_gateway,all_sensor,flag);
     }
 
-    //生产python脚本计算所需的数据文件 摄像头
+    //生产python脚本计算所需的数据文件 摄像头 废弃
     public void createListDataCm() throws Exception {
         List<String> all_gateway = collectGatewayFile();
         String[] height = relatedProperties.getGatewayHeight().split(",");
@@ -72,7 +72,7 @@ public class TransformService {
         List<String> all_sensor = collectSensorFile();
         countSetCm.createPyDataCm(all_gateway2,all_sensor);
     }
-    //使用python脚本计算 摄像头
+    //使用python脚本计算 摄像头 废弃
     public HashMap<String,List<List<String>>> calByPythonCm() throws Exception {
         createListDataCm();
         List<String> all_gateway = collectGatewayFile();
@@ -110,7 +110,7 @@ public class TransformService {
         return hs;
     }
 
-    //用贪心算法计算，数据保存在txt中  摄像头
+    //用贪心算法计算，数据保存在txt中  摄像头 废弃
     public  HashMap<String,List<List<String>>> calByGreedyCm() throws Exception {
         List<String> all_sensor = collectSensorFile();
         List<String> all_gateway = collectGatewayFile();
@@ -158,7 +158,7 @@ public class TransformService {
         return hs;
     }
 
-    //使用python脚本计算
+    //使用python脚本计算 无法实现
     public HashMap<String,List<List<String>>> calByPython_upload(String flag) throws Exception {
         createListData(flag);
         List<String> all_sensor = collectSensorFile();
@@ -194,7 +194,7 @@ public class TransformService {
     }
 
     /**
-     * 用贪心算法计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回
+     * 用贪心算法计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回 实现
      * @return
      * @throws Exception
      */
@@ -252,7 +252,7 @@ public class TransformService {
         return hs;
     }
 
-    // 收集gateWay数据，即把各个街道数据文件中数据，整合到一个集合中
+    // 收集gateWay数据，即把各个街道数据文件中数据，整合到一个集合中 废弃
     public List<String> collectGatewayFile() throws Exception {
         String str_gateway = relatedProperties.getGatewayPath();
         List<String> all_gateway = new ArrayList<>();
@@ -273,7 +273,7 @@ public class TransformService {
         return all_gateway;
     }
 
-    // 收集sensor数据，即把各个街道数据文件中数据，整合到一个集合中
+    // 收集sensor数据，即把各个街道数据文件中数据，整合到一个集合中 废弃
     public List<String> collectSensorFile() throws Exception {
         String str_sensor = relatedProperties.getSensorPath();
         List<String> all_sensor = new ArrayList<>();
@@ -293,7 +293,7 @@ public class TransformService {
         return all_sensor;
     }
 
-    // 收集crossing数据
+    // 收集crossing数据 废弃
     public List<String> collectCrossingFile() {
         String str_crossing = relatedProperties.getCrossingPath();
         List<String> crossing = null;
@@ -305,7 +305,7 @@ public class TransformService {
         return crossing;
     }
 
-    // 收集sensor数据，与上传文件相关的计算相关
+    // 收集sensor数据，与上传文件相关的计算相关 废弃
     public List<List<String>> collectSensorFile02() throws Exception {
         String str_sensor = relatedProperties.getSensorPath();
         List<List<String>> all_sensor = new ArrayList<>();
@@ -324,7 +324,8 @@ public class TransformService {
         }
         return all_sensor;
     }
-    // 收集gateway数据，与上传文件相关的计算相关
+
+    // 收集gateway数据，与上传文件相关的计算相关 废弃
     public List<List<String>> collectGatewayFile02() throws Exception {
         String str_gateway = relatedProperties.getGatewayPath();
         List<List<String>> all_gateway = new ArrayList<>();

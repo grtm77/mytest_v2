@@ -23,6 +23,7 @@ public class FileRelation {
     CountSet countSet;
 
 
+//    废弃
     public List<String> traverseFolder2(String path) throws Exception {
         List<String> ls = new LinkedList<>();
         File file = new File(path);
@@ -48,7 +49,7 @@ public class FileRelation {
     }
 
     /**
-     * 获取文件内容
+     * 获取文件内容 废弃
      *
      * @param path
      * @return
@@ -75,61 +76,8 @@ public class FileRelation {
         return strList2;
     }
 
-    public  void saveDataByRedis(String roadName, List<String> strList1, String pointType) throws IOException {
-        //List<String> strList1 = getFileContent("D:\\downloads\\坐标数据\\地图格式_古老东方路下.txt");
-        double sum_x=0;
-        double sum_y=0;
-
-        double max_x=Integer.MIN_VALUE;
-        double max_y=Integer.MIN_VALUE;
-        double min_x=Integer.MAX_VALUE;
-        double min_y=Integer.MAX_VALUE;
-
-        //求中心点坐标
-        for (int i = 0; i <strList1.size() ; i++) {
-            String[] str=strList1.get(i).split(",");
-            double d_x = Double.parseDouble(str[0]);
-            if(d_x > max_x)max_x=d_x;
-            if(d_x < min_x)min_x=d_x;
-            sum_x=sum_x+d_x;
-            double d_y = Double.parseDouble(str[1]);
-            if(d_y > max_y)max_y=d_y;
-            if(d_y < min_y)min_y=d_y;
-            sum_y=sum_y+d_y;
-        }
-
-        // 请求整个节点集合中两个相距最远点 的距离
-        double max_distance = c_distance(max_x, max_y, min_x, min_y);
-        // 取整个距离的 一半的 3/4
-        double temp_d = (max_distance/2)*3/4;
-
-        double avg_x=sum_x/strList1.size();
-        double avg_y=sum_y/strList1.size();
-        //写入redis
-        ListOperations<String, String> listOperations = redisTemplate.opsForList();
-        // 5.7米 = 0.0000566  *0.00001698
-        //传感器与网关的保存方式不一样
-        if("sensor".equals(pointType)){
-            for (int i = 0; i <strList1.size() ; i++) {
-                String[] str=strList1.get(i).split(",");
-                double d_x = Double.parseDouble(str[0]);
-                double d_y = Double.parseDouble(str[1]);
-                if(temp_d>c_distance(avg_x,avg_y,d_x,d_y)){
-                    listOperations.leftPush(pointType,roadName+i+","+strList1.get(i));
-                }else{
-                    listOperations.leftPush(pointType,"*"+roadName+i+","+strList1.get(i));
-                }
-            }
-        }else{
-            for (int i = 0; i <strList1.size() ; i++) {
-                String[] str=strList1.get(i).split(",");
-                listOperations.leftPush(pointType,roadName+i+","+strList1.get(i));
-            }
-        }
-    }
-
     /**0.00005913
-     * 计算各个坐标与中心点的距离，从而算出路口的点
+     * 计算各个坐标与中心点的距离，从而算出路口的点 实现
      * @param b1_longitude   坐标1 经度
      * @param b1_laitude     坐标1 纬度
      * @param b2_longitude   坐标2 经度
@@ -158,7 +106,7 @@ public class FileRelation {
     }
 
     /**
-     * 计算路口的情况下，生成结果，传感器被哪些网关覆盖，网关覆盖了哪些传感器
+     * 计算路口的情况下，生成结果，传感器被哪些网关覆盖，网关覆盖了哪些传感器 实现
      * @param sensorListResult list里面String的格式: "名字,经度，维度 "，网关list格式相同
      * @param gatewayListResult
      */

@@ -17,6 +17,7 @@ public class DBRelation {
     @Autowired
     CountSet countSet;
 
+    //写入数据 新增
     public void write_new(String roadName, List<String[]> strList1, String pointType) {
         Connection conn = null;
         Statement stmt = null;
@@ -65,6 +66,7 @@ public class DBRelation {
         }
     }
 
+//    清空数据表 新增
     public void clear() {
         Connection conn = null;
         Statement stmt = null;

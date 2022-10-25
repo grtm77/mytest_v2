@@ -142,8 +142,8 @@ public class Detection {
         }
 
         //当while循环结束，得到选择结果
-        System.out.println("选择结果：" + select);
-        System.out.println(select.size());
+//        System.out.println("选择结果：" + select);
+//        System.out.println(select.size());
 
         return select;
     }

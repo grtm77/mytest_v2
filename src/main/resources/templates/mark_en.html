@@ -63,7 +63,9 @@
                         data-target="#calModal">Calculation
                 </button>
                 <button type="button" class="layui-btn" id="gshIt">Formatting</button>
-                <button type="button" class="layui-btn" id="clear">Clear Database</button>
+                <button type="button" class="layui-btn" id="clear" data-toggle="modal"
+                        data-target="#clearModal">Clear Database
+                </button>
                 <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
                         data-target="#uploadModal">Files Upload
                 </button>
@@ -72,7 +74,24 @@
     </div>
 </div>
 
-<!--计算比较-->
+<!--清空数据库 新增-->
+<div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="clearModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="clearModalLabel">Are you sure to clear your database?</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <button type="button" class="btn btn-primary" id="confirm">Confirm</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--计算比较 部分实现-->
 <div class="modal fade" id="calModal" tabindex="-1" role="dialog" aria-labelledby="calModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -83,15 +102,15 @@
             <div class="modal-body" align="center">
                 <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">Greedy</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calPulp">Pulp</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy withOutCros
+                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy WithoutCros
                 </button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calPulpWithOutCros">Pulp withOutCros</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="calPulpWithOutCros">Pulp WithoutCros</button>
             </div>
         </div>
     </div>
 </div>
 
-<!--文件上传-->
+<!--数据库上传 实现-->
 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -174,6 +193,7 @@
         ]
     });
 
+    //JS
     $(function () {
         map.addEventListener('click', function (e) {
             var cros = $("#nodeType").val();
@@ -261,7 +281,7 @@
             }
         });
 
-        // 生成数据，保存到数据库
+        // 生成数据，保存到数据库 新增
         $("#save").click(function () {
             var flag_cros = $("#nodeType").val() == "cros" ? 0 : 1;
 
@@ -297,7 +317,7 @@
             });
         });
 
-        // 生成完数据后，发送请求计算 线性规划 （计算路口）
+        // 生成完数据后，发送请求计算 线性规划 （计算路口）未实现
         $("#calPulp").click(function () {
             // 清楚地图上已经标记的点
             map.clearOverlays();
@@ -360,7 +380,7 @@
             });
         });
 
-        // 生成完数据后，发送请求计算 线性规划 （不计算路口）
+        // 生成完数据后，发送请求计算 线性规划 （不计算路口）正在实现
         $("#calPulpWithOutCros").click(function () {
             // 清楚地图上已经标记的点
             map.clearOverlays();
@@ -423,7 +443,7 @@
             });
         });
 
-        // 生成完数据后，发送请求计算 贪心算法 （计算路口）
+        // 生成完数据后，发送请求计算 贪心算法 （计算路口）实现
         $("#calGreedy").click(function () {
             // 清楚地图上已经标记的点
             map.clearOverlays();
@@ -487,7 +507,7 @@
             });
         });
 
-        // 生成完数据后，发送请求计算 贪心算法 （不计算路口）
+        // 生成完数据后，发送请求计算 贪心算法 （不计算路口）实现
         $("#calGreedyWithOutCros").click(function () {
             // 清楚地图上已经标记的点
             map.clearOverlays();
@@ -549,7 +569,7 @@
             });
         });
 
-        // 格式化
+        // 格式化 实现
         $("#gshIt").click(function () {
             //清空所有存放数据的数组
             all_sensor = [];
@@ -561,8 +581,8 @@
             map.clearOverlays();
         });
 
-        //清空数据表
-        $("#clear").click(function () {
+        //清空数据表 新增
+        $("#confirm").click(function () {
             $.ajax({
                 "url": "hhcl",
                 "type": "post",
@@ -575,7 +595,7 @@
             });
         });
 
-        //值改变事件
+        //值改变事件 无需更改
         layui.use(['layer', 'form', 'jquery'], function () {
             var form = layui.form;
             form.on('select(nodeType)', function (data) {
@@ -585,7 +605,7 @@
         });
     });
 
-    //gateway数据库读取
+    //gateway数据库读取 新增
     $("#gatewayupload").click(function () {
         $.ajax({
             "url": "gup",
@@ -603,7 +623,7 @@
         });
     });
 
-    //sensor数据库读取
+    //sensor数据库读取 新增
     $("#sensorupload").click(function () {
         $.ajax({
             "url": "sup",
@@ -631,7 +651,7 @@
         });
     });
 
-    //crossing数据库读取
+    //crossing数据库读取 新增
     $("#crosupload").click(function () {
         $.ajax({
             "url": "cup",
