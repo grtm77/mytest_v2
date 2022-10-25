@@ -36,7 +36,8 @@ public class DBRelation {
             for (int i = 0; i < strList1.size(); i++) {
                 try {
                     //准备SQL语句
-                    String tsql = "INSERT INTO sensor(roadName,numberInRoad,Lng,Lat) VALUES (" + roadName + "," + i + "," + strList1.get(i)[0] + "," + strList1.get(i)[1] + ")";
+                    String tsql = "INSERT INTO sensor(roadName,numberInRoad,Lng,Lat) VALUES (\'" + roadName + "\'," + i + "," + strList1.get(i)[0] + "," + strList1.get(i)[1] + ")";
+//                    System.out.println(tsql);
                     //执行，抛出异常
                     stmt.executeUpdate(tsql);
                 } catch (SQLException e) {
@@ -46,7 +47,7 @@ public class DBRelation {
         } else if ("gateway".equals(pointType)) {
             for (int i = 0; i < strList1.size(); i++) {
                 try {
-                    String tsql = "INSERT INTO gateway(roadName,numberInRoad,Lng,Lat) VALUES (" + roadName + "," + i + "," + strList1.get(i)[0] + "," + strList1.get(i)[1] + ")";
+                    String tsql = "INSERT INTO gateway(roadName,numberInRoad,Lng,Lat) VALUES (\'" + roadName + "\'," + i + "," + strList1.get(i)[0] + "," + strList1.get(i)[1] + ")";
                     stmt.executeUpdate(tsql);
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -55,7 +56,7 @@ public class DBRelation {
         } else if ("cros".equals(pointType)) {
             for (int i = 0; i < strList1.size(); i++) {
                 try {
-                    String tsql = "INSERT INTO crossing(roadName,numberInRoad,Lng,Lat) VALUES (" + roadName + "," + i + "," + strList1.get(i)[0] + "," + strList1.get(i)[1] + ")";
+                    String tsql = "INSERT INTO crossing(roadName,numberInRoad,Lng,Lat) VALUES (\'" + roadName + "\'," + i + "," + strList1.get(i)[0] + "," + strList1.get(i)[1] + ")";
                     stmt.executeUpdate(tsql);
                 } catch (SQLException e) {
                     e.printStackTrace();
