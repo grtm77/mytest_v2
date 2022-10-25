@@ -33,7 +33,7 @@
         }
     </style>
     <!--百度地图SDK密钥-->
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=9nGWZvruVhORFbBRonwmEfgU1ax4Drrp">
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=7yQLH1vsuBmKMSwd5jAKjkK0WkhGdOvy">
     </script>
 </head>
 <body>
@@ -102,12 +102,9 @@
                 <h4 class="modal-title" id="uploadModalLabel">Files Upload</h4>
             </div>
             <div class="modal-body" align="center">
-                <button type="button" class="btn btn-primary" id="sensorupload" data-toggle="modal" data-target="#sensorFileModal">Sensor Upload</button>
-                <button type="button" class="btn btn-primary" id="gatewayupload" data-toggle="modal"
-                        data-target="#gatewayFileModal">Gateway Upload
-                </button>
-                <button  type="button" class="btn btn-primary" id="crosupload" data-toggle="modal"
-                        data-target="#crossingFileModal">Crossing Upload
+                <button type="button" class="btn btn-primary" id="sensorupload" >Sensor Upload</button>
+                <button type="button" class="btn btn-primary" id="gatewayupload">Gateway Upload</button>
+                <button type="button" class="btn btn-primary" id="crosupload" >Crossing Upload
                 </button>
             </div>
         </div>
@@ -686,26 +683,24 @@
                 "url": "hho",
                 "type": "post",
                 "success": function (response) {
-                    layer.msg("请求成功");
+                    layer.msg("Success!");
                 },
                 "error": function (response) {
-                    layer.msg("请求失败")
+                    layer.msg("Error!");
                 }
             });
         });
 
         //清空数据表
         $("#clear").click(function () {
-            // 清楚地图上已经标记的点
-            map.clearOverlays();
             $.ajax({
                 "url": "hhcl",
                 "type": "post",
                 "success": function (response) {
-                    layer.msg("请求成功");
+                    layer.msg("Success!");
                 },
                 "error": function (response) {
-                    layer.msg("请求失败")
+                    layer.msg("Error!");
                 }
             });
         });
@@ -720,7 +715,71 @@
         });
     });
 
-    //sensor文件上传
+    //gateway数据库读取
+    $("#gatewayupload").click(function () {
+        $.ajax({
+            "url": "gup",
+            "type": "post",
+            "success": function (response) {
+                var gateways = response.data;//拿到的gateway列表
+                // console.log(gateways);
+                //在地图上标记
+                for (var i = 0; i < gateways.length; i++) {
+                    var point2 = new BMap.Point(gateways[i][2], gateways[i][3]);
+                    var marker2 = new BMap.Marker(point2, {icon: gIcon});
+                    map.addOverlay(marker2);
+                }
+            }
+        });
+    });
+
+    //sensor数据库读取
+    $("#sensorupload").click(function () {
+        $.ajax({
+            "url": "sup",
+            "type": "post",
+            "success": function (response) {
+                var sensors = response.data;//拿到的sensor列表
+                // console.log(sensors);
+                var xx1 = sensors[0][2];
+                var yy1 = sensors[0][3];
+                var last_str = sensors[sensors.length-1];
+                var xx2 = last_str[2];
+                var yy2 = last_str[3];
+                var angle = Math.atan2((yy1-yy2), (xx2-xx1)); //弧度  0.6435011087932844
+                var theta = angle*( 180 /Math.PI);  //角度  36.86989764584402
+                //在地图上标记
+                for (var i = 0; i < sensors.length; i++) {
+                    var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
+                    var marker1 = new BMap.Marker(point1, {icon: sIcon});
+                    var marker0 = new BMap.Marker(point1, {icon: rIcon});
+                    marker0.setRotation(theta);
+                    map.addOverlay(marker0);
+                    map.addOverlay(marker1);
+                }
+            }
+        });
+    });
+
+    //crossing数据库读取
+    $("#crosupload").click(function () {
+        $.ajax({
+            "url": "cup",
+            "type": "post",
+            "success": function (response) {
+                var crossing = response.data;//拿到的cros列表
+                // console.log(crossing);
+                //在地图上标记
+                for (var i = 0; i < crossing.length; i++) {
+                    var point3 = new BMap.Point(crossing[i][2], crossing[i][3]);
+                    var marker3 = new BMap.Marker(point3, {icon: cIcon});
+                    map.addOverlay(marker3);
+                }
+            }
+        });
+    });
+
+    //sensor文件读取
     layui.use('upload', function () {
         var $ = layui.jquery,
             upload = layui.upload;
@@ -770,10 +829,8 @@
                     for(var i=0;i<res.data.length;i++){
                         var split = res.data[i].split(",");
                         var tmpPoint = new BMap.Point(split[1], split[2]);
-                        var tmpMaker = new BMap.Marker(tmpPoint, {
-                            icon: sIcon
-                        });
-                        map.addOverlay(tmpMaker)
+                        var tmpMaker = new BMap.Marker(tmpPoint, {icon: sIcon});
+                        map.addOverlay(tmpMaker);
                     }
 
                     return delete this.files[index]; //删除文件队列已经上传成功的文件

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.sql.*;
 import java.util.*;
 
 @Component
@@ -16,6 +17,9 @@ public class CountSet {
 
     @Autowired
     FileRelation fileRelation;
+
+    @Autowired
+    DBRelation dbRelation;
 
     /**
      * 从目标文件中读取灯柱和节点坐标
@@ -45,22 +49,71 @@ public class CountSet {
         return strList2;
     }
 
+
+    /**
+     * 从数据库中读取灯柱和节点坐标
+     * @return
+     */
+    public List<List<String>> getDBContent() {
+
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            // 加载数据库驱动类
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // 创建连接
+            conn = DriverManager.getConnection
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=root&password=T197lyjZ148");
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String tsql = "SELECT * FROM crossing";
+        ResultSet rs = null;
+        List<String> lis;
+        List<List<String>> bk = new ArrayList();
+        try {
+            rs = stmt.executeQuery(tsql);
+            while (rs.next()) {
+                lis = new ArrayList();
+                lis.add(rs.getString("roadName"));
+                lis.add(rs.getString("numberInRoad"));
+                lis.add(rs.getString("Lng"));
+                lis.add(rs.getString("Lat"));
+                bk.add(lis);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bk;
+    }
+
     /**
      * 将每个路口的信息存入map
      *
      * @return
      */
     public HashMap<String, Vector<Double>> countCrossing() {
-        List<String> crossingList = getFileContent(relatedProperties.getCrossingPath() + "\\crosRoad.txt");
+        List<List<String>> cList = getDBContent();
+        List<String> crossingList = new ArrayList<String>();
+        Iterator<List<String>> it = cList.iterator();
+
+        while (it.hasNext()) {
+            List<String> itnext = it.next();
+            String temp2 = itnext.get(2) + "," + itnext.get(3);
+            crossingList.add(temp2);
+        }
         HashMap<String, Vector<Double>> cros = new HashMap<>();
 
         for (int i = 0; i < crossingList.size(); i++) {
             Vector<Double> vc = new Vector<>();
-            //System.out.println(strList1.get(i));
+//            System.out.println(crossingList.get(i));
             String[] split = crossingList.get(i).split(",");
+            vc.add(Double.parseDouble(split[0]));
             vc.add(Double.parseDouble(split[1]));
-            vc.add(Double.parseDouble(split[2]));
-            cros.put(split[0], vc);
+            cros.put(crossingList.get(i), vc);
         }
         return cros;
     }
@@ -351,25 +404,23 @@ public class CountSet {
 
         for (int i = 0; i < strList1.size(); i++) {
             Vector<Double> vc = new Vector<>();
-            //System.out.println(strList1.get(i));
+//            System.out.println(strList1.get(i));
             String[] split = strList1.get(i).split(",");
+            vc.add(Double.parseDouble(split[0]));
             vc.add(Double.parseDouble(split[1]));
-            vc.add(Double.parseDouble(split[2]));
-            hs1.put(split[0], vc);
+            hs1.put(strList1.get(i), vc);
         }
-
         for (int i = 0; i < strList2.size(); i++) {
             Vector<Double> vc = new Vector<>();
             //System.out.println(strList2.get(i));
             String[] split = strList2.get(i).split(",");
+            vc.add(Double.parseDouble(split[0]));
             vc.add(Double.parseDouble(split[1]));
-            vc.add(Double.parseDouble(split[2]));
-            hashSet.add(split[0]);
-            hs2.put(split[0], vc);
+            hashSet.add(strList2.get(i));
+            hs2.put(strList2.get(i), vc);
         }
 
         double raius = relatedProperties.getGatewayRadius();
-
         // 计算路口集合
         HashMap<String, Vector<Double>> crossingMap = countCrossing();
         if (crossingMap.size() == 0) {
@@ -445,6 +496,7 @@ public class CountSet {
 //        while (iterator.hasNext()){
 //            System.out.println(iterator.next());
 //        }
+
         return result;
     }
 

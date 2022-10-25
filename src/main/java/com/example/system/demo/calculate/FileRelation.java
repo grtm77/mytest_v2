@@ -341,8 +341,8 @@ public class FileRelation {
 
         FileWriter fileWriter1 = null;
         try {
-            fileWriter1 = new FileWriter(new File(relatedProperties.getResultPath()+"\\"+"sensorResult.txt"));
-            fileWriter1.write("传感器节点文件格式： 传感器节点名称 -> 能够覆盖的该传感器节点的网关名称 "+"\r\n");
+            fileWriter1 = new FileWriter(new File(relatedProperties.getResultPath()+"/sensorResult.txt"));
+            fileWriter1.write("传感器节点文件格式： 传感器节点名称 -> 能够覆盖的该传感器节点的网关名称 "+"\n");
             for(String sensor : sensorListResult){
                 String[] sensorSplit = sensor.split(",");
                 StringBuilder sensor_tmp = new StringBuilder(sensorSplit[0]+" ->");

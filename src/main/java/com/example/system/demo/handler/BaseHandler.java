@@ -73,6 +73,20 @@ public class BaseHandler {
         return ResultEntity.sucessWithData(sensorList);
     }
 
+    @RequestMapping("/gup")
+    @ResponseBody
+    public ResultEntity<List<List<String>>> gatewayUpload() {
+        List<List<String>> gatewayList = dbRelation.readGateway();
+        return ResultEntity.sucessWithData(gatewayList);
+    }
+
+    @RequestMapping("/cup")
+    @ResponseBody
+    public ResultEntity<List<List<String>>> crossingUpload() {
+        List<List<String>> crossingList = dbRelation.readCrossing();
+        return ResultEntity.sucessWithData(crossingList);
+    }
+
     @RequestMapping("/uploadGateway")
     @ResponseBody
     public ResultEntity uploadGateway(@RequestParam("file") MultipartFile file) {

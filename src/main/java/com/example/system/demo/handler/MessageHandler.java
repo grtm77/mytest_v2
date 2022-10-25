@@ -51,8 +51,10 @@ public class MessageHandler {
         HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calByGreedy_upload(flag);
+            System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            System.out.println("Exception");
             listResultEntity.setMessage(e.getMessage());
             return listResultEntity;
         }

@@ -33,7 +33,7 @@
         }
     </style>
     <!--百度地图SDK密钥-->
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=9nGWZvruVhORFbBRonwmEfgU1ax4Drrp">
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=7yQLH1vsuBmKMSwd5jAKjkK0WkhGdOvy">
     </script>
 </head>
 <body>
@@ -715,6 +715,24 @@
         });
     });
 
+    //gateway数据库读取
+    $("#gatewayupload").click(function () {
+        $.ajax({
+            "url": "gup",
+            "type": "post",
+            "success": function (response) {
+                var gateways = response.data;//拿到的gateway列表
+                // console.log(gateways);
+                //在地图上标记
+                for (var i = 0; i < gateways.length; i++) {
+                    var point2 = new BMap.Point(gateways[i][2], gateways[i][3]);
+                    var marker2 = new BMap.Marker(point2, {icon: gIcon});
+                    map.addOverlay(marker2);
+                }
+            }
+        });
+    });
+
     //sensor数据库读取
     $("#sensorupload").click(function () {
         $.ajax({
@@ -743,16 +761,23 @@
         });
     });
 
-
-
-
-
-
-
-
-
-
-
+    //crossing数据库读取
+    $("#crosupload").click(function () {
+        $.ajax({
+            "url": "cup",
+            "type": "post",
+            "success": function (response) {
+                var crossing = response.data;//拿到的cros列表
+                // console.log(crossing);
+                //在地图上标记
+                for (var i = 0; i < crossing.length; i++) {
+                    var point3 = new BMap.Point(crossing[i][2], crossing[i][3]);
+                    var marker3 = new BMap.Marker(point3, {icon: cIcon});
+                    map.addOverlay(marker3);
+                }
+            }
+        });
+    });
 
     //sensor文件读取
     layui.use('upload', function () {

@@ -35,7 +35,9 @@ public class DBRelation {
         if ("sensor".equals(pointType)) {
             for (int i = 0; i < strList1.size(); i++) {
                 try {
+                    //准备SQL语句
                     String tsql = "INSERT INTO sensor(roadName,numberInRoad,Lng,Lat) VALUES (" + roadName + "," + i + "," + strList1.get(i)[0] + "," + strList1.get(i)[1] + ")";
+                    //执行，抛出异常
                     stmt.executeUpdate(tsql);
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -102,6 +104,75 @@ public class DBRelation {
             e.printStackTrace();
         }
         String tsql = "SELECT * FROM sensor";
+        ResultSet rs = null;
+        List<String> lis;
+        List<List<String>> bk = new ArrayList();
+        try {
+            rs = stmt.executeQuery(tsql);
+            while (rs.next()) {
+                lis = new ArrayList();
+                lis.add(rs.getString("roadName"));
+                lis.add(rs.getString("numberInRoad"));
+                lis.add(rs.getString("Lng"));
+                lis.add(rs.getString("Lat"));
+                bk.add(lis);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bk;
+    }
+    public List<List<String>> readGateway() {
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            // 加载数据库驱动类
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // 创建连接
+            conn = DriverManager.getConnection
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=root&password=T197lyjZ148");
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String tsql = "SELECT * FROM gateway";
+        ResultSet rs = null;
+        List<String> lis;
+        List<List<String>> bk = new ArrayList();
+        try {
+            rs = stmt.executeQuery(tsql);
+            while (rs.next()) {
+                lis = new ArrayList();
+                lis.add(rs.getString("roadName"));
+                lis.add(rs.getString("numberInRoad"));
+                lis.add(rs.getString("Lng"));
+                lis.add(rs.getString("Lat"));
+                bk.add(lis);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bk;
+    }
+
+    public List<List<String>> readCrossing() {
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            // 加载数据库驱动类
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // 创建连接
+            conn = DriverManager.getConnection
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=root&password=T197lyjZ148");
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String tsql = "SELECT * FROM crossing";
         ResultSet rs = null;
         List<String> lis;
         List<List<String>> bk = new ArrayList();
