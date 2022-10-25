@@ -22,36 +22,6 @@ public class FileRelation {
     @Autowired
     CountSet countSet;
 
-    int flag = 1;//用来判断文件是否删除成功
-
-
-
-    /**
-     * 删除文件夹下的文件
-     * @param file
-     */
-    public void deleteFile(File file){
-        //判断文件不为null或文件目录存在
-        if (file == null || !file.exists()){
-            flag = 0;
-           // System.out.println("文件删除失败,请检查文件路径是否正确");
-            return;
-        }
-        //取得这个目录下的所有子文件对象
-        File[] files = file.listFiles();
-        //遍历该目录下的文件对象
-        for (File f: files){
-            //打印文件名
-            String name = file.getName();
-            //System.out.println(name);
-            //判断子目录是否存在子目录,如果是文件则删除
-            if (f.isDirectory()){
-                deleteFile(f);
-            }else {
-                f.delete();
-            }
-        }
-    }
 
     public List<String> traverseFolder2(String path) throws Exception {
         List<String> ls = new LinkedList<>();
@@ -104,141 +74,6 @@ public class FileRelation {
         }
         return strList2;
     }
-
-    /**
-     * 写入文本的脚本
-     * @param
-     */
-//    public void writeFile(String roadName,String pointType)throws IOException{
-//        File f;
-//        if("sensor".equals(pointType)){
-//            f=new File(relatedProperties.getSensorPath()+"\\"+roadName+".txt");
-//        }else {
-//            f=new File(relatedProperties.getGatewayPath()+"\\"+roadName+".txt");
-//        }
-//
-//        //f.createNewFile();
-//        FileOutputStream fileOutputStream = new FileOutputStream(f);
-//        PrintStream printStream = new PrintStream(fileOutputStream);
-//        System.setOut(printStream);
-//    }
-
-    /**
-     * 保存数据到txt文件
-     * @param
-     */
-    public void writeFile_new(String roadName, List<String> strList1, String pointType)throws IOException{
-        FileWriter fileWriter = null;
-        if("sensor".equals(pointType)){
-            //保存传感器数据到传感器文件
-            try {
-                fileWriter = new FileWriter(new File(relatedProperties.getSensorPath()+"\\"+roadName+".txt"));
-                for (int i = 0; i <strList1.size() ; i++) {
-                    //String[] str = strList1.get(i).split(",");
-                    fileWriter.write(roadName + i + "," + strList1.get(i)+"\r\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
-                if(fileWriter!=null){
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }else if("gateway".equals(pointType)){
-            //保存网关数据到网关文件
-            try {
-                fileWriter = new FileWriter(new File(relatedProperties.getGatewayPath()+"\\"+roadName+".txt"));
-                for (int i = 0; i <strList1.size() ; i++) {
-                    //String[] str = strList1.get(i).split(",");
-                    fileWriter.write(roadName + i + "," + strList1.get(i)+"\r\n");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
-                if(fileWriter!=null){
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-        }else if("cros".equals(pointType)){
-            //保存路口数据至路口数据文件 cros.txt
-            try {
-                fileWriter = new FileWriter(new File(relatedProperties.getCrossingPath()+"\\"+"crosRoad.txt"));
-                for(int i=0;i<strList1.size();i++){
-                    fileWriter.write("crosRoad"+i+","+strList1.get(i)+"\r\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
-                if(fileWriter!=null){
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 保存路口数据至路口数据文件 cros.txt
-     */
-//    public void write_cros(List<String> strList1)  {
-//        FileWriter fileWriter = null;
-//        try {
-//            fileWriter = new FileWriter(new File(relatedProperties.getCrossingPath()+"\\"+"cros.txt"));
-//            for(int i=0;i<strList1.size();i++){
-//                fileWriter.write("cros"+i+","+strList1.get(i)+"\r\n");
-//
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }finally {
-//            if(fileWriter!=null){
-//                try {
-//                    fileWriter.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-
-    /**
-     * 将生成的坐标转换成 算法需要的格式，给每个节点加上名字，
-     * @throws IOException
-     */
-//    public  void write_sensor(String roadName, List<String> strList1, String pointType) throws IOException {
-//
-//        //写入文件
-//        writeFile(roadName,pointType);
-//        // 5.7米 = 0.0000566  *0.00001698
-////        for (int i = 0; i <strList1.size() ; i++) {
-////            String[] str=strList1.get(i).split(",");
-////            double d_x = Double.parseDouble(str[0]);
-////            double d_y = Double.parseDouble(str[1]);
-////            if(temp_d>c_distance(avg_x,avg_y,d_x,d_y)){
-////                System.out.println(roadName+i+","+strList1.get(i));
-////            }else{
-////                System.out.println("*"+i+","+strList1.get(i));
-////            }
-////        }
-//
-//            for (int i = 0; i <strList1.size() ; i++) {
-//                String[] str = strList1.get(i).split(",");
-//                System.out.println(roadName + i + "," + strList1.get(i));
-//            }
-//    }
 
     public  void saveDataByRedis(String roadName, List<String> strList1, String pointType) throws IOException {
         //List<String> strList1 = getFileContent("D:\\downloads\\坐标数据\\地图格式_古老东方路下.txt");
@@ -389,7 +224,7 @@ public class FileRelation {
 
         FileWriter fileWriter2 = null;
         try {
-            fileWriter2 = new FileWriter(new File(relatedProperties.getResultPath()+"\\"+"gatewayResult.txt"));
+            fileWriter2 = new FileWriter(new File(relatedProperties.getResultPath()+"/gatewayResult.txt"));
             fileWriter2.write("网关节点文件格式： 网关节点名称 -> 被该网关覆盖的传感器节点名称 "+"\r\n");
             for(String gateway : gatewayListResult){
                 String[] gatewaySplit = gateway.split(",");
@@ -437,7 +272,7 @@ public class FileRelation {
 
         FileWriter fileWriter3 = null;
         try {
-            fileWriter3 = new FileWriter(new File(relatedProperties.getResultPath()+"\\"+"resultAnalysis.txt"));
+            fileWriter3 = new FileWriter(new File(relatedProperties.getResultPath()+"/resultAnalysis.txt"));
             fileWriter3.write("<--传感器节点分析-->"+"\r\n");
 
             for(Map.Entry<Integer,Integer> entry : sensorAnalysis.entrySet()){
@@ -466,7 +301,4 @@ public class FileRelation {
             }
         }
     }
-
-
-
 }

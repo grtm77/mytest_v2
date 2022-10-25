@@ -193,37 +193,6 @@ public class TransformService {
         return hs;
     }
 
-    //用贪心算法计算，数据保存在txt中
-//    public List<String> calByGreedy() throws Exception {
-//        List<String> all_sensor = collectSensorFile();
-//        List<String> all_gateway = collectGatewayFile();
-//
-//        // 计算结果
-//        ArrayList<String> resultWithName = null;
-//
-//        try {
-//            resultWithName = countSet.test01(all_gateway, all_sensor);
-//        } catch (Exception e) {
-//            //System.out.println("错误信息："+e.getMessage());
-//            throw e;
-//        }
-//
-//        ArrayList<String> resultWithCoordinate = new ArrayList<>();
-//        //strings.forEach(System.out::println);
-//        //all_gateway.forEach(System.out::println);
-//        // 把结果对应的坐标数据返回
-//        for (String s : all_gateway) {
-//            String[] split = s.split(",");
-//            if (resultWithName.contains(split[0])) {
-//                String data = split[1] + "," + split[2];
-//                resultWithCoordinate.add(data);
-//            }
-//        }
-//
-//        return resultWithCoordinate;
-//    }
-
-
     /**
      * 用贪心算法计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回
      * @return

@@ -522,11 +522,6 @@ public class CountSet {
                 //使用牛顿迭代法计算平方根
                 BigDecimal sqrt = sqrt(add);
                 double distance = sqrt.doubleValue();
-                //double distance = Math.sqrt((x_gateway_vc - x_sensor_vc) * (x_gateway_vc - x_sensor_vc) + (y_gateway_vc - y_sensor_vc) * (y_gateway_vc - y_sensor_vc));
-                ;
-
-//                System.out.println(string_gateway==string_sensor);
-//                System.out.println(string_gateway.equals(string_sensor));
                 double aa_distance = distance * Math.pow(10, 5);
                 String string_gateway = entry_gateway.getKey().substring(0, 5);
                 String string_sensor = entry_sensor.getKey().substring(0, 5);
