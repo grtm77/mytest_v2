@@ -318,8 +318,6 @@ public class CountSet {
 
         HashSet<String> hashSet = new HashSet<>();
 
-//        List<String> strList1 = getFileContent("C:\\Users\\THTF\\Desktop\\gateway\\all.txt");
-//        List<String> strList2= getFileContent("C:\\Users\\THTF\\Desktop\\sensor\\All_road.txt");
 
         for (int i = 0; i < strList1.size(); i++) {
             Vector<Double> vc = new Vector<>();
@@ -399,25 +397,23 @@ public class CountSet {
 
         HashSet<String> hashSet = new HashSet<>();
 
-//        List<String> strList1 = getFileContent("D:\\downloads\\灯柱坐标数据\\已标记\\all.txt");
-//        List<String> strList2= getFileContent("D:\\gatewayData\\All_road.txt");
 
         for (int i = 0; i < strList1.size(); i++) {
             Vector<Double> vc = new Vector<>();
 //            System.out.println(strList1.get(i));
             String[] split = strList1.get(i).split(",");
-            vc.add(Double.parseDouble(split[0]));
             vc.add(Double.parseDouble(split[1]));
-            hs1.put(strList1.get(i), vc);
+            vc.add(Double.parseDouble(split[2]));
+            hs1.put(split[0], vc);
         }
         for (int i = 0; i < strList2.size(); i++) {
             Vector<Double> vc = new Vector<>();
             //System.out.println(strList2.get(i));
             String[] split = strList2.get(i).split(",");
-            vc.add(Double.parseDouble(split[0]));
             vc.add(Double.parseDouble(split[1]));
-            hashSet.add(strList2.get(i));
-            hs2.put(strList2.get(i), vc);
+            vc.add(Double.parseDouble(split[2]));
+            hashSet.add(split[0]);
+            hs2.put(split[0], vc);
         }
 
         double raius = relatedProperties.getGatewayRadius();
@@ -429,9 +425,6 @@ public class CountSet {
 
         //TODO
         //计算数据（与贪心计算有关）， 这里分包含路口的计算和不包含路口的计算,路口集合在367行
-        // 一个函数做重载，差别在第三个参数有没有传入路口集合
-        // countSet(Map<String, Vector<Double>> gateway, Map<String, Vector<Double>> sensor,  double radius)
-        // countSet(Map<String, Vector<Double>> gateway, Map<String, Vector<Double>> sensor, Map<String, Vector<Double>> cros, double radius)
         Map<String, Map<String, Vector<Double>>> stringMapMap = null;
         if("withoutCros".equals(flag)){
             stringMapMap = countSet(hs1, hs2, raius);
@@ -471,31 +464,6 @@ public class CountSet {
 
         // 调用Detection中的近似贪心算法计算
         ArrayList<String> result = Detection.greedyAlgorithm(hashSet, stringHashSetHashMap);
-
-        //查看近似贪心算法的准确度   resultash.size();  查看resultash的是否包含了所有节点元素
-//        HashSet<String > resultash = new HashSet<>();
-//        for (int i = 0; i <result.size() ; i++) {
-//            HashSet<String> lamKey = lampposts2.get(result.get(i));
-//            Iterator<String> iterator1 = lamKey.iterator();
-//            while(iterator1.hasNext()) {
-//                resultash.add(iterator1.next());
-//            }
-//        }
-
-//        System.out.println("!-------------------------------------------------------------!");
-//        for (Map.Entry<String, Vector<Double>> entry : hs1.entrySet()) {
-//            System.out.println(entry.getKey() + "--->" + entry.getValue());
-//        }
-//        for (Map.Entry<String, Vector<Double>> entry : hs2.entrySet()) {
-//            System.out.println(entry.getKey() + "--->" + entry.getValue());
-//        }
-//        System.out.println("!-------------------------------------------------------------!");
-//
-//        // 输出格式化的所有传感器节点
-//        Iterator<String> iterator = hashSet.iterator();
-//        while (iterator.hasNext()){
-//            System.out.println(iterator.next());
-//        }
 
         return result;
     }

@@ -7,12 +7,9 @@ import com.example.system.demo.calculate.PythonCal;
 import com.example.system.demo.config.RelatedProperties;
 import com.example.system.demo.pojo.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 
@@ -244,13 +241,13 @@ public class TransformService {
 
         while (it2.hasNext()) {
             List<String> it2next = it2.next();
-            String temp2 = it2next.get(2) + "," + it2next.get(3);
+            String temp2 = it2next.get(0) + it2next.get(1) + "," + it2next.get(2) + "," + it2next.get(3);
             all_gateway.add(temp2);
         }
 
         while (it1.hasNext()) {
             List<String> it1next = it1.next();
-            String temp1 = it1next.get(2) + "," + it1next.get(3);
+            String temp1 = it1next.get(0) + it1next.get(1) + "," +  it1next.get(2) + "," + it1next.get(3);
             all_sensor.add(temp1);
         }
 
@@ -278,8 +275,8 @@ public class TransformService {
         List<List<String>> all_sensor02 = sensor;
         List<List<String>> all_gateway02 = new ArrayList<>();
         all_gateway02.add((resultWithCoordinate));
-        hs.put("sensorList",all_sensor02);
-        hs.put("gatewayList",all_gateway02);
+        hs.put("sensorList", all_sensor02);
+        hs.put("gatewayList", all_gateway02);
 
         //生成分析结果
         fileRelation.creatResult(all_sensor,resultTmp);
@@ -377,73 +374,4 @@ public class TransformService {
         }
         return all_gateway;
     }
-    //格式化文件夹,删除目录下的txt文件
-    public void deleteFile() {
-        //输入要删除文件目录的绝对路径
-        File file1 = new File(relatedProperties.getSensorPath());
-        File file2 = new File(relatedProperties.getGatewayPath());
-        File file3 = new File(relatedProperties.getCrossingPath());
-        fileRelation.deleteFile(file1);
-        fileRelation.deleteFile(file2);
-        fileRelation.deleteFile(file3);
-    }
-
-    //用redis保存
-//    public void saveByRedis(Point points) throws IOException {
-//        String roadName = points.getRoadName();
-//        String pointType = points.getPointType();
-//        String[] points1 = points.getPoints();
-//        List<String> strings = Arrays.asList(points1);
-//
-//        ListOperations<String, String> listOperations = redisTemplate.opsForList();
-//
-//        try {
-//             fileRelation.saveDataByRedis(roadName, strings, pointType);
-//        } catch (IOException e) {
-//            throw e;
-//        }
-//    }
-
-    //用贪心算法计算，数据保存在redis中
-//    public List<String> calByGreedy02() throws Exception {
-//        ListOperations<String, String> listOperations = redisTemplate.opsForList();
-//        //从redis中取出数据
-//        List<String> all_sensor = listOperations.range("sensor", 0, -1);
-//        List<String> all_gateway = listOperations.range("gateway", 0, -1);
-//
-//        // 计算结果
-//        ArrayList<String> resultWithName = null;
-//
-//        try {
-//            if(all_gateway.size()==0 || all_sensor.size()==0)throw new Exception("没有数据！");
-//            resultWithName = countSet.test01(all_gateway, all_sensor);
-//        } catch (Exception e) {
-//            //System.out.println("错误信息："+e.getMessage());
-//            throw e;
-//        }
-//
-//        ArrayList<String> resultWithCoordinate = new ArrayList<>();
-//        // 把结果对应的坐标数据返回
-//        for (String s : all_gateway) {
-//            String[] split = s.split(",");
-//            if (resultWithName.contains(split[0])) {
-//                String data = split[1] + "," + split[2];
-//                resultWithCoordinate.add(data);
-//            }
-//        }
-//        return resultWithCoordinate;
-//    }
-
-    //删除redis中的数据
-//    public void clearRedisData() {
-//        ListOperations<String, String> listOperations = redisTemplate.opsForList();
-//        while(listOperations.size("sensor")!=0){
-//            listOperations.leftPop("sensor");
-//        }
-//        while(listOperations.size("gateway")!=0){
-//            listOperations.leftPop("gateway");
-//        }
-//    }
-
-
 }

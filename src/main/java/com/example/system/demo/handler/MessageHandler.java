@@ -66,7 +66,6 @@ public class MessageHandler {
     @ResponseBody
     @RequestMapping(value = "/hho", method = RequestMethod.POST)
     public ResultEntity<List<String>> tets04() {
-        transformService.deleteFile();
         return ResultEntity.successWithoutData();
     }
 
