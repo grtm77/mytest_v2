@@ -50,6 +50,11 @@ public class TransformService {
         dbRelation.clear();
     }
 
+    //排序 新增
+    public void sortDB() {
+        dbRelation.sort();
+    }
+
     //生产python脚本计算所需的数据文件 无法实现
     public void createListData(String flag) throws Exception {
         List<String> all_gateway = collectGatewayFile();

@@ -44,6 +44,14 @@ public class MessageHandler {
 
     }
 
+    //排序 新增
+    @ResponseBody
+    @RequestMapping(value = "/hhst", method = RequestMethod.POST)
+    public ResultEntity<String> sort() {
+        transformService.sortDB();
+        return ResultEntity.successWithoutData();
+    }
+
     //用贪心算法计算，数据保存在txt 实现
     @ResponseBody
     @RequestMapping(value = "/hhe", method = RequestMethod.POST)

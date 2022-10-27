@@ -66,7 +66,7 @@ public class DBRelation {
         }
     }
 
-//    清空数据表 新增
+    //清空数据表 新增
     public void clear() {
         Connection conn = null;
         Statement stmt = null;
@@ -91,6 +91,51 @@ public class DBRelation {
         }
     }
 
+    //排序 新增
+    public void sort() {
+        Connection conn = null;
+        Statement stmt = null;
+        Statement stmt2 = null;
+        Statement stmt3 = null;
+        try {
+            // 加载数据库驱动类
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // 创建连接
+            conn = DriverManager.getConnection
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=root&password=T197lyjZ148");
+            stmt = conn.createStatement();
+            stmt2 = conn.createStatement();
+            stmt3 = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String[] keys = new String[]{"sensor", "gateway", "crossing"};
+        for (String key : keys) {
+//            System.out.println(key);
+            String tsql = "SELECT * FROM " + key + " ORDER BY numberInRoad, " + key + "_id";
+            System.out.println(tsql);
+            ResultSet rs = null;
+            try {
+                rs = stmt.executeQuery(tsql);
+                stmt2.executeUpdate("TRUNCATE TABLE " + key);
+                while (rs.next()) {
+                    String rdnm = rs.getString("roadName");
+                    String nbir = rs.getString("numberInRoad");
+                    String lng = rs.getString("Lng");
+                    String lat = rs.getString("Lat");
+                    String lsql = "INSERT INTO sensor(roadName,numberInRoad,Lng,Lat) VALUES (\'" + rdnm + "\'," + nbir + "," + lng + "," + lat + ")";
+//                    System.out.println(lsql);
+                    stmt3.executeUpdate(lsql);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //    读取senor 新增
     public List<List<String>> readSensor() {
         Connection conn = null;
         Statement stmt = null;
@@ -125,6 +170,7 @@ public class DBRelation {
         }
         return bk;
     }
+
     public List<List<String>> readGateway() {
         Connection conn = null;
         Statement stmt = null;
