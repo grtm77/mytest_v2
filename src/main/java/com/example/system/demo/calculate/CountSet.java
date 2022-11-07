@@ -63,7 +63,7 @@ public class CountSet {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=root&password=T197lyjZ148");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();

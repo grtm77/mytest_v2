@@ -106,6 +106,7 @@
             <div class="modal-body" align="center">
                 <button type="button" class="btn btn-primary" id="sortconfirm">Confirm</button>
                 <button type="button" class="btn btn-primary" id="backup">Backup</button>
+                <button type="button" class="btn btn-primary" id="restore">Restore</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
             </div>
         </div>
@@ -620,6 +621,34 @@
         $("#sortconfirm").click(function () {
             $.ajax({
                 "url": "hhst",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("Success!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //备份 新增
+        $("#backup").click(function () {
+            $.ajax({
+                "url": "hhback",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("Success!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //还原 新增
+        $("#restore").click(function () {
+            $.ajax({
+                "url": "hhres",
                 "type": "post",
                 "success": function (response) {
                     layer.msg("Success!");

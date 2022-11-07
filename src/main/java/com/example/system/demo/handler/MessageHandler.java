@@ -52,6 +52,22 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
+    //备份 新增
+    @ResponseBody
+    @RequestMapping(value = "/hhback", method = RequestMethod.POST)
+    public ResultEntity<String> backup() {
+        transformService.bkDB();
+        return ResultEntity.successWithoutData();
+    }
+
+    //还原 新增
+    @ResponseBody
+    @RequestMapping(value = "/hhres", method = RequestMethod.POST)
+    public ResultEntity<String> restore() {
+        transformService.resDB();
+        return ResultEntity.successWithoutData();
+    }
+
     //用贪心算法计算，数据保存在txt 实现
     @ResponseBody
     @RequestMapping(value = "/hhe", method = RequestMethod.POST)

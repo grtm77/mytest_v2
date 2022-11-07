@@ -22,7 +22,6 @@ public class BaseHandler {
 
     @Autowired
     DBRelation dbRelation;
-
     @Autowired
     RelatedProperties relatedProperties;
     @Autowired

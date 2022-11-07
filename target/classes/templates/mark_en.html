@@ -66,6 +66,9 @@
                 <button type="button" class="layui-btn" id="clear" data-toggle="modal"
                         data-target="#clearModal">Clear Database
                 </button>
+                <button type="button" class="layui-btn" id="sort" data-toggle="modal"
+                        data-target="#sortModal">Sort
+                </button>
                 <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
                         data-target="#uploadModal">Files Upload
                 </button>
@@ -85,6 +88,25 @@
             </div>
             <div class="modal-body" align="center">
                 <button type="button" class="btn btn-primary" id="confirm">Confirm</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--排序 新增-->
+<div class="modal fade" id="sortModal" tabindex="-1" role="dialog" aria-labelledby="sortModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="sortModalLabel">Are you sure you want to sort data in the database?</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <button type="button" class="btn btn-primary" id="sortconfirm">Confirm</button>
+                <button type="button" class="btn btn-primary" id="backup">Backup</button>
+                <button type="button" class="btn btn-primary" id="restore">Restore</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
             </div>
         </div>
@@ -585,6 +607,48 @@
         $("#confirm").click(function () {
             $.ajax({
                 "url": "hhcl",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("Success!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //排序 新增
+        $("#sortconfirm").click(function () {
+            $.ajax({
+                "url": "hhst",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("Success!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //备份 新增
+        $("#backup").click(function () {
+            $.ajax({
+                "url": "hhback",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("Success!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //还原 新增
+        $("#restore").click(function () {
+            $.ajax({
+                "url": "hhres",
                 "type": "post",
                 "success": function (response) {
                     layer.msg("Success!");

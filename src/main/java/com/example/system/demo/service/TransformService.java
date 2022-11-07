@@ -55,6 +55,17 @@ public class TransformService {
         dbRelation.sort();
     }
 
+    //备份 新增
+    public void bkDB() {
+        dbRelation.bkup();
+    }
+
+    //还原 新增
+    public void resDB() {
+        dbRelation.clear();
+        dbRelation.res();
+    }
+
     //生产python脚本计算所需的数据文件 无法实现
     public void createListData(String flag) throws Exception {
         List<String> all_gateway = collectGatewayFile();
