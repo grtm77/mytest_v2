@@ -471,6 +471,89 @@ public class CountSet {
     }
 
     /**
+     * 有向贪心
+     * @param strList1 网关
+     * @param strList2 传感器
+     */
+    public ArrayList<String> test03(List<String> strList1, List<String> strList2,String flag) throws Exception {
+        HashMap<String, Vector<Double>> hs1 = new HashMap<>();
+        HashMap<String, Vector<Double>> hs2 = new HashMap<>();
+
+        HashSet<String> hashSet = new HashSet<>();
+
+
+        for (int i = 0; i < strList1.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+//            System.out.println(strList1.get(i));
+            String[] split = strList1.get(i).split(",");
+            vc.add(Double.parseDouble(split[1]));
+            vc.add(Double.parseDouble(split[2]));
+            hs1.put(split[0], vc);
+        }
+        for (int i = 0; i < strList2.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            //System.out.println(strList2.get(i));
+            String[] split = strList2.get(i).split(",");
+            vc.add(Double.parseDouble(split[1]));
+            vc.add(Double.parseDouble(split[2]));
+            hashSet.add(split[0]);
+            hs2.put(split[0], vc);
+        }
+
+        double raius = relatedProperties.getGatewayRadius();
+        // 计算路口集合
+        HashMap<String, Vector<Double>> crossingMap = countCrossing();
+        if (crossingMap.size() == 0) {
+            throw new Exception("没有路口坐标!");
+        }
+
+        //TODO
+        //计算数据（与贪心计算有关），这里分包含路口的计算和不包含路口的计算
+        Map<String, Map<String, Vector<Double>>> stringMapMap = null;
+        if("withoutCros".equals(flag)){
+            stringMapMap = countSet(hs1, hs2, raius);
+        }else{
+            stringMapMap = countSet(hs1, hs2, crossingMap, raius);
+        }
+
+        HashMap<String, HashSet<String>> stringHashSetHashMap = new HashMap<>();
+
+        for (Map.Entry<String, Map<String, Vector<Double>>> entryt : stringMapMap.entrySet()) {
+            Map<String, Vector<Double>> valu2e = entryt.getValue();
+            HashSet<String> hashss = new HashSet<>();
+            for (Map.Entry<String, Vector<Double>> maps : valu2e.entrySet()) {
+                String key = maps.getKey();
+                hashss.add(key);
+            }
+            stringHashSetHashMap.put(entryt.getKey(), hashss);
+        }
+
+        //copy一下map，为了后面验证准确度
+        HashMap<String, HashSet<String>> lampposts2 = Detection.copyMap(stringHashSetHashMap);
+
+        //计算当前的所有灯柱能否包含所有传感器
+        HashSet<String> resultash = new HashSet<>();
+        for (Map.Entry<String, HashSet<String>> entry : lampposts2.entrySet()) {
+            HashSet<String> value = entry.getValue();
+            Iterator<String> iterator1 = value.iterator();
+            while (iterator1.hasNext()) {
+                resultash.add(iterator1.next());
+            }
+        }
+
+        // 判断传感器有没有被全部覆盖到
+        if (resultash.size() != hashSet.size()) {
+            throw new Exception("传感器没有被全部覆盖到!");
+        }
+
+        // 调用Detection中的近似贪心算法计算
+        ArrayList<String> result = Detection.calByLinner(strList2, strList1, stringHashSetHashMap);
+
+        return result;
+    }
+
+
+    /**
      * 计算每个摄像头能包含的节点集合
      *
      * @param gateway

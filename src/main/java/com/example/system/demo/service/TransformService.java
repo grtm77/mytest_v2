@@ -286,6 +286,66 @@ public class TransformService {
         return hs;
     }
 
+    /**
+     * 用有向贪心计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回 新增
+     * @return
+     * @throws Exception
+     */
+    public HashMap<String,List<List<String>>> calByLinner_upload(String flag) throws Exception {
+
+        List<List<String>> sensor = dbRelation.readSensor();
+        List<List<String>> gateway = dbRelation.readGateway();
+        List<String> all_sensor = new ArrayList<String>();
+        List<String> all_gateway = new ArrayList<String>();
+        HashMap<String, List<List<String>>> hs = new HashMap<>();
+        Iterator<List<String>> it1 = sensor.iterator();
+        Iterator<List<String>> it2 = gateway.iterator();
+
+        while (it2.hasNext()) {
+            List<String> it2next = it2.next();
+            String temp2 = it2next.get(0) + it2next.get(1) + "," + it2next.get(2) + "," + it2next.get(3);
+            all_gateway.add(temp2);
+        }
+
+        while (it1.hasNext()) {
+            List<String> it1next = it1.next();
+            String temp1 = it1next.get(0) + it1next.get(1) + "," +  it1next.get(2) + "," + it1next.get(3);
+            all_sensor.add(temp1);
+        }
+
+        // 计算结果
+        ArrayList<String> resultWithName = null;
+        try {
+            resultWithName = countSet.test03(all_gateway, all_sensor, flag);
+        } catch (Exception e) {
+            System.out.println("错误信息："+e.getMessage());
+            throw e;
+        }
+
+        ArrayList<String> resultWithCoordinate = new ArrayList<>();
+        ArrayList<String> resultTmp = new ArrayList<>();
+        for (String s : all_gateway) {
+            String[] split = s.split(",");
+            if (resultWithName.contains(split[0])) {
+                String data = split[1] + "," + split[2];
+                resultWithCoordinate.add(data);
+                resultTmp.add(s);
+            }
+        }
+
+        //获取所有传感器的数据放入map，一起返回
+        List<List<String>> all_sensor02 = sensor;
+        List<List<String>> all_gateway02 = new ArrayList<>();
+        all_gateway02.add((resultWithCoordinate));
+        hs.put("sensorList", all_sensor02);
+        hs.put("gatewayList", all_gateway02);
+
+        //生成分析结果
+        fileRelation.creatResult(all_sensor,resultTmp);
+        return hs;
+    }
+
+
     // 收集gateWay数据，即把各个街道数据文件中数据，整合到一个集合中 废弃
     public List<String> collectGatewayFile() throws Exception {
         String str_gateway = relatedProperties.getGatewayPath();

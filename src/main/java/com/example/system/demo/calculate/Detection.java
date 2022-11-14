@@ -150,6 +150,90 @@ public class Detection {
 
 
     /**
+     * 使用有向贪心计算
+     *
+     * @return
+     */
+    public static ArrayList<String> calByLinner(List<String> sensors, List<String> gateways, HashMap<String, HashSet<String>> lampposts) {
+
+        LinkedList<String> sortList = new LinkedList<>();
+        for(int i=0;i<sensors.size();i++){
+            String[] tmpStrings= sensors.get(i).split(",");
+            sortList.add(tmpStrings[0]);
+        }
+
+        LinkedList<String> sortGateway = new LinkedList<>();
+
+        HashMap<String, Integer> sortHelp = new HashMap<>();
+
+        for(int i=0;i<gateways.size();i++){
+            String[] tmpStrings= gateways.get(i).split(",");
+            sortGateway.add(tmpStrings[0]);
+            sortHelp.put(tmpStrings[0],i);
+        }
+
+        LinkedHashMap<String, HashSet<String>> sortMap = new LinkedHashMap<>();
+        for(int i = 0;i<sortGateway.size();i++){
+            String poll = sortGateway.get(i);
+            sortMap.put(poll,lampposts.get(poll));
+        }
+
+        ArrayList<String> del = new ArrayList<>();
+
+        ArrayList<String> result = new ArrayList<>();
+        for(int i=0;i<sortList.size();i++){
+            String tmpSortSensor = sortList.get(i);
+            String tmpSortSensor2 = "";
+            if(sortList.size() > 1){
+                tmpSortSensor2 = sortList.get(i+1);
+            }
+
+            String tmpSelected = "";
+            int maxL = 0;
+
+            for(Map.Entry<String, HashSet<String>> entry:sortMap.entrySet()){
+
+                HashSet<String> value = entry.getValue();
+
+                if((value.contains(tmpSortSensor) && value.contains(tmpSortSensor2)) || value.contains(tmpSortSensor)){
+                    int length = Detection.helpCal(del,value);
+                    if(length > maxL){
+                        tmpSelected = entry.getKey();
+                        maxL = length;
+                    }
+//                    if(value.size() < maxL && !"".equals(tmpSelected)
+//                            && entry.getKey().substring(0, 3).equals(tmpSortSensor.substring(0, 3))
+//                            && sortHelp.get(entry.getKey()) < sortHelp.get(tmpSelected)){
+//                        sortMap.put(entry.getKey(),new HashSet<>());
+//                    }
+                }
+            }
+            result.add(tmpSelected);
+
+            for(String tmpSet : sortMap.get(tmpSelected)){
+                if(sortList.contains(tmpSet)){
+                    del.add(tmpSet);
+                    sortList.remove(tmpSet);
+                }
+            }
+
+            sortMap.put(tmpSelected,new HashSet<>());
+            i=-1;
+        }
+
+        return result;
+    }
+
+    public static int helpCal(ArrayList<String> del , HashSet<String> hs){
+        int i=0;
+        for(String s : hs){
+            if(!del.contains(s))i++;
+        }
+        return i;
+    }
+
+
+    /**
      * 从目标文件中读取灯柱和节点坐标
      *
      * @param path

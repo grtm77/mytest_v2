@@ -109,6 +109,23 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
+    //用贪心算法计算，数据保存在txt 实现
+    @ResponseBody
+    @RequestMapping(value = "/hhln", method = RequestMethod.POST)
+    public ResultEntity<HashMap<String, List<List<String>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) {
+        HashMap<String, List<List<String>>> strings = null;
+        try {
+            strings = transformService.calByLinner_upload(flag);
+            System.out.println("Success");
+        } catch (Exception e) {
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            System.out.println("Exception");
+            listResultEntity.setMessage(e.getMessage());
+            return listResultEntity;
+        }
+        return ResultEntity.sucessWithData(strings);
+    }
+
     //使用python脚本计算 正在实现
     @ResponseBody
     @RequestMapping(value = "/calByPython", method = RequestMethod.POST)
