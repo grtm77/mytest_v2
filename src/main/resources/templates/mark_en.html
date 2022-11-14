@@ -72,6 +72,9 @@
                 <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
                         data-target="#uploadModal">Files Upload
                 </button>
+                <button type="button" class="layui-btn" id="tdata" data-toggle="modal"
+                        data-target="#tdataModal">TestDataUpload
+                </button>
             </div>
         </div>
     </div>
@@ -88,6 +91,25 @@
             </div>
             <div class="modal-body" align="center">
                 <button type="button" class="btn btn-primary" id="confirm">Confirm</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--测试数据上传 新增-->
+<div class="modal fade" id="tdataModal" tabindex="-1" role="dialog" aria-labelledby="sortModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="tdataModalLabel">Which test data would you like to upload?</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <button type="button" class="btn btn-primary" id="tdata162">162</button>
+                <button type="button" class="btn btn-primary" id="tdata321">321</button>
+                <button type="button" class="btn btn-primary" id="tdata518">518</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
             </div>
         </div>
@@ -173,7 +195,7 @@
     var pointIndex = 0;//初始化节点之间的距离
     var all = [];//存放地图上所有标记的节点
     var map = new BMap.Map("container");// 创建地图实例
-    var point = new BMap.Point(112.884, 22.909);// 创建点坐标
+    var point = new BMap.Point(113.880229, 22.915683);// 创建点坐标
     map.centerAndZoom(point, 21);// 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
     map.addControl(new BMap.ScaleControl());  //添加比例尺
@@ -638,6 +660,48 @@
                 "type": "post",
                 "success": function (response) {
                     layer.msg("Success!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //162 新增
+        $("#tdata162").click(function () {
+            $.ajax({
+                "url": "hh162",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("The data is loaded in database successfully!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //321 新增
+        $("#tdata321").click(function () {
+            $.ajax({
+                "url": "hh321",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("The data is loaded in database successfully!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //518 新增
+        $("#tdata518").click(function () {
+            $.ajax({
+                "url": "hh518",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("The data is loaded in database successfully!");
                 },
                 "error": function (response) {
                     layer.msg("Error!");

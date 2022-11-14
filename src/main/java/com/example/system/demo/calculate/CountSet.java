@@ -176,6 +176,7 @@ public class CountSet {
             // 把当前网关和它所能覆盖到的节点加入到map集合
             coverMap.put(entry_gateway.getKey(), coverMap_gateway);
         }
+        System.out.println("coverMap = " + coverMap);
         return coverMap;
     }
 
@@ -221,6 +222,7 @@ public class CountSet {
             // 把当前网关和它所能覆盖到的节点加入到map集合
             coverMap.put(entry_gateway.getKey(), coverMap_gateway);
         }
+        System.out.println("coverMap = " + coverMap);
         return coverMap;
     }
 

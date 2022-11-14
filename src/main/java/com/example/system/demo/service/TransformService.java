@@ -60,6 +60,24 @@ public class TransformService {
         dbRelation.bkup();
     }
 
+    //162 新增
+    public void td162() {
+        dbRelation.clear();
+        dbRelation.tdata("162");
+    }
+
+    //321 新增
+    public void td321() {
+        dbRelation.clear();
+        dbRelation.tdata("321");
+    }
+
+    //518 新增
+    public void td518() {
+        dbRelation.clear();
+        dbRelation.tdata("518");
+    }
+
     //还原 新增
     public void resDB() {
         dbRelation.clear();
@@ -239,7 +257,7 @@ public class TransformService {
         // 计算结果
         ArrayList<String> resultWithName = null;
         try {
-            resultWithName = countSet.test01(all_gateway, all_sensor,flag);
+            resultWithName = countSet.test01(all_gateway, all_sensor, flag);
         } catch (Exception e) {
             System.out.println("错误信息："+e.getMessage());
             throw e;

@@ -26,7 +26,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 2.创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
             stmt2 = conn.createStatement();
             stmt3 = conn.createStatement();
@@ -144,7 +144,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,6 +166,35 @@ public class DBRelation {
         }
     }
 
+    public void tdata(String num) {
+        Connection conn;
+        Statement stmt = null;
+        try {
+            // 加载数据库驱动类
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // 创建连接
+            conn = DriverManager.getConnection
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String[] keys = new String[]{"sensor", "gateway", "crossing"};
+        for (String key : keys) {
+//            System.out.println(key);
+            String tsql = "INSERT INTO " + key + " SELECT * FROM " + key + "_" + num;
+            System.out.println(tsql);
+            try {
+                stmt.executeUpdate(tsql);
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public void res() {
         Connection conn = null;
         Statement stmt = null;
@@ -174,7 +203,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -205,7 +234,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -240,7 +269,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -275,7 +304,7 @@ public class DBRelation {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 创建连接
             conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksystem");
+                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();

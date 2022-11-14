@@ -60,6 +60,30 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
+    //162 新增
+    @ResponseBody
+    @RequestMapping(value = "/hh162", method = RequestMethod.POST)
+    public ResultEntity<String> t162() {
+        transformService.td162();
+        return ResultEntity.successWithoutData();
+    }
+
+    //321 新增
+    @ResponseBody
+    @RequestMapping(value = "/hh321", method = RequestMethod.POST)
+    public ResultEntity<String> t321() {
+        transformService.td321();
+        return ResultEntity.successWithoutData();
+    }
+
+    //518 新增
+    @ResponseBody
+    @RequestMapping(value = "/hh518", method = RequestMethod.POST)
+    public ResultEntity<String> t518() {
+        transformService.td518();
+        return ResultEntity.successWithoutData();
+    }
+
     //还原 新增
     @ResponseBody
     @RequestMapping(value = "/hhres", method = RequestMethod.POST)
