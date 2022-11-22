@@ -2,50 +2,50 @@
   "groups": [
     {
       "name": "related",
-      "type": "com.example.system.demo.config.RelatedProperties",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "type": "top.bultrail.markroad.config.RelatedProperties",
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     }
   ],
   "properties": [
     {
       "name": "related.crossing-path",
       "type": "java.lang.String",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     },
     {
       "name": "related.crossing-radius",
       "type": "java.lang.Double",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     },
     {
       "name": "related.gateway-angle",
       "type": "java.lang.Double",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     },
     {
       "name": "related.gateway-height",
       "type": "java.lang.String",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     },
     {
       "name": "related.gateway-path",
       "type": "java.lang.String",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     },
     {
       "name": "related.gateway-radius",
       "type": "java.lang.Double",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     },
     {
       "name": "related.result-path",
       "type": "java.lang.String",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     },
     {
       "name": "related.sensor-path",
       "type": "java.lang.String",
-      "sourceType": "com.example.system.demo.config.RelatedProperties"
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
     }
   ],
   "hints": []
