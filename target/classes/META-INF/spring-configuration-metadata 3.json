@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "related",
+      "type": "top.bultrail.markroad.config.RelatedProperties",
+      "sourceType": "top.bultrail.markroad.config.RelatedProperties"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}
