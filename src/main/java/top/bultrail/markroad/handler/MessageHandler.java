@@ -60,6 +60,13 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/hh1500", method = RequestMethod.POST)
+    public ResultEntity<String> t1500() {
+        transformService.td1500();
+        return ResultEntity.successWithoutData();
+    }
+
     //162 新增
     @ResponseBody
     @RequestMapping(value = "/hh1056", method = RequestMethod.POST)
@@ -150,6 +157,22 @@ public class MessageHandler {
         HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calByPython_upload(flag);
+            System.out.println("Success");
+        } catch (Exception e) {
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            listResultEntity.setMessage(e.getMessage());
+            return listResultEntity;
+        }
+        return ResultEntity.sucessWithData(strings);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/calByGA", method = RequestMethod.POST)
+    public ResultEntity<HashMap<String, List<List<String>>>> calByGA(@RequestParam(value = "crosFlag") String flag) {
+        HashMap<String, List<List<String>>> strings = null;
+        try {
+            strings = transformService.calByGA_upload(flag);
+            System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
             listResultEntity.setMessage(e.getMessage());

@@ -22,7 +22,7 @@ public class DBRelation {
     @Autowired
     CountSet countSet;
 
-    private QueryRunner qr = new QueryRunner();;
+    private QueryRunner qr = new QueryRunner();
 //    private DBRelation dbRelation = new DBRelation();
 
     //新建连接
@@ -31,9 +31,9 @@ public class DBRelation {
         Connection conn;
         try {
             cpds.setDriverClass("com.mysql.cj.jdbc.Driver");
-            cpds.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/Marks");
-            cpds.setUser("lyj");
-            cpds.setPassword("marksoftware");
+            cpds.setJdbcUrl("jdbc:mysql://10.45.39.13:3306/Marks");
+            cpds.setUser("mytest");
+            cpds.setPassword("12345678");
             cpds.setMinPoolSize(5);
             cpds.setAcquireIncrement(5);
             cpds.setMaxPoolSize(10);

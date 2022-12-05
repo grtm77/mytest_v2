@@ -43,16 +43,10 @@ public class PythonCal {
 
         List<String> result = new LinkedList<>();
         String property = System.getProperty("user.dir");
-        // 写入文件
-//        try {
-//            new PythonCal().writeFile();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         try {
-            String[] args1 = new String[]{"python", property + "\\src\\main\\java\\com\\example\\system\\demo\\calculate\\tets01_Copy.py",
-                    property + "\\src\\main\\java\\com\\example\\system\\demo\\calculate\\gateWayData.txt",
-                    property + "\\src\\main\\java\\com\\example\\system\\demo\\calculate\\sensorData.txt"};
+            String[] args1 = new String[]{"python", property + "/src/main/java/top/bultrail/markroad/calculate/tets01_Copy.py",
+                    property + "/src/main/java/top/bultrail/markroad/calculate/gateWayData.txt",
+                    property + "/src/main/java/top/bultrail/markroad/calculate/sensorData.txt"};
             Process pr = Runtime.getRuntime().exec(args1);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -76,7 +70,7 @@ public class PythonCal {
             e.printStackTrace();
         }
 
-        //result.forEach(System.out::println); //输出结果看一看
+        result.forEach(System.out::println); //输出结果看一看
         return result;
     }
 

@@ -1,5 +1,10 @@
 package top.bultrail.markroad.calculate;
 
+import GA_Func.GAFunction;
+import Matlab_func.Function;
+import com.mathworks.toolbox.javabuilder.MWClassID;
+import com.mathworks.toolbox.javabuilder.MWNumericArray;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import top.bultrail.markroad.config.RelatedProperties;
 import eu.andredick.aco.algorithm.AbstractAlgorithm;
 import eu.andredick.aco.algorithm.Statistics;
@@ -10,6 +15,7 @@ import eu.andredick.tools.MatConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.beans.PropertyVetoException;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -61,19 +67,20 @@ public class CountSet {
      * @return
      */
     public List<List<String>> getDBContent() {
-
-        Connection conn = null;
+        ComboPooledDataSource cpds = new ComboPooledDataSource();
+        Connection conn;
         Statement stmt = null;
         try {
-            // 加载数据库驱动类
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // 创建连接
-            conn = DriverManager.getConnection
-                    ("jdbc:mysql://127.0.0.1:3306/Marks?useSSL=true&characterEncoding=utf-8&serverTimezone=GMT&user=lyj&password=marksoftware");
+            cpds.setDriverClass("com.mysql.cj.jdbc.Driver");
+            cpds.setJdbcUrl("jdbc:mysql://10.45.39.13:3306/Marks");
+            cpds.setUser("mytest");
+            cpds.setPassword("12345678");
+            cpds.setMinPoolSize(5);
+            cpds.setAcquireIncrement(5);
+            cpds.setMaxPoolSize(10);
+            conn = cpds.getConnection();
             stmt = conn.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | PropertyVetoException e) {
             e.printStackTrace();
         }
         String tsql = "SELECT * FROM crossing";
@@ -678,6 +685,242 @@ public class CountSet {
         ArrayList<String> result = new ArrayList<>();
         for(int i = 0; i < sol.length; i++){
             if(sol[i]){
+                result.add(hsc1.get(i));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 新线性规划
+     * @param strList1 网关
+     * @param strList2 传感器
+     */
+    public ArrayList<String> test05(List<String> strList1, List<String> strList2, String flag) throws Exception {
+        HashMap<String, Vector<Double>> hs1 = new HashMap<>();
+        HashMap<String, Vector<Double>> hs2 = new HashMap<>();
+        HashMap<Integer, String> hsc1 = new HashMap<>();
+        HashMap<Integer, String> hsc2 = new HashMap<>();
+        HashMap<String, Integer> hsc1b = new HashMap<>();
+        HashMap<String, Integer> hsc2b = new HashMap<>();
+
+        HashSet<String> hashSet = new HashSet<>();
+
+        for (int i = 0; i < strList1.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = strList1.get(i).split(",");
+            vc.add(Double.parseDouble(split[1]));
+            vc.add(Double.parseDouble(split[2]));
+            hs1.put(split[0], vc);
+            hsc1.put(i, split[0]);
+            hsc1b.put(split[0], i);
+        }
+        for (int i = 0; i < strList2.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = strList2.get(i).split(",");
+            vc.add(Double.parseDouble(split[1]));
+            vc.add(Double.parseDouble(split[2]));
+            hashSet.add(split[0]);
+            hs2.put(split[0], vc);
+            hsc2.put(i, split[0]);
+            hsc2b.put(split[0], i);
+        }
+
+        double raius = relatedProperties.getGatewayRadius();
+        // 计算路口集合
+        HashMap<String, Vector<Double>> crossingMap = countCrossing();
+
+        Map<String, Map<String, Vector<Double>>> stringMapMap = null;
+        if("withoutCros".equals(flag)){
+            stringMapMap = countSet(hs1, hs2, raius);
+        }else{
+            stringMapMap = countSet(hs1, hs2, crossingMap, raius);
+        }
+
+        HashMap<String, HashSet<String>> stringHashSetHashMap = new HashMap<>();
+
+        for (Map.Entry<String, Map<String, Vector<Double>>> entryt : stringMapMap.entrySet()) {
+            Map<String, Vector<Double>> valu2e = entryt.getValue();
+            HashSet<String> hashss = new HashSet<>();
+            for (Map.Entry<String, Vector<Double>> maps : valu2e.entrySet()) {
+                String key = maps.getKey();
+                hashss.add(key);
+            }
+            stringHashSetHashMap.put(entryt.getKey(), hashss);
+        }
+
+        //计算当前的所有灯柱能否包含所有传感器
+        HashSet<String> resultash = new HashSet<>();
+        for (Map.Entry<String, HashSet<String>> entry : stringHashSetHashMap.entrySet()) {
+            HashSet<String> value = entry.getValue();
+            Iterator<String> iterator1 = value.iterator();
+            while (iterator1.hasNext()) {
+                resultash.add(iterator1.next());
+            }
+        }
+
+        // 判断传感器有没有被全部覆盖到
+        if (resultash.size() != hashSet.size()) {
+            for (String value : hashSet){
+                int f = 0;
+                for(String key : resultash){
+                    if(value == key) {
+                        f = 1;
+                        break;
+                    }
+                }
+                if(f == 0) System.out.println(value);
+            }
+            throw new Exception("传感器没有被全部覆盖到!");
+        }
+
+//        对stringHashSetHashMap操作
+        double[][] matrix = new double[strList2.size()][strList1.size()];
+        for(String key : stringHashSetHashMap.keySet()) {
+            for (String i : stringHashSetHashMap.get(key)){
+                matrix[hsc2b.get(i)][hsc1b.get(key)] = 1.0;
+            }
+        }
+
+        //打印测试覆盖矩阵
+//        for(boolean[] iw : matrix) {
+//            for (boolean i : iw){
+//                System.out.print(i);
+//                System.out.print(" ");
+//            }
+//            System.out.print("\n");
+//        }
+
+        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+        Function test = new Function();
+        Object[] sresult = test.select_linprog(2, input);
+        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+
+//        打印结果
+//        for (int i : sol) {
+//            System.out.print(i);
+//            System.out.print(" ");
+//        }
+        ArrayList<String> result = new ArrayList<>();
+        for(int i = 0; i < sol.length; i++){
+            if(sol[i] == 1){
+                result.add(hsc1.get(i));
+            }
+        }
+
+        return result;
+    }
+
+
+    public ArrayList<String> test06(List<String> strList1, List<String> strList2, String flag) throws Exception {
+        HashMap<String, Vector<Double>> hs1 = new HashMap<>();
+        HashMap<String, Vector<Double>> hs2 = new HashMap<>();
+        HashMap<Integer, String> hsc1 = new HashMap<>();
+        HashMap<Integer, String> hsc2 = new HashMap<>();
+        HashMap<String, Integer> hsc1b = new HashMap<>();
+        HashMap<String, Integer> hsc2b = new HashMap<>();
+
+        HashSet<String> hashSet = new HashSet<>();
+
+        for (int i = 0; i < strList1.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = strList1.get(i).split(",");
+            vc.add(Double.parseDouble(split[1]));
+            vc.add(Double.parseDouble(split[2]));
+            hs1.put(split[0], vc);
+            hsc1.put(i, split[0]);
+            hsc1b.put(split[0], i);
+        }
+        for (int i = 0; i < strList2.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = strList2.get(i).split(",");
+            vc.add(Double.parseDouble(split[1]));
+            vc.add(Double.parseDouble(split[2]));
+            hashSet.add(split[0]);
+            hs2.put(split[0], vc);
+            hsc2.put(i, split[0]);
+            hsc2b.put(split[0], i);
+        }
+
+        double raius = relatedProperties.getGatewayRadius();
+        // 计算路口集合
+        HashMap<String, Vector<Double>> crossingMap = countCrossing();
+
+        Map<String, Map<String, Vector<Double>>> stringMapMap = null;
+        if("withoutCros".equals(flag)){
+            stringMapMap = countSet(hs1, hs2, raius);
+        }else{
+            stringMapMap = countSet(hs1, hs2, crossingMap, raius);
+        }
+
+        HashMap<String, HashSet<String>> stringHashSetHashMap = new HashMap<>();
+
+        for (Map.Entry<String, Map<String, Vector<Double>>> entryt : stringMapMap.entrySet()) {
+            Map<String, Vector<Double>> valu2e = entryt.getValue();
+            HashSet<String> hashss = new HashSet<>();
+            for (Map.Entry<String, Vector<Double>> maps : valu2e.entrySet()) {
+                String key = maps.getKey();
+                hashss.add(key);
+            }
+            stringHashSetHashMap.put(entryt.getKey(), hashss);
+        }
+
+        //计算当前的所有灯柱能否包含所有传感器
+        HashSet<String> resultash = new HashSet<>();
+        for (Map.Entry<String, HashSet<String>> entry : stringHashSetHashMap.entrySet()) {
+            HashSet<String> value = entry.getValue();
+            Iterator<String> iterator1 = value.iterator();
+            while (iterator1.hasNext()) {
+                resultash.add(iterator1.next());
+            }
+        }
+
+        // 判断传感器有没有被全部覆盖到
+        if (resultash.size() != hashSet.size()) {
+            for (String value : hashSet){
+                int f = 0;
+                for(String key : resultash){
+                    if(value == key) {
+                        f = 1;
+                        break;
+                    }
+                }
+                if(f == 0) System.out.println(value);
+            }
+            throw new Exception("传感器没有被全部覆盖到!");
+        }
+
+//        对stringHashSetHashMap操作
+        double[][] matrix = new double[strList2.size()][strList1.size()];
+        for(String key : stringHashSetHashMap.keySet()) {
+            for (String i : stringHashSetHashMap.get(key)){
+                matrix[hsc2b.get(i)][hsc1b.get(key)] = 1.0;
+            }
+        }
+
+        //打印测试覆盖矩阵
+//        for(boolean[] iw : matrix) {
+//            for (boolean i : iw){
+//                System.out.print(i);
+//                System.out.print(" ");
+//            }
+//            System.out.print("\n");
+//        }
+
+        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+        GAFunction test = new GAFunction();
+        Object[] sresult = test.GA_parse(2, input);
+        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+
+//        打印结果
+//        for (int i : sol) {
+//            System.out.print(i);
+//            System.out.print(" ");
+//        }
+        ArrayList<String> result = new ArrayList<>();
+        for(int i = 0; i < sol.length; i++){
+            if(sol[i] == 1){
                 result.add(hsc1.get(i));
             }
         }

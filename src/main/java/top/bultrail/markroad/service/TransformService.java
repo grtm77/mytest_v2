@@ -78,6 +78,11 @@ public class TransformService {
         dbRelation.tdata("1056");
     }
 
+    public void td1500() {
+        dbRelation.clear();
+        dbRelation.tdata("1500");
+    }
+
     //还原 新增
     public void resDB() {
         dbRelation.clear();
@@ -194,21 +199,37 @@ public class TransformService {
 
     //使用python脚本计算 无法实现
     public HashMap<String,List<List<String>>> calByPython_upload(String flag) throws Exception {
-        createListData(flag);
-        List<String> all_sensor = collectSensorFile();
-        List<String> all_gateway = collectGatewayFile();
-        List<String> strings = pythonCal.calByPython();
-        //todo
+        List<List<String>> sensor = dbRelation.readSensor();
+        List<List<String>> gateway = dbRelation.readGateway();
+        List<String> all_sensor = new ArrayList<String>();
+        List<String> all_gateway = new ArrayList<String>();
         HashMap<String, List<List<String>>> hs = new HashMap<>();
+        Iterator<List<String>> it1 = sensor.iterator();
+        Iterator<List<String>> it2 = gateway.iterator();
+
+        while (it2.hasNext()) {
+            List<String> it2next = it2.next();
+            String temp2 = it2next.get(0) + it2next.get(1) + "," + it2next.get(2) + "," + it2next.get(3);
+            all_gateway.add(temp2);
+        }
+
+        while (it1.hasNext()) {
+            List<String> it1next = it1.next();
+            String temp1 = it1next.get(0) + it1next.get(1) + "," +  it1next.get(2) + "," + it1next.get(3);
+            all_sensor.add(temp1);
+        }
+
+        // 计算结果
+        ArrayList<String> resultWithName = null;
+
+        resultWithName = countSet.test05(all_gateway, all_sensor, flag);
+
 
         ArrayList<String> resultWithCoordinate = new ArrayList<>();
         ArrayList<String> resultTmp = new ArrayList<>();
-        //strings.forEach(System.out::println);
-        //all_gateway.forEach(System.out::println);
-        // 把结果对应的坐标数据返回
         for (String s : all_gateway) {
             String[] split = s.split(",");
-            if (strings.contains(split[0])) {
+            if (resultWithName.contains(split[0])) {
                 String data = split[1] + "," + split[2];
                 resultWithCoordinate.add(data);
                 resultTmp.add(s);
@@ -216,14 +237,64 @@ public class TransformService {
         }
 
         //获取所有传感器的数据放入map，一起返回
-        List<List<String>> all_sensor02 = collectSensorFile02();
+        List<List<String>> all_sensor02 = sensor;
         List<List<String>> all_gateway02 = new ArrayList<>();
         all_gateway02.add((resultWithCoordinate));
-        hs.put("sensorList",all_sensor02);
-        hs.put("gatewayList",all_gateway02);
+        hs.put("sensorList", all_sensor02);
+        hs.put("gatewayList", all_gateway02);
 
         //生成分析结果
-//        dbRelation.creatResult(all_sensor,resultTmp);
+        fileRelation.creatResult(all_sensor,resultTmp);
+        return hs;
+    }
+
+    public HashMap<String,List<List<String>>> calByGA_upload(String flag) throws Exception {
+        List<List<String>> sensor = dbRelation.readSensor();
+        List<List<String>> gateway = dbRelation.readGateway();
+        List<String> all_sensor = new ArrayList<String>();
+        List<String> all_gateway = new ArrayList<String>();
+        HashMap<String, List<List<String>>> hs = new HashMap<>();
+        Iterator<List<String>> it1 = sensor.iterator();
+        Iterator<List<String>> it2 = gateway.iterator();
+
+        while (it2.hasNext()) {
+            List<String> it2next = it2.next();
+            String temp2 = it2next.get(0) + it2next.get(1) + "," + it2next.get(2) + "," + it2next.get(3);
+            all_gateway.add(temp2);
+        }
+
+        while (it1.hasNext()) {
+            List<String> it1next = it1.next();
+            String temp1 = it1next.get(0) + it1next.get(1) + "," +  it1next.get(2) + "," + it1next.get(3);
+            all_sensor.add(temp1);
+        }
+
+        // 计算结果
+        ArrayList<String> resultWithName = null;
+
+        resultWithName = countSet.test06(all_gateway, all_sensor, flag);
+
+
+        ArrayList<String> resultWithCoordinate = new ArrayList<>();
+        ArrayList<String> resultTmp = new ArrayList<>();
+        for (String s : all_gateway) {
+            String[] split = s.split(",");
+            if (resultWithName.contains(split[0])) {
+                String data = split[1] + "," + split[2];
+                resultWithCoordinate.add(data);
+                resultTmp.add(s);
+            }
+        }
+
+        //获取所有传感器的数据放入map，一起返回
+        List<List<String>> all_sensor02 = sensor;
+        List<List<String>> all_gateway02 = new ArrayList<>();
+        all_gateway02.add((resultWithCoordinate));
+        hs.put("sensorList", all_sensor02);
+        hs.put("gatewayList", all_gateway02);
+
+        //生成分析结果
+        fileRelation.creatResult(all_sensor,resultTmp);
         return hs;
     }
 

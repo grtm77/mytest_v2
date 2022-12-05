@@ -147,10 +147,9 @@
             <div class="modal-body" align="center">
                 <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">Greedy</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calLinner">New Greedy</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calPulp">LP</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>
-<!--                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy WithoutCros</button>-->
+                <button type="button" class="layui-btn layui-btn-warm" id="calAco">Aco Scp</button>
+<!--                <button type="button" class="layui-btn layui-btn-warm" id="calPulp">Pulp</button>-->
+                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy WithoutCros</button>
 <!--                <button type="button" class="layui-btn layui-btn-warm" id="calPulpWithOutCros">Pulp WithoutCros</button>-->
             </div>
         </div>
@@ -364,6 +363,137 @@
             });
         });
 
+        // $.ajaxSettings.async = false;
+
+        // 生成完数据后，发送请求计算 线性规划 （计算路口）未实现
+        $("#calPulp").click(function () {
+            // 清楚地图上已经标记的点
+            map.clearOverlays();
+            $.ajax({
+                "url": "calByPython",
+                "type": "post",
+                "data": {
+                    "crosFlag": "withCros"
+                },
+                "success": function (response) {
+                    var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
+                    alert(dataGateway[0].length + " gateways have been used! " )
+                    //在地图上标记网关坐标
+                    for (var j = 0; j < dataGateway[0].length; j++) {
+                        var temp = dataGateway[0][j].split(",");
+                        var point1 = new BMap.Point(temp[0], temp[1]);
+                        var marker1 = new BMap.Marker(point1, {
+                            icon: gIcon
+                        });
+                        map.addOverlay(marker1);
+                        marker1.setTop(true);
+                        // 绘制圆
+                        var circle = new BMap.Circle(point1, 68, {
+                            strokeColor: 'blue',
+                            strokeWeight: 2,
+                            strokeOpacity: 0.5, //圆形的边线透明度
+                            strokeStyle: 'solid'
+                        });
+                        map.addOverlay(circle);
+                    }
+
+                    //标记传感器节点和车位
+                    for (var j = 0; j < response.data.sensorList.length; j++) {
+                        for (var k = 0; k < response.data.sensorList[j].length; k++) {
+                            var first_str = response.data.sensorList[j][0].split(",");
+                            var xx1 = first_str[1];
+                            var yy1 = first_str[2];
+                            var last_str = response.data.sensorList[j][response.data.sensorList[j].length - 1].split(",");
+                            var xx2 = last_str[1];
+                            var yy2 = last_str[2];
+
+                            var angle = Math.atan2((yy1 - yy2), (xx2 - xx1)); //弧度  0.6435011087932844
+                            var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
+                            var tmp = response.data.sensorList[j][k].split(",");
+                            var point2 = new BMap.Point(tmp[1], tmp[2]);
+                            var marker0 = new BMap.Marker(point2, {
+                                icon: rIcon
+                            });
+                            var marker2 = new BMap.Marker(point2, {
+                                icon: sIcon
+                            });
+                            marker0.setRotation(theta)
+                            //map.addOverlay(marker0)
+                            map.addOverlay(marker2)
+                        }
+                    }
+                },
+                "error": function (response) {
+                    layer.msg("请求失败")
+                }
+            });
+        });
+
+        // 生成完数据后，发送请求计算 线性规划 （不计算路口）正在实现
+        $("#calPulpWithOutCros").click(function () {
+            // 清楚地图上已经标记的点
+            map.clearOverlays();
+            $.ajax({
+                "url": "calByPython",
+                "type": "post",
+                "data": {
+                    "crosFlag": "withoutCros"
+                },
+                "success": function (response) {
+                    var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
+
+                    alert(dataGateway[0].length + " gateways have been used! " )
+                    //在地图上标记网关坐标
+                    for (var j = 0; j < dataGateway[0].length; j++) {
+                        var temp = dataGateway[0][j].split(",");
+                        var point1 = new BMap.Point(temp[0], temp[1]);
+                        var marker1 = new BMap.Marker(point1, {
+                            icon: gIcon
+                        });
+                        map.addOverlay(marker1);
+                        marker1.setTop(true);
+                        // 绘制圆
+                        var circle = new BMap.Circle(point1, 68, {
+                            strokeColor: 'blue',
+                            strokeWeight: 2,
+                            strokeOpacity: 0.5, //圆形的边线透明度
+                            strokeStyle: 'solid'
+                        });
+                        map.addOverlay(circle);
+                    }
+
+                    //标记传感器节点和车位
+                    for (var j = 0; j < response.data.sensorList.length; j++) {
+                        for (var k = 0; k < response.data.sensorList[j].length; k++) {
+                            var first_str = response.data.sensorList[j][0].split(",");
+                            var xx1 = first_str[1];
+                            var yy1 = first_str[2];
+                            var last_str = response.data.sensorList[j][response.data.sensorList[j].length - 1].split(",");
+                            var xx2 = last_str[1];
+                            var yy2 = last_str[2];
+
+                            var angle = Math.atan2((yy1 - yy2), (xx2 - xx1)); //弧度  0.6435011087932844
+                            var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
+                            var tmp = response.data.sensorList[j][k].split(",");
+                            var point2 = new BMap.Point(tmp[1], tmp[2]);
+                            var marker0 = new BMap.Marker(point2, {
+                                icon: rIcon
+                            });
+                            var marker2 = new BMap.Marker(point2, {
+                                icon: sIcon
+                            });
+                            marker0.setRotation(theta)
+                            //map.addOverlay(marker0)
+                            map.addOverlay(marker2)
+                        }
+                    }
+                },
+                "error": function (response) {
+                    layer.msg("请求失败")
+                }
+            });
+        });
+
         // 生成完数据后，发送请求计算 贪心算法 （计算路口）实现
         $("#calGreedy").click(function () {
             // 清楚地图上已经标记的点
@@ -494,146 +624,12 @@
             });
         });
 
-        // 生成完数据后，发送请求计算 蚁群算法 新增
+// 生成完数据后，发送请求计算 蚁群算法 新增
         $("#calAco").click(function () {
             // 清楚地图上已经标记的点
             map.clearOverlays();
             $.ajax({
                 "url": "hhaco",
-                "type": "post",
-                "data": {
-                    "crosFlag": "withCros"
-                },
-                "success": function (response) {
-                    var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
-
-                    alert(dataGateway[0].length + " gateways have been used! " )
-
-                    //在地图上标记网关坐标
-                    for (var j = 0; j < dataGateway[0].length; j++) {
-                        var temp = dataGateway[0][j].split(",");
-                        var point1 = new BMap.Point(temp[0], temp[1]);
-                        var marker1 = new BMap.Marker(point1, {
-                            icon: gIcon
-                        });
-                        map.addOverlay(marker1);
-                        marker1.setTop(true);
-                        // 绘制圆
-                        var circle = new BMap.Circle(point1, 68, {
-                            strokeColor: 'blue',
-                            strokeWeight: 2,
-                            strokeOpacity: 0.5, //圆形的边线透明度
-                            strokeStyle: 'solid'
-                        });
-                        map.addOverlay(circle);
-                    }
-
-                    //标记传感器节点和车位
-                    for (var j = 0; j < response.data.sensorList.length; j++) {
-                        for (var k = 0; k < response.data.sensorList[j].length; k++) {
-                            var first_str = response.data.sensorList[j][0].split(",");
-                            var xx1 = first_str[1];
-                            var yy1 = first_str[2];
-                            var last_str = response.data.sensorList[j][response.data.sensorList[j].length - 1].split(",");
-                            var xx2 = last_str[1];
-                            var yy2 = last_str[2];
-
-                            var angle = Math.atan2((yy1 - yy2), (xx2 - xx1))  //弧度  0.6435011087932844
-                            var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
-                            var tmp = response.data.sensorList[j][k].split(",");
-                            var point2 = new BMap.Point(tmp[1], tmp[2]);
-                            var marker0 = new BMap.Marker(point2, {
-                                icon: rIcon
-                            });
-                            var marker2 = new BMap.Marker(point2, {
-                                icon: sIcon
-                            });
-                            marker0.setRotation(theta)
-                            //map.addOverlay(marker0)
-                            map.addOverlay(marker2)
-                        }
-
-                    }
-                },
-                "error": function (response) {
-                    layer.msg("请求失败")
-                }
-            });
-        });
-
-        // 生成完数据后，发送请求计算新线性规划 新增
-        $("#calPulp").click(function () {
-            // 清楚地图上已经标记的点
-            map.clearOverlays();
-            $.ajax({
-                "url": "calByPython",
-                "type": "post",
-                "data": {
-                    "crosFlag": "withCros"
-                },
-                "success": function (response) {
-                    var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
-
-                    alert(dataGateway[0].length + " gateways have been used! " )
-
-                    //在地图上标记网关坐标
-                    for (var j = 0; j < dataGateway[0].length; j++) {
-                        var temp = dataGateway[0][j].split(",");
-                        var point1 = new BMap.Point(temp[0], temp[1]);
-                        var marker1 = new BMap.Marker(point1, {
-                            icon: gIcon
-                        });
-                        map.addOverlay(marker1);
-                        marker1.setTop(true);
-                        // 绘制圆
-                        var circle = new BMap.Circle(point1, 68, {
-                            strokeColor: 'blue',
-                            strokeWeight: 2,
-                            strokeOpacity: 0.5, //圆形的边线透明度
-                            strokeStyle: 'solid'
-                        });
-                        map.addOverlay(circle);
-                    }
-
-                    //标记传感器节点和车位
-                    for (var j = 0; j < response.data.sensorList.length; j++) {
-                        for (var k = 0; k < response.data.sensorList[j].length; k++) {
-                            var first_str = response.data.sensorList[j][0].split(",");
-                            var xx1 = first_str[1];
-                            var yy1 = first_str[2];
-                            var last_str = response.data.sensorList[j][response.data.sensorList[j].length - 1].split(",");
-                            var xx2 = last_str[1];
-                            var yy2 = last_str[2];
-
-                            var angle = Math.atan2((yy1 - yy2), (xx2 - xx1))  //弧度  0.6435011087932844
-                            var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
-                            var tmp = response.data.sensorList[j][k].split(",");
-                            var point2 = new BMap.Point(tmp[1], tmp[2]);
-                            var marker0 = new BMap.Marker(point2, {
-                                icon: rIcon
-                            });
-                            var marker2 = new BMap.Marker(point2, {
-                                icon: sIcon
-                            });
-                            marker0.setRotation(theta)
-                            //map.addOverlay(marker0)
-                            map.addOverlay(marker2)
-                        }
-
-                    }
-                },
-                "error": function (response) {
-                    layer.msg("请求失败")
-                }
-            });
-        });
-
-        // 生成完数据后，发送请求计算遗传算法 新增
-        $("#calGA").click(function () {
-            // 清楚地图上已经标记的点
-            map.clearOverlays();
-            $.ajax({
-                "url": "calByGA",
                 "type": "post",
                 "data": {
                     "crosFlag": "withCros"
@@ -853,7 +849,6 @@
             });
         });
 
-        //1500
         $("#tdata1500").click(function () {
             $.ajax({
                 "url": "hh1500",
