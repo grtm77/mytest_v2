@@ -14,14 +14,7 @@ import java.util.List;
 @Controller
 public class BaseHandler {
     @Autowired
-    TransformService transformService;
-
-    @Autowired
     DBRelation dbRelation;
-    @Autowired
-    RelatedProperties relatedProperties;
-    @Autowired
-    BaseService baseService;
 
     @RequestMapping("/sup")
     @ResponseBody

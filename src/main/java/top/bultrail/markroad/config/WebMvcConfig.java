@@ -12,15 +12,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addViewController("/map").setViewName("mark_en");
 
-//        registry.addViewController("/switch").setViewName("mark_en");
-
-//        registry.addViewController("/covert").setViewName("mark01");
-
-//        registry.addViewController("/test01").setViewName("index");
-
         registry.addViewController("/").setViewName("mark_en");
 
-//        registry.addViewController("/to/register").setViewName("register");
 
     }
 }

@@ -6,24 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import top.bultrail.markroad.bean.Point;
-import top.bultrail.markroad.config.RelatedProperties;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DBRelation {
 
-    @Autowired
-    RelatedProperties relatedProperties;
-
-    @Autowired
-    CountSet countSet;
-
     private QueryRunner qr = new QueryRunner();
-//    private DBRelation dbRelation = new DBRelation();
 
     //新建连接
     private Connection setConnection() {

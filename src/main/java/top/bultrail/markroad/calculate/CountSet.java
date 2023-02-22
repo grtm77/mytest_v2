@@ -5,6 +5,7 @@ import Matlab_func.Function;
 import com.mathworks.toolbox.javabuilder.MWClassID;
 import com.mathworks.toolbox.javabuilder.MWNumericArray;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import greedy.Greedy;
 import top.bultrail.markroad.config.RelatedProperties;
 import eu.andredick.aco.algorithm.AbstractAlgorithm;
 import eu.andredick.aco.algorithm.Statistics;
@@ -413,40 +414,44 @@ public class CountSet {
     }
 
     /**
-     * 与贪心计算有关
+     * 新线性规划
      * @param strList1 网关
      * @param strList2 传感器
      */
-    public ArrayList<String> test01(List<String> strList1, List<String> strList2,String flag) throws Exception {
+    public ArrayList<String> test01(List<String> strList1, List<String> strList2, String flag) throws Exception {
         HashMap<String, Vector<Double>> hs1 = new HashMap<>();
         HashMap<String, Vector<Double>> hs2 = new HashMap<>();
+        HashMap<Integer, String> hsc1 = new HashMap<>();
+        HashMap<Integer, String> hsc2 = new HashMap<>();
+        HashMap<String, Integer> hsc1b = new HashMap<>();
+        HashMap<String, Integer> hsc2b = new HashMap<>();
 
         HashSet<String> hashSet = new HashSet<>();
 
         for (int i = 0; i < strList1.size(); i++) {
             Vector<Double> vc = new Vector<>();
-//            System.out.println(strList1.get(i));
             String[] split = strList1.get(i).split(",");
             vc.add(Double.parseDouble(split[1]));
             vc.add(Double.parseDouble(split[2]));
             hs1.put(split[0], vc);
+            hsc1.put(i, split[0]);
+            hsc1b.put(split[0], i);
         }
         for (int i = 0; i < strList2.size(); i++) {
             Vector<Double> vc = new Vector<>();
-            //System.out.println(strList2.get(i));
             String[] split = strList2.get(i).split(",");
             vc.add(Double.parseDouble(split[1]));
             vc.add(Double.parseDouble(split[2]));
             hashSet.add(split[0]);
             hs2.put(split[0], vc);
+            hsc2.put(i, split[0]);
+            hsc2b.put(split[0], i);
         }
 
         double raius = relatedProperties.getGatewayRadius();
         // 计算路口集合
         HashMap<String, Vector<Double>> crossingMap = countCrossing();
 
-        //TODO
-        //计算数据（与贪心计算有关），这里分包含路口的计算和不包含路口的计算
         Map<String, Map<String, Vector<Double>>> stringMapMap = null;
         if("withoutCros".equals(flag)){
             stringMapMap = countSet(hs1, hs2, raius);
@@ -466,12 +471,9 @@ public class CountSet {
             stringHashSetHashMap.put(entryt.getKey(), hashss);
         }
 
-        //copy一下map，为了后面验证准确度
-        HashMap<String, HashSet<String>> lampposts2 = Detection.copyMap(stringHashSetHashMap);
-
         //计算当前的所有灯柱能否包含所有传感器
         HashSet<String> resultash = new HashSet<>();
-        for (Map.Entry<String, HashSet<String>> entry : lampposts2.entrySet()) {
+        for (Map.Entry<String, HashSet<String>> entry : stringHashSetHashMap.entrySet()) {
             HashSet<String> value = entry.getValue();
             Iterator<String> iterator1 = value.iterator();
             while (iterator1.hasNext()) {
@@ -481,14 +483,57 @@ public class CountSet {
 
         // 判断传感器有没有被全部覆盖到
         if (resultash.size() != hashSet.size()) {
+            for (String value : hashSet){
+                int f = 0;
+                for(String key : resultash){
+                    if(value == key) {
+                        f = 1;
+                        break;
+                    }
+                }
+                if(f == 0) System.out.println(value);
+            }
             throw new Exception("传感器没有被全部覆盖到!");
         }
 
-        // 调用Detection中的近似贪心算法计算
-        ArrayList<String> result = Detection.greedyAlgorithm(hashSet, stringHashSetHashMap);
+//        对stringHashSetHashMap操作
+        double[][] matrix = new double[strList2.size()][strList1.size()];
+        for(String key : stringHashSetHashMap.keySet()) {
+            for (String i : stringHashSetHashMap.get(key)){
+                matrix[hsc2b.get(i)][hsc1b.get(key)] = 1.0;
+            }
+        }
+
+//        for(double[] iw : matrix) {
+//            for (double i : iw){
+//                System.out.print((int)i);
+//                System.out.print(" ");
+//            }
+//            System.out.print("\n");
+//        }
+
+        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+//        Function test = new Function();
+//        Object[] sresult = test.select_linprog(2, input);
+        Greedy test = new Greedy();
+        Object[] sresult = test.select_random_greedy(2, input);
+        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+
+//        打印结果
+//        for (int i : sol) {
+//            System.out.print(i);
+//            System.out.print(" ");
+//        }
+        ArrayList<String> result = new ArrayList<>();
+        for(int i = 0; i < sol.length; i++){
+            if(sol[i] == 1){
+                result.add(hsc1.get(i));
+            }
+        }
 
         return result;
     }
+
 
     /**
      * 有向贪心
@@ -544,7 +589,6 @@ public class CountSet {
             }
             stringHashSetHashMap.put(entryt.getKey(), hashss);
         }
-
         //计算当前的所有灯柱能否包含所有传感器
         HashSet<String> resultash = new HashSet<>();
         for (Map.Entry<String, HashSet<String>> entry : stringHashSetHashMap.entrySet()) {
@@ -559,7 +603,6 @@ public class CountSet {
         if (resultash.size() != hashSet.size()) {
             throw new Exception("传感器没有被全部覆盖到!");
         }
-
         // 调用Detection中的近似贪心算法计算
         ArrayList<String> result = Detection.calByLinner(strList2, strList1, stringHashSetHashMap);
 //        System.out.println(result);
@@ -660,7 +703,8 @@ public class CountSet {
         //打印测试覆盖矩阵
 //        for(boolean[] iw : matrix) {
 //            for (boolean i : iw){
-//                System.out.print(i);
+//                if(i) System.out.print("1");
+//                else System.out.print("0");
 //                System.out.print(" ");
 //            }
 //            System.out.print("\n");
@@ -690,6 +734,7 @@ public class CountSet {
         }
 
         return result;
+//        return null;
     }
 
     /**
@@ -783,14 +828,13 @@ public class CountSet {
             }
         }
 
-        //打印测试覆盖矩阵
-//        for(boolean[] iw : matrix) {
-//            for (boolean i : iw){
-//                System.out.print(i);
-//                System.out.print(" ");
-//            }
-//            System.out.print("\n");
-//        }
+        for(double[] iw : matrix) {
+            for (double i : iw){
+                System.out.print((int)i);
+                System.out.print(" ");
+            }
+            System.out.print("\n");
+        }
 
         MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
         Function test = new Function();

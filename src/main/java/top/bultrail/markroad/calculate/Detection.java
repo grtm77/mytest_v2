@@ -5,95 +5,6 @@ import java.io.*;
 import java.util.*;
 
 public class Detection {
-    public static void main(String[] args) {
-        //从txt文件中读取数据
-        List<String> strList1 = getFileContent("E:\\1a黑马资料！！！！！！！\\python数据.txt");
-        //网关集合
-        HashMap<String, HashSet<String>> lampposts = new HashMap<>();
-        //将String数据转换成数组
-        int[][] ints = reverse(strToArray(strList1));
-        //往网关集合中添加数据
-        for (int i = 0; i <ints.length ; i++) {
-            HashSet<String> hashSet1 = new HashSet<>();
-            for (int j = 0; j < ints[0].length; j++) {
-                if(ints[i][j]==1){
-                    hashSet1.add(j + "");
-                }
-            }
-            lampposts.put(i + "", hashSet1);
-        }
-        //sensors存放所有的传感器
-        HashSet<String> sensors = new HashSet<>();
-
-        //遍历hashmap，找出所有传感器放入sensors
-        Iterator<Map.Entry<String, HashSet<String>>> iterator = lampposts.entrySet().iterator();
-        while (iterator.hasNext()){
-            Map.Entry<String, HashSet<String>> next = iterator.next();
-            HashSet<String> val = next.getValue();
-
-            val.stream().forEach(a -> sensors.add(a));
-        }
-
-        //查看传感器集合中的元素
-        //sensors.stream().forEach(a -> System.out.print(a + " "));
-
-
-        HashMap<String, HashSet<String>> lampposts2 = copyMap(lampposts);
-
-        //近似贪心算法，找到近似最优解
-        ArrayList<String> result = greedyAlgorithm(sensors, lampposts);
-
-        //查看近似贪心算法的准确度   resultash.size();
-        HashSet<String > resultash = new HashSet<>();
-        for (int i = 0; i <result.size() ; i++) {
-            HashSet<String> lamKey = lampposts2.get(result.get(i));
-            Iterator<String> iterator1 = lamKey.iterator();
-            while(iterator1.hasNext()) {
-                resultash.add(iterator1.next());
-            }
-        }
-
-        System.out.println("ssss");
-
-// ------------------------------------------------------------------------------------------//
-//        因为txt文件中的数据格式不对，需要转换成300*3000的，所以这里舍弃了
-//        for (int i = 0; i < strList1.size(); i++) {
-//            HashSet<String> hashSet1 = new HashSet<>();
-//            int length = strList1.get(i).replace(" ", "").length();
-//            String replace = strList1.get(i).replace(" ", "");
-//            for (int j = 0; j < length; j++) {
-//                if (replace.charAt(j) == '1') {
-//                    hashSet1.add(j + "");
-//                }
-//            }
-//            lampposts.put(i + "", hashSet1);
-//
-//        }
-// ------------------------------------------------------------------------------------------//
-        //网关集合
-//            HashMap<String, HashSet<String>> lampposts = new HashMap<>();
-//            //sensors存放所有的传感器
-//            HashSet<String> sensors = new HashSet<>();
-//
-//            //添加传感器数据
-//            add(lampposts);
-//
-//            //遍历hashmap，找出所有传感器放入sensors
-//            Iterator<Map.Entry<String, HashSet<String>>> iterator = lampposts.entrySet().iterator();
-//
-//            while (iterator.hasNext()){
-//                Map.Entry<String, HashSet<String>> next = iterator.next();
-//                HashSet<String> val = next.getValue();
-//
-//                val.stream().forEach(a -> sensors.add(a));
-//            }
-//
-//            sensors.stream().forEach(a -> System.out.print(a + " "));
-//
-//            //贪心算法，找到近似最优解
-//            greedyAlgorithm(sensors,lampposts);
-    }
-
     /**
      * 贪心算法
      *
@@ -234,65 +145,6 @@ public class Detection {
 
 
     /**
-     * 从目标文件中读取灯柱和节点坐标
-     *
-     * @param path
-     * @return
-     */
-    public static List<String> getFileContent(String path) {
-
-        List<String> strList2 = new ArrayList<>();
-        try {
-            File file = new File(path);
-            InputStreamReader read = new InputStreamReader(new FileInputStream(
-                    file), "UTF-8");
-            BufferedReader reader = new BufferedReader(read);
-            String line;
-            while ((line = reader.readLine()) != null) {
-                strList2.add(line);
-            }
-            reader.close();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return strList2;
-
-    }
-
-    // 将矩阵转置
-    public static int[][] reverse(int temp[][]) {
-        int R = temp.length;
-        int C = temp[0].length;
-        //上面的两个步骤主要是为了下面这一步实现创建和实例化一个二维数组
-        int[][] ans = new int[C][R];
-        // 主要的思路就是遍历二维数组
-        for(int r = 0; r < R; ++r ){
-            for(int c = 0; c < C; ++c){
-                ans[c][r] = temp[r][c];
-            }
-        }
-        return ans;
-    }
-
-    //将字符串转数组换为矩阵
-    public static int[][] strToArray(List<String> list) {
-        int length = list.size();
-        int width = list.get(0).replace(" ", "").length();
-        int[][] a = new int[length][width];
-        for (int i = 0; i <length ; i++) {
-            for (int j = 0; j <width ; j++) {
-                String replace = list.get(i).replace(" ", "");
-                a[i][j]=Integer.parseInt(String.valueOf(replace.charAt(j)));
-            }
-        }
-        return a;
-    }
-
-    /**
      * 复制map
      */
     public static HashMap<String, HashSet<String>> copyMap(HashMap<String, HashSet<String>> source){
@@ -309,6 +161,4 @@ public class Detection {
 
         return resultMap;
     }
-
-
     }

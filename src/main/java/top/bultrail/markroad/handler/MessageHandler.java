@@ -119,26 +119,10 @@ public class MessageHandler {
     //用贪心算法计算，数据保存在txt 实现
     @ResponseBody
     @RequestMapping(value = "/hhln", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) {
-        HashMap<String, List<List<String>>> strings = null;
-        try {
-            strings = transformService.calByLinner_upload(flag);
-            System.out.println("Success");
-        } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            System.out.println("Exception");
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
-        }
-        return ResultEntity.sucessWithData(strings);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/hhaco", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByAco(@RequestParam(value = "crosFlag") String flag) throws Exception {
+    public ResultEntity<HashMap<String, List<List<String>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
 //        try {
-            strings = transformService.calByAco_upload(flag);
+            strings = transformService.calByLinner_upload(flag);
             System.out.println("Success");
 //        } catch (Exception e) {
 //            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
@@ -146,6 +130,22 @@ public class MessageHandler {
 //            listResultEntity.setMessage(e.getMessage());
 //            return listResultEntity;
 //        }
+        return ResultEntity.sucessWithData(strings);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/hhaco", method = RequestMethod.POST)
+    public ResultEntity<HashMap<String, List<List<String>>>> calByAco(@RequestParam(value = "crosFlag") String flag) throws Exception {
+        HashMap<String, List<List<String>>> strings = null;
+        try {
+            strings = transformService.calByAco_upload(flag);
+            System.out.println("Success");
+        } catch (Exception e) {
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            System.out.println("Exception");
+            listResultEntity.setMessage(e.getMessage());
+            return listResultEntity;
+        }
         return ResultEntity.sucessWithData(strings);
     }
 
@@ -181,33 +181,4 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
-    //用贪心算法计算，数据保存在redis 摄像头 废弃
-    @ResponseBody
-    @RequestMapping(value = "/calByGreedyCm", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByGreedyCm() {
-        HashMap<String, List<List<String>>> strings = null;
-        try {
-            strings = transformService.calByGreedyCm();
-        } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
-        }
-        return ResultEntity.sucessWithData(strings);
-    }
-
-    //使用python脚本计算 摄像头 废弃
-    @ResponseBody
-    @RequestMapping(value = "/calByPythonCm", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByPythonCm() {
-        HashMap<String, List<List<String>>> strings = null;
-        try {
-            strings = transformService.calByPythonCm();
-        } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
-        }
-        return ResultEntity.sucessWithData(strings);
-    }
 }

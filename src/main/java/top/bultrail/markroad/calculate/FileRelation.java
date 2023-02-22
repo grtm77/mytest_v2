@@ -14,66 +14,10 @@ import java.util.*;
 @Component
 public class FileRelation {
     @Autowired
-    RedisTemplate redisTemplate;
-    @Autowired
     RelatedProperties relatedProperties;
-
     @Autowired
     CountSet countSet;
 
-
-//    废弃
-    public List<String> traverseFolder2(String path) throws Exception {
-        List<String> ls = new LinkedList<>();
-        File file = new File(path);
-        if (file.exists()) {
-            File[] files = file.listFiles();
-            if (null == files || files.length == 0) {
-                throw new Exception("还没有添加任何文件！");
-            } else {
-                for (File file2 : files) {
-                    if (file2.isDirectory()) {
-//                        System.out.println("文件夹:" + file2.getAbsolutePath());
-//                        traverseFolder2(file2.getAbsolutePath());
-                    } else {
-                        //System.out.println("文件:" + file2.getAbsolutePath());
-                        ls.add(file2.getAbsolutePath());
-                    }
-                }
-            }
-        } else {
-            throw new Exception("文件不存在");
-        }
-        return ls;
-    }
-
-    /**
-     * 获取文件内容 废弃
-     *
-     * @param path
-     * @return
-     */
-    public  List<String> getFileContent(String path) {
-        List<String> strList2 = new ArrayList<>();
-        try {
-            File file = new File(path);
-            InputStreamReader read = new InputStreamReader(new FileInputStream(
-                    file), "UTF-8");
-            BufferedReader reader = new BufferedReader(read);
-            String line;
-            while ((line = reader.readLine()) != null) {
-                strList2.add(line);
-            }
-            reader.close();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return strList2;
-    }
 
     /**0.00005913
      * 计算各个坐标与中心点的距离，从而算出路口的点 实现
