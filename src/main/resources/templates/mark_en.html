@@ -111,6 +111,12 @@
                 <button type="button" class="btn btn-primary" id="tdata466">466</button>
                 <button type="button" class="btn btn-primary" id="tdata1056">1056</button>
                 <button type="button" class="btn btn-primary" id="tdata1500">1500</button>
+
+                <button type="button" class="btn btn-primary" id="tdata2322">G114</button>
+                <button type="button" class="btn btn-primary" id="tdata4662">G228</button>
+                <button type="button" class="btn btn-primary" id="tdata10562">G354</button>
+                <button type="button" class="btn btn-primary" id="tdata15002">G484</button>
+
                 <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
             </div>
         </div>
@@ -145,11 +151,16 @@
                 <h4 class="modal-title" id="calModalLabel">Calculation</h4>
             </div>
             <div class="modal-body" align="center">
-                <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">Greedy</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calLinner">New Greedy</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calPulp">LP</button>
+<!--                <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">Greedy</button>-->
+<!--                <button type="button" class="layui-btn layui-btn-warm" id="calLinner">New Greedy</button>-->
+<!--                <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>-->
+<!--                <button type="button" class="layui-btn layui-btn-warm" id="calPulp">LP</button>-->
+<!--                <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>-->
+                <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="22">BB</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">NG</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="11">TPS</button>
 <!--                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy WithoutCros</button>-->
 <!--                <button type="button" class="layui-btn layui-btn-warm" id="calPulpWithOutCros">Pulp WithoutCros</button>-->
             </div>
@@ -626,6 +637,62 @@
         $("#tdata1500").click(function () {
             $.ajax({
                 "url": "hh1500",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("The data is loaded in database successfully!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //2322 新增
+        $("#tdata2322").click(function () {
+            $.ajax({
+                "url": "hh2322",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("The data is loaded in database successfully!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //4662 新增
+        $("#tdata4662").click(function () {
+            $.ajax({
+                "url": "hh4662",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("The data is loaded in database successfully!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //5182 新增
+        $("#tdata10562").click(function () {
+            $.ajax({
+                "url": "hh10562",
+                "type": "post",
+                "success": function (response) {
+                    layer.msg("The data is loaded in database successfully!");
+                },
+                "error": function (response) {
+                    layer.msg("Error!");
+                }
+            });
+        });
+
+        //15002
+        $("#tdata15002").click(function () {
+            $.ajax({
+                "url": "hh15002",
                 "type": "post",
                 "success": function (response) {
                     layer.msg("The data is loaded in database successfully!");

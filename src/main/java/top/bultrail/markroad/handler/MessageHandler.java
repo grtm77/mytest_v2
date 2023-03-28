@@ -91,6 +91,37 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/hh15002", method = RequestMethod.POST)
+    public ResultEntity<String> t15002() {
+        transformService.tdGuo(484);
+        return ResultEntity.successWithoutData();
+    }
+
+    //162 新增
+    @ResponseBody
+    @RequestMapping(value = "/hh10562", method = RequestMethod.POST)
+    public ResultEntity<String> t10562() {
+        transformService.tdGuo(354);
+        return ResultEntity.successWithoutData();
+    }
+
+    //321 新增
+    @ResponseBody
+    @RequestMapping(value = "/hh2322", method = RequestMethod.POST)
+    public ResultEntity<String> t2322() {
+        transformService.tdGuo(114);
+        return ResultEntity.successWithoutData();
+    }
+
+    //518 新增
+    @ResponseBody
+    @RequestMapping(value = "/hh4662", method = RequestMethod.POST)
+    public ResultEntity<String> t4662() {
+        transformService.tdGuo(228);
+        return ResultEntity.successWithoutData();
+    }
+
     //还原 新增
     @ResponseBody
     @RequestMapping(value = "/hhres", method = RequestMethod.POST)

@@ -80,6 +80,11 @@ public class TransformService {
         dbRelation.tdata("1500");
     }
 
+    public void tdGuo(int num) {
+        dbRelation.clear();
+        dbRelation.tdataG(num + "");
+    }
+
     //还原 新增
     public void resDB() {
         dbRelation.clear();

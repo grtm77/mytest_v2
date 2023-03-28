@@ -165,6 +165,26 @@ public class DBRelation {
         }
     }
 
+    public void tdataG(String num) {
+
+        Connection conn = setConnection();
+        String[] keys = new String[]{"sensor", "gateway", "crossing"};
+        for (String key : keys) {
+            String sql = "INSERT INTO " + key + " SELECT * FROM " + key + "_guo" + num;
+            try {
+                qr.update(conn, sql);
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void res() {
 
         Connection conn = setConnection();
