@@ -40,3 +40,8 @@ bin/
 
 #rebel
 *rebel.xml*
+*.DS_Store
+Matlab_Func/
+target/
+target1/
+*.orig

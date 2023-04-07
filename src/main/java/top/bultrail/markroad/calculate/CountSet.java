@@ -1,5 +1,6 @@
 package top.bultrail.markroad.calculate;
 
+import branch_bound_algorithm.Class1;
 import GA_Func.GAFunction;
 import Matlab_func.Function;
 import com.mathworks.toolbox.javabuilder.MWClassID;
@@ -414,7 +415,7 @@ public class CountSet {
     }
 
     /**
-     * 新线性规划
+     * 新线性规划，调用matlab
      * @param strList1 网关
      * @param strList2 传感器
      */
@@ -511,13 +512,20 @@ public class CountSet {
 //            }
 //            System.out.print("\n");
 //        }
-
+//=====================================================
+        // matlab朴素贪心
+//        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+//        Greedy test = new Greedy();
+//        Object[] sresult = test.select_random_greedy(2, input);
+//=====================================================================================
+        //分支限界 Matlab代码测试
         MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-//        Function test = new Function();
-//        Object[] sresult = test.select_linprog(2, input);
-        Greedy test = new Greedy();
-        Object[] sresult = test.select_random_greedy(2, input);
+        Class1 test = new Class1();
+        Object[] sresult = test.branch_bound_algorithm(2, input);
+//==============================================================================
         int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+
+
 
 //        打印结果
 //        for (int i : sol) {
@@ -738,7 +746,7 @@ public class CountSet {
     }
 
     /**
-     * 新线性规划
+     * 新线性规划  python
      * @param strList1 网关
      * @param strList2 传感器
      */
@@ -951,10 +959,17 @@ public class CountSet {
 //            }
 //            System.out.print("\n");
 //        }
-
+//==============================================================
+//        遗传算法
+//        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+//        GAFunction test = new GAFunction();
+//        Object[] sresult = test.GA_parse(2, input);
+//===================================================================
+//        matlab线性规划
         MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        GAFunction test = new GAFunction();
-        Object[] sresult = test.GA_parse(2, input);
+        Function test = new Function();
+        Object[] sresult = test.select_linprog(2, input);
+//=======================================================================
         int[] sol = ((MWNumericArray)sresult[0]).getIntData();
 
 //        打印结果
