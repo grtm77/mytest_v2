@@ -195,7 +195,7 @@
     // 创建自定义网关图标
     var gIcon = new BMap.Icon("icon/jian.png", new BMap.Size(32, 32));
     // 传感器图标
-    var sIcon = new BMap.Icon("icon/point.png", new BMap.Size(32, 32));
+    var sIcon = new BMap.Icon("icon/point16.png", new BMap.Size(16, 16));
     // 车位图标
     var rIcon = new BMap.Icon("icon/parkingspace.png", new BMap.Size(48, 48));
     // 路口图标
@@ -211,13 +211,14 @@
     var map = new BMap.Map("container");// 创建地图实例
     // var point = new BMap.Point(113.80848202641658,22.816506505348503);// 创建点坐标
     var point = new BMap.Point(112.884, 22.909);// 创建点坐标
-    map.centerAndZoom(point, 21);// 初始化地图，设置中心点坐标和地图级别
+    map.centerAndZoom(point, 19);// 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+    map.disableDoubleClickZoom(true);
     map.addControl(new BMap.ScaleControl());  //添加比例尺
     //突破19级限制
     var defaultMapType = map.getMapType();
     var defaultTileLayer = defaultMapType.getTileLayer();//创建了一个地图图层
-    var newMapType = new BMap.MapType('新地图', defaultTileLayer, {minZoom: 15, maxZoom: 25});
+    var newMapType = new BMap.MapType('新地图', defaultTileLayer, {minZoom: 18, maxZoom: 21});
     map.setMapType(newMapType);
     map.addControl(new BMap.MapTypeControl({
         mapTypes: [
@@ -265,6 +266,7 @@
             map.addOverlay(marker1);
             marker1.setTop(true);
             // 绘制圆
+            // var colors = ['blue','red','green','black','blue'];
             var circle = new BMap.Circle(point1, 68, {
                 strokeColor: 'blue',
                 strokeWeight: 2,
@@ -741,15 +743,7 @@
                     var point2 = new BMap.Point(gateways[i][2], gateways[i][3]);
                     var marker2 = new BMap.Marker(point2, {icon: gIcon});
                     map.addOverlay(marker2);
-                    // marker2.setTop(true);
-                    // // 绘制圆
-                    // var circle = new BMap.Circle(point2, 68, {
-                    //     strokeColor: 'blue',
-                    //     strokeWeight: 2,
-                    //     strokeOpacity: 0.5, //圆形的边线透明度
-                    //     strokeStyle: 'solid'
-                    // });
-                    // map.addOverlay(circle);
+                    marker2.setTop(true);
                 }
             }
         });
@@ -762,7 +756,7 @@
             "type": "post",
             "success": function (response) {
                 var sensors = response.data;//拿到的sensor列表
-                // console.log(sensors);
+                console.log(sensors);
                 var xx1 = sensors[0][2];
                 var yy1 = sensors[0][3];
                 var last_str = sensors[sensors.length - 1];
@@ -774,9 +768,9 @@
                 for (var i = 0; i < sensors.length; i++) {
                     var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
                     var marker1 = new BMap.Marker(point1, {icon: sIcon});
-                    var marker0 = new BMap.Marker(point1, {icon: rIcon});
-                    marker0.setRotation(theta);
-                    map.addOverlay(marker0);
+                    // var marker0 = new BMap.Marker(point1, {icon: rIcon});
+                    // marker0.setRotation(theta);
+                    // map.addOverlay(marker0);
                     map.addOverlay(marker1);
                 }
             }

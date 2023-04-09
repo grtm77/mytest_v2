@@ -147,7 +147,7 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
-    //用贪心算法计算，数据保存在txt 实现
+    //用有向贪心算法计算，数据保存在txt 实现
     @ResponseBody
     @RequestMapping(value = "/hhln", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) throws Exception {
