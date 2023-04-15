@@ -158,9 +158,10 @@
 <!--                <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>-->
                 <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="22">BB</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="calBB">BB</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">NG</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="11">TPS</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="calFive">TPS</button>
+                <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>
 <!--                <button type="button" class="layui-btn layui-btn-warm" id="calGreedyWithOutCros">Greedy WithoutCros</button>-->
 <!--                <button type="button" class="layui-btn layui-btn-warm" id="calPulpWithOutCros">Pulp WithoutCros</button>-->
             </div>
@@ -276,29 +277,14 @@
             map.addOverlay(circle);
         }
 
-        //标记传感器节点和车位
-        for (var j = 0; j < response.data.sensorList.length; j++) {
-            for (var k = 0; k < response.data.sensorList[j].length; k++) {
-                var first_str = response.data.sensorList[j][0].split(",");
-                var xx1 = first_str[1];
-                var yy1 = first_str[2];
-                var last_str = response.data.sensorList[j][response.data.sensorList[j].length - 1].split(",");
-                var xx2 = last_str[1];
-                var yy2 = last_str[2];
-                var angle = Math.atan2((yy1 - yy2), (xx2 - xx1))  //弧度  0.6435011087932844
-                var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
-                var tmp = response.data.sensorList[j][k].split(",");
-                var point2 = new BMap.Point(tmp[1], tmp[2]);
-                var marker0 = new BMap.Marker(point2, {
-                    icon: rIcon
-                });
-                var marker2 = new BMap.Marker(point2, {
-                    icon: sIcon
-                });
-                marker0.setRotation(theta)
-                //map.addOverlay(marker0)
-                map.addOverlay(marker2)
-            }
+        // 标记传感器节点
+        var sensors = response.data.sensorList;//response.data计算出来的最终网关坐标
+        for (var i = 0; i < sensors.length; i++) {
+            var sensor_point = new BMap.Point(sensors[i][2], sensors[i][3]);
+            var sensor_marker = new BMap.Marker(sensor_point, {icon: sIcon});
+            // var marker0 = new BMap.Marker(point1, {icon: rIcon});
+            // map.addOverlay(marker0);
+            map.addOverlay(sensor_marker);
         }
     }
 
@@ -438,6 +424,7 @@
                 },
                 "success": function (response) {
                     drawPoints(response);
+                    layer.msg("网关绘制完成");
                 },
                 "error": function (response) {
                     layer.msg("请求失败")
@@ -457,6 +444,47 @@
                 },
                 "success": function (response) {
                     drawPoints(response);
+                    layer.msg("网关绘制完成");
+                },
+                "error": function (response) {
+                    layer.msg("请求失败")
+                }
+            });
+        });
+
+        // 生成完数据后，发送请求计算 有向贪心 （计算路口）新增
+        $("#calBB").click(function () {
+            // 清楚地图上已经标记的点
+            map.clearOverlays();
+            $.ajax({
+                "url": "hhbb",
+                "type": "post",
+                "data": {
+                    "crosFlag": "withCros"
+                },
+                "success": function (response) {
+                    drawPoints(response);
+                    layer.msg("网关绘制完成");
+                },
+                "error": function (response) {
+                    layer.msg("请求失败")
+                }
+            });
+        });
+
+        // 生成完数据后，发送请求计算 有向贪心 （计算路口）新增
+        $("#calFive").click(function () {
+            // 清楚地图上已经标记的点
+            map.clearOverlays();
+            $.ajax({
+                "url": "hhfive",
+                "type": "post",
+                "data": {
+                    "crosFlag": "withCros"
+                },
+                "success": function (response) {
+                    drawPoints(response);
+                    layer.msg("网关绘制完成");
                 },
                 "error": function (response) {
                     layer.msg("请求失败")
@@ -476,6 +504,7 @@
                 },
                 "success": function (response) {
                     drawPoints(response);
+                    layer.msg("网关绘制完成");
                 },
                 "error": function (response) {
                     layer.msg("请求失败")
@@ -514,6 +543,7 @@
                 },
                 "success": function (response) {
                     drawPoints(response);
+                    layer.msg("网关绘制完成");
                 },
                 "error": function (response) {
                     layer.msg("请求失败")
