@@ -79,7 +79,9 @@
         </div>
     </div>
 </div>
-
+<div id="123456">
+    <button type="button" class="btn btn-primary" id="buttontest">Null</button>
+</div>
 <!--清空数据库 新增-->
 <div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="clearModalLabel"
      aria-hidden="true">
@@ -181,8 +183,7 @@
             <div class="modal-body" align="center">
                 <button type="button" class="btn btn-primary" id="sensorupload">Sensor Upload</button>
                 <button type="button" class="btn btn-primary" id="gatewayupload">Gateway Upload</button>
-                <button type="button" class="btn btn-primary" id="crosupload">Crossing Upload
-                </button>
+                <button type="button" class="btn btn-primary" id="crosupload">Crossing Upload</button>
             </div>
         </div>
     </div>
@@ -211,7 +212,9 @@
     var all = [];//存放地图上所有标记的节点
     var map = new BMap.Map("container");// 创建地图实例
     // var point = new BMap.Point(113.80848202641658,22.816506505348503);// 创建点坐标
-    var point = new BMap.Point(112.884, 22.909);// 创建点坐标
+    // var point = new BMap.Point(112.884, 22.909);// 标注位置
+    var point = new BMap.Point(112.8835, 22.9082);   // gxh上传
+    // var point = new BMap.Point(113.87908182502431, 22.91486091203956);  //东莞理工学院北门
     map.centerAndZoom(point, 19);// 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
     map.disableDoubleClickZoom(true);
@@ -227,6 +230,32 @@
             BMAP_HYBRID_MAP//混合
         ]
     }));
+
+    // 添加自定义组件
+    // 定义一个控件类，即function
+    function MyControl(){
+        // 设置默认停靠位置和偏移量
+        this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT;
+        this.defaultOffset = new BMap.Size(10, 10);
+    }
+    // 通过JavaScript的prototype属性继承于BMap.Control
+    MyControl.prototype = new BMap.Control();
+    // 自定义控件必须实现initialize方法，并且将控件的DOM元素返回
+    // 在本方法中创建个div元素作为控件的容器，并将其添加到地图容器中
+    MyControl.prototype.initialize = function(map){
+        // 创建一个DOM元素
+        var div = document.getElementById("123456");
+        // 添加DOM元素到地图中
+        map.getContainer().appendChild(div);
+        // 将DOM元素返回
+        return div;
+    }
+    // 创建控件实例
+    var MyControl= new MyControl();
+    // 添加到地图当中
+    map.addControl(MyControl);
+
+
     //清除商场等图层
     map.setMapStyleV2({
         styleJson: [
@@ -775,6 +804,7 @@
                     map.addOverlay(marker2);
                     marker2.setTop(true);
                 }
+                layer.msg("网关绘制完成");
             }
         });
     });
@@ -803,6 +833,7 @@
                     // map.addOverlay(marker0);
                     map.addOverlay(marker1);
                 }
+                layer.msg("传感器节点绘制完成");
             }
         });
     });
@@ -821,6 +852,7 @@
                     var marker3 = new BMap.Marker(point3, {icon: cIcon});
                     map.addOverlay(marker3);
                 }
+                layer.msg("路口绘制完成");
             }
         });
     });
