@@ -1,7 +1,6 @@
 // 生成数据，保存到数据库 新增
 $("#save").click(function () {
     var flag_cros = $("#nodeType").val() == "cros" ? 0 : 1;
-
     for (var i = flag_cros; i < pts.length; i++) {
         var a = [];
         a.push(pts[i].lng);
@@ -38,6 +37,9 @@ $("#save").click(function () {
 $("#calGreedy").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "hhe",
         "type": "post",
@@ -46,18 +48,24 @@ $("#calGreedy").click(function () {
         },
         "success": function (response) {
             drawPoints(response);
+            layer.close(loading);
             layer.msg("网关绘制完成");
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });
+
 });
 
 // 生成完数据后，发送请求计算 有向贪心 （计算路口）新增
 $("#calLinner").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "hhln",
         "type": "post",
@@ -66,9 +74,11 @@ $("#calLinner").click(function () {
         },
         "success": function (response) {
             drawPoints(response);
+            layer.close(loading);
             layer.msg("网关绘制完成");
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });
@@ -78,6 +88,9 @@ $("#calLinner").click(function () {
 $("#calBB").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "hhbb",
         "type": "post",
@@ -86,9 +99,11 @@ $("#calBB").click(function () {
         },
         "success": function (response) {
             drawPoints(response);
+            layer.close(loading);
             layer.msg("网关绘制完成");
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });
@@ -98,6 +113,9 @@ $("#calBB").click(function () {
 $("#calFive").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "hhfive",
         "type": "post",
@@ -106,9 +124,11 @@ $("#calFive").click(function () {
         },
         "success": function (response) {
             drawPoints(response);
+            layer.close(loading);
             layer.msg("网关绘制完成");
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });
@@ -118,6 +138,9 @@ $("#calFive").click(function () {
 $("#calAco").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "hhaco",
         "type": "post",
@@ -126,9 +149,11 @@ $("#calAco").click(function () {
         },
         "success": function (response) {
             drawPoints(response);
+            layer.close(loading);
             layer.msg("网关绘制完成");
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });
@@ -138,6 +163,9 @@ $("#calAco").click(function () {
 $("#calPulp").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "calByPython",
         "type": "post",
@@ -145,9 +173,12 @@ $("#calPulp").click(function () {
             "crosFlag": "withCros"
         },
         "success": function (response) {
+            layer.close(loading);
+            layer.msg("网关绘制完成");
             drawPoints(response);
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });
@@ -157,6 +188,9 @@ $("#calPulp").click(function () {
 $("#calGA").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "calByGA",
         "type": "post",
@@ -165,9 +199,11 @@ $("#calGA").click(function () {
         },
         "success": function (response) {
             drawPoints(response);
+            layer.close(loading);
             layer.msg("网关绘制完成");
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });
@@ -177,6 +213,9 @@ $("#calGA").click(function () {
 $("#calGreedyWithOutCros").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
     $.ajax({
         "url": "hhe",
         "type": "post",
@@ -185,8 +224,11 @@ $("#calGreedyWithOutCros").click(function () {
         },
         "success": function (response) {
             drawPoints(response);
+            layer.close(loading);
+            layer.msg("网关绘制完成");
         },
         "error": function (response) {
+            layer.close(loading);
             layer.msg("请求失败")
         }
     });

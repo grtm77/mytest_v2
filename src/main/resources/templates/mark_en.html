@@ -153,6 +153,9 @@
                 <h4 class="modal-title" id="calModalLabel">Calculation</h4>
             </div>
             <div class="modal-body" align="center">
+<!--                <button class="layui-btn layui-btn-warm">-->
+<!--                    <i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>-->
+<!--                </button>-->
                 <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calBB">BB</button>
@@ -404,6 +407,21 @@
             });
         });
     });
+    // 加载中，显示两秒
+    // layer.msg('Loading...', {
+    //     icon: 16
+    //     , shade: 0.01
+    //     , time: 2000
+    // });
+
+    // var loading = layer.load('Loading...', {
+    //     shade: [0.5,'#fff'] //0.1透明度的白色背景
+    // });
+    // var index = layer.load(1); //换了种风格
+    // setTimeout(function (data) {
+    //     //最后数据加载完 让 loading层消失
+    //     layer.close(loading);
+    // }, 5000);
 </script>
 <script type="text/javascript" src="js/my_ajax.js"></script>
 </html>
