@@ -325,43 +325,7 @@ function sensorupload() {
     });
 };
 //sensor数据库读取 新增
-// $("#sensorupload").click(sensorupload());
 $("#sensorupload").click(function(){sensorupload()});
-
-// //sensor数据库读取 新增
-// $("#sensorupload").click(function sensorupload() {
-//     var loading = layer.load('Loading...', {
-//         shade: [0.5,'#fff'] //0.1透明度的白色背景
-//     });
-//     $.ajax({
-//         "url": "sup",
-//         "type": "post",
-//         "success": function (response) {
-//             var sensors = response.data;//拿到的sensor列表
-//             console.log(sensors);
-//             // 用于计算角度
-//             // var xx1 = sensors[0][2];
-//             // var yy1 = sensors[0][3];
-//             // var last_str = sensors[sensors.length - 1];
-//             // var xx2 = last_str[2];
-//             // var yy2 = last_str[3];
-//             // var angle = Math.atan2((yy1 - yy2), (xx2 - xx1)); //弧度  0.6435011087932844
-//             // var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
-//             //在地图上标记
-//             for (var i = 0; i < sensors.length; i++) {
-//                 var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
-//                 var marker1 = new BMap.Marker(point1, {icon: sIcon});
-//                 // var marker0 = new BMap.Marker(point1, {icon: rIcon});
-//                 // marker0.setRotation(theta);
-//                 // map.addOverlay(marker0);
-//                 map.addOverlay(marker1);
-//             }
-//             layer.close(loading);
-//             layer.msg("传感器节点绘制完成");
-//         }
-//     });
-// });
-
 
 //gateway数据库读取 新增
 $("#gatewayupload").click(function () {
