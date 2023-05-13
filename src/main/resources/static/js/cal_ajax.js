@@ -33,6 +33,7 @@ $("#save").click(function () {
     });
 });
 
+
 // 生成完数据后，发送请求计算 贪心算法 （计算路口）实现
 $("#calGreedy").click(function () {
     // 清楚地图上已经标记的点
@@ -288,118 +289,6 @@ $("#backup").click(function () {
     });
 });
 
-//232 新增
-$("#tdata232").click(function () {
-    $.ajax({
-        "url": "hh232",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
-//466 新增
-$("#tdata466").click(function () {
-    $.ajax({
-        "url": "hh466",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
-//518 新增
-$("#tdata1056").click(function () {
-    $.ajax({
-        "url": "hh1056",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
-//1500
-$("#tdata1500").click(function () {
-    $.ajax({
-        "url": "hh1500",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
-//2322 新增
-$("#tdata2322").click(function () {
-    $.ajax({
-        "url": "hh2322",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
-//4662 新增
-$("#tdata4662").click(function () {
-    $.ajax({
-        "url": "hh4662",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
-//5182 新增
-$("#tdata10562").click(function () {
-    $.ajax({
-        "url": "hh10562",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
-//15002
-$("#tdata15002").click(function () {
-    $.ajax({
-        "url": "hh15002",
-        "type": "post",
-        "success": function (response) {
-            layer.msg("The data is loaded in database successfully!");
-        },
-        "error": function (response) {
-            layer.msg("Error!");
-        }
-    });
-});
-
 //还原 新增
 $("#restore").click(function () {
     $.ajax({
@@ -414,6 +303,64 @@ $("#restore").click(function () {
     });
 });
 
+function sensorupload() {
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
+    $.ajax({
+        "url": "sup",
+        "type": "post",
+        "success": function (response) {
+            var sensors = response.data;//拿到的sensor列表
+            console.log(sensors);
+            //在地图上标记
+            for (var i = 0; i < sensors.length; i++) {
+                var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
+                var marker1 = new BMap.Marker(point1, {icon: sIcon});
+                map.addOverlay(marker1);
+            }
+            layer.close(loading);
+            layer.msg("传感器节点绘制完成");
+        }
+    });
+};
+//sensor数据库读取 新增
+// $("#sensorupload").click(sensorupload());
+$("#sensorupload").click(function(){sensorupload()});
+
+// //sensor数据库读取 新增
+// $("#sensorupload").click(function sensorupload() {
+//     var loading = layer.load('Loading...', {
+//         shade: [0.5,'#fff'] //0.1透明度的白色背景
+//     });
+//     $.ajax({
+//         "url": "sup",
+//         "type": "post",
+//         "success": function (response) {
+//             var sensors = response.data;//拿到的sensor列表
+//             console.log(sensors);
+//             // 用于计算角度
+//             // var xx1 = sensors[0][2];
+//             // var yy1 = sensors[0][3];
+//             // var last_str = sensors[sensors.length - 1];
+//             // var xx2 = last_str[2];
+//             // var yy2 = last_str[3];
+//             // var angle = Math.atan2((yy1 - yy2), (xx2 - xx1)); //弧度  0.6435011087932844
+//             // var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
+//             //在地图上标记
+//             for (var i = 0; i < sensors.length; i++) {
+//                 var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
+//                 var marker1 = new BMap.Marker(point1, {icon: sIcon});
+//                 // var marker0 = new BMap.Marker(point1, {icon: rIcon});
+//                 // marker0.setRotation(theta);
+//                 // map.addOverlay(marker0);
+//                 map.addOverlay(marker1);
+//             }
+//             layer.close(loading);
+//             layer.msg("传感器节点绘制完成");
+//         }
+//     });
+// });
 
 
 //gateway数据库读取 新增
@@ -436,34 +383,39 @@ $("#gatewayupload").click(function () {
     });
 });
 
-//sensor数据库读取 新增
-$("#sensorupload").click(function () {
-    $.ajax({
-        "url": "sup",
-        "type": "post",
-        "success": function (response) {
-            var sensors = response.data;//拿到的sensor列表
-            console.log(sensors);
-            var xx1 = sensors[0][2];
-            var yy1 = sensors[0][3];
-            var last_str = sensors[sensors.length - 1];
-            var xx2 = last_str[2];
-            var yy2 = last_str[3];
-            var angle = Math.atan2((yy1 - yy2), (xx2 - xx1)); //弧度  0.6435011087932844
-            var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
-            //在地图上标记
-            for (var i = 0; i < sensors.length; i++) {
-                var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
-                var marker1 = new BMap.Marker(point1, {icon: sIcon});
-                // var marker0 = new BMap.Marker(point1, {icon: rIcon});
-                // marker0.setRotation(theta);
-                // map.addOverlay(marker0);
-                map.addOverlay(marker1);
-            }
-            layer.msg("传感器节点绘制完成");
-        }
-    });
-});
+// //sensor数据库读取 新增
+// $("#sensorupload").click(function sensorupload() {
+//     var loading = layer.load('Loading...', {
+//         shade: [0.5,'#fff'] //0.1透明度的白色背景
+//     });
+//     $.ajax({
+//         "url": "sup",
+//         "type": "post",
+//         "success": function (response) {
+//             var sensors = response.data;//拿到的sensor列表
+//             console.log(sensors);
+//             // 用于计算角度
+//             // var xx1 = sensors[0][2];
+//             // var yy1 = sensors[0][3];
+//             // var last_str = sensors[sensors.length - 1];
+//             // var xx2 = last_str[2];
+//             // var yy2 = last_str[3];
+//             // var angle = Math.atan2((yy1 - yy2), (xx2 - xx1)); //弧度  0.6435011087932844
+//             // var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
+//             //在地图上标记
+//             for (var i = 0; i < sensors.length; i++) {
+//                 var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
+//                 var marker1 = new BMap.Marker(point1, {icon: sIcon});
+//                 // var marker0 = new BMap.Marker(point1, {icon: rIcon});
+//                 // marker0.setRotation(theta);
+//                 // map.addOverlay(marker0);
+//                 map.addOverlay(marker1);
+//             }
+//             layer.close(loading);
+//             layer.msg("传感器节点绘制完成");
+//         }
+//     });
+// });
 
 //crossing数据库读取 新增
 $("#crosupload").click(function () {

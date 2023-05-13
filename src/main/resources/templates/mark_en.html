@@ -33,19 +33,23 @@
         }
     </style>
     <!--百度地图SDK密钥-->
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=7yQLH1vsuBmKMSwd5jAKjkK0WkhGdOvy">
-    </script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=7yQLH1vsuBmKMSwd5jAKjkK0WkhGdOvy"></script>
 </head>
 <body>
+<!--用于放置地图实例-->
 <div id="container"></div>
+
+<!--下方按钮组-->
 <div class="produce">
     <div class="layui-form layui-form-pane">
+        <!--输入框-->
         <div class="layui-inline">
             <label class="layui-form-label">Road</label>
             <div class="layui-input-inline">
                 <input type="tel" id="roadName" lay-verify="required|phone" autocomplete="off" class="layui-input">
             </div>
         </div>
+<!--    标记类型 NodeType-->
         <div class="layui-inline">
             <label class="layui-form-label">NodeType</label>
             <div class="layui-input-inline">
@@ -57,6 +61,7 @@
             </div>
         </div>
         <div class="layui-inline">
+<!--            右下方按钮组-->
             <div class="layui-block layui-btn-container">
                 <button type="button" class="layui-btn layui-btn-normal" id="save">Save Data</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="cal" data-toggle="modal"
@@ -79,9 +84,12 @@
         </div>
     </div>
 </div>
+<!--null 按钮-->
 <div id="123456">
     <button type="button" class="btn btn-primary" id="buttontest">Null</button>
 </div>
+
+<!--按钮组所对应的模态框-->
 <!--清空数据库 新增-->
 <div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="clearModalLabel"
      aria-hidden="true">
@@ -100,7 +108,7 @@
 </div>
 
 <!--测试数据上传 新增-->
-<div class="modal fade" id="tdataModal" tabindex="-1" role="dialog" aria-labelledby="sortModalLabel"
+<div class="modal fade" id="tdataModal" tabindex="-1" role="dialog" aria-labelledby="tdataModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -119,7 +127,7 @@
                 <button type="button" class="btn btn-primary" id="tdata10562">G354</button>
                 <button type="button" class="btn btn-primary" id="tdata15002">G484</button>
 
-                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+<!--                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>-->
             </div>
         </div>
     </div>
@@ -144,7 +152,7 @@
     </div>
 </div>
 
-<!--计算比较 部分实现-->
+<!--计算比较 -->
 <div class="modal fade" id="calModal" tabindex="-1" role="dialog" aria-labelledby="calModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -153,9 +161,6 @@
                 <h4 class="modal-title" id="calModalLabel">Calculation</h4>
             </div>
             <div class="modal-body" align="center">
-<!--                <button class="layui-btn layui-btn-warm">-->
-<!--                    <i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>-->
-<!--                </button>-->
                 <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>
                 <button type="button" class="layui-btn layui-btn-warm" id="calBB">BB</button>
@@ -167,7 +172,7 @@
     </div>
 </div>
 
-<!--数据库上传 实现-->
+<!--数据库上传 绘制传感器、网关、路口-->
 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -206,10 +211,9 @@
     var pointIndex = 0;//初始化节点之间的距离
     var all = [];//存放地图上所有标记的节点
     var map = new BMap.Map("container");// 创建地图实例
-    // var point = new BMap.Point(113.80848202641658,22.816506505348503);// 创建点坐标
-    // var point = new BMap.Point(112.884, 22.909);// 标注位置
+    // var point = new BMap.Point(113.80848202641658,22.816506505348503);// lyj标注位置
     var point = new BMap.Point(112.8835, 22.9082);   // gxh上传
-    // var point = new BMap.Point(113.87908182502431, 22.91486091203956);  //东莞理工学院北门
+    // var point = new BMap.Point(113.87908182502431, 22.91486091203956);  //东莞理工学院北门坐标
     map.centerAndZoom(point, 19);// 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
     map.disableDoubleClickZoom(true);
@@ -407,21 +411,7 @@
             });
         });
     });
-    // 加载中，显示两秒
-    // layer.msg('Loading...', {
-    //     icon: 16
-    //     , shade: 0.01
-    //     , time: 2000
-    // });
-
-    // var loading = layer.load('Loading...', {
-    //     shade: [0.5,'#fff'] //0.1透明度的白色背景
-    // });
-    // var index = layer.load(1); //换了种风格
-    // setTimeout(function (data) {
-    //     //最后数据加载完 让 loading层消失
-    //     layer.close(loading);
-    // }, 5000);
 </script>
-<script type="text/javascript" src="js/my_ajax.js"></script>
+<script type="text/javascript" src="js/cal_ajax.js"></script>
+<script type="text/javascript" src="js/data_upload.js"></script>
 </html>
