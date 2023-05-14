@@ -18,6 +18,48 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>my</groupId>
+            <artifactId>my.aco</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/aco-scp.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>matlabfunc</groupId>
+            <artifactId>matlabfunc.branch_bound_algorithm</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/branch_bound_algorithm.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>matlabfunc</groupId>
+            <artifactId>matlabfunc.GA_Func</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/GA_Func.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>matlabfunc</groupId>
+            <artifactId>matlabfunc.greedy</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/greedy.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>matlabfunc</groupId>
+            <artifactId>matlabfunc.javabuilder</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/javabuilder.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>matlabfunc</groupId>
+            <artifactId>matlabfunc.Matlab_func</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/Matlab_func.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
