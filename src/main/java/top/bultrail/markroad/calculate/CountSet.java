@@ -1,12 +1,8 @@
 package top.bultrail.markroad.calculate;
 
-import branch_bound_algorithm.Class1;
-import GA_Func.GAFunction;
-import Matlab_func.Function;
 import com.mathworks.toolbox.javabuilder.MWClassID;
 import com.mathworks.toolbox.javabuilder.MWNumericArray;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import greedy.Greedy;
 import top.bultrail.markroad.config.RelatedProperties;
 import eu.andredick.aco.algorithm.AbstractAlgorithm;
 import eu.andredick.aco.algorithm.Statistics;
@@ -519,8 +515,8 @@ public class CountSet {
         HashMap<Integer, String> hsc1 = myCoor.getHsc1();
         // matlab朴素贪心
         MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        Greedy test = new Greedy();
-        Object[] sresult = test.select_random_greedy(2, input);
+        select_random_greedy_zsj.Class1 test = new select_random_greedy_zsj.Class1();
+        Object[] sresult = test.select_random_greedy_zsj(2, input);
 
         int[] sol = ((MWNumericArray)sresult[0]).getIntData();
 
@@ -551,9 +547,8 @@ public class CountSet {
         HashMap<Integer, String> hsc1 = myCoor.getHsc1();
         //分支限界 Matlab代码测试
         MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        Class1 test = new Class1();
+        branch_bound_algorithm.Class1 test = new branch_bound_algorithm.Class1();
         Object[] sresult = test.branch_bound_algorithm(2, input);
-
         int[] sol = ((MWNumericArray)sresult[0]).getIntData();
 
         ArrayList<String> result = new ArrayList<>();
@@ -690,7 +685,7 @@ public class CountSet {
         HashMap<Integer, String> hsc1 = myCoor.getHsc1();
         // 调用matlab计算
         MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        Function test = new Function();
+        select_linprog.Class1 test = new select_linprog.Class1();
         Object[] sresult = test.select_linprog(2, input);
         int[] sol = ((MWNumericArray)sresult[0]).getIntData();
 
@@ -719,9 +714,8 @@ public class CountSet {
         HashMap<Integer, String> hsc1 = myCoor.getHsc1();
 //        遗传算法
         MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        GAFunction test = new GAFunction();
+        GA_parse.Class1 test = new GA_parse.Class1();
         Object[] sresult = test.GA_parse(2, input);
-
         int[] sol = ((MWNumericArray)sresult[0]).getIntData();
 
 //        打印结果
