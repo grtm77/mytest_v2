@@ -33,17 +33,17 @@
         </dependency>
         <dependency>
             <groupId>matlabfunc</groupId>
-            <artifactId>matlabfunc.GA_Func</artifactId>
+            <artifactId>matlabfunc.GA_parse</artifactId>
             <version>0.0.1</version>
             <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/GA_Func.jar</systemPath>
+            <systemPath>${basedir}/src/main/resources/lib/GA_parse.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>matlabfunc</groupId>
-            <artifactId>matlabfunc.greedy</artifactId>
+            <artifactId>matlabfunc.select_random_greedy_zsj</artifactId>
             <version>0.0.1</version>
             <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/greedy.jar</systemPath>
+            <systemPath>${basedir}/src/main/resources/lib/select_random_greedy_zsj.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>matlabfunc</groupId>
@@ -54,10 +54,10 @@
         </dependency>
         <dependency>
             <groupId>matlabfunc</groupId>
-            <artifactId>matlabfunc.Matlab_func</artifactId>
+            <artifactId>matlabfunc.select_linprog</artifactId>
             <version>0.0.1</version>
             <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/Matlab_func.jar</systemPath>
+            <systemPath>${basedir}/src/main/resources/lib/select_linprog.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
