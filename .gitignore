@@ -44,13 +44,11 @@ target/
 *.DS_Store
 *.orig
 out/
-src/main/resources/lib/Matlab_func.jar
-src/main/resources/lib/GA_Func.jar
-src/main/resources/lib/greedy.jar
-src/main/resources/lib/greedy_zsj.jar
-src/main/resources/lib/javabuilder.jar
-src/main/resources/lib/branch_bound_algorithm.jar
+
 .mvn/wrapper/maven-wrapper.jar
-src/main/resources/lib/GA_parse.jar
-src/main/resources/lib/select_linprog.jar
-src/main/resources/lib/select_random_greedy_zsj.jar
+
+# src/main/resources/lib/javabuilder.jar
+# src/main/resources/lib/branch_bound_algorithm.jar
+# src/main/resources/lib/GA_parse.jar
+# src/main/resources/lib/select_linprog.jar
+# src/main/resources/lib/select_random_greedy_zsj.jar
