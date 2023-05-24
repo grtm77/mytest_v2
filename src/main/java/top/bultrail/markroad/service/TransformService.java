@@ -117,7 +117,7 @@ public class TransformService {
         // 计算结果
         ArrayList<String> resultWithName = null;
 
-        resultWithName = countSet.test05(all_gateway, all_sensor, flag);
+        resultWithName = countSet.calByMatLP(all_gateway, all_sensor, flag);
 
 
         ArrayList<String> resultWithCoordinate = new ArrayList<>();
@@ -145,33 +145,36 @@ public class TransformService {
 
     //使用遗传计算
     public HashMap<String,List<List<String>>> calByGA_upload(String flag) throws Exception {
+        //从数据库读取的sensor与gateway集
         List<List<String>> sensor = dbRelation.readSensor();
         List<List<String>> gateway = dbRelation.readGateway();
+        // 转化数据库中读取的结果
         List<String> all_sensor = new ArrayList<String>();
         List<String> all_gateway = new ArrayList<String>();
         HashMap<String, List<List<String>>> hs = new HashMap<>();
+
         Iterator<List<String>> it1 = sensor.iterator();
         Iterator<List<String>> it2 = gateway.iterator();
-
+        // 网关节点集
         while (it2.hasNext()) {
             List<String> it2next = it2.next();
             String temp2 = it2next.get(0) + it2next.get(1) + "," + it2next.get(2) + "," + it2next.get(3);
             all_gateway.add(temp2);
         }
-
+        // 传感器节点集
         while (it1.hasNext()) {
             List<String> it1next = it1.next();
             String temp1 = it1next.get(0) + it1next.get(1) + "," +  it1next.get(2) + "," + it1next.get(3);
             all_sensor.add(temp1);
         }
 
-        // 计算结果
+        // 计算结果  返回被选中的网关节点名
         ArrayList<String> resultWithName = null;
-
         resultWithName = countSet.test06(all_gateway, all_sensor, flag);
 
-
+        // 存储网关集的位置信息
         ArrayList<String> resultWithCoordinate = new ArrayList<>();
+        // 存储网关整体信息
         ArrayList<String> resultTmp = new ArrayList<>();
         for (String s : all_gateway) {
             String[] split = s.split(",");
@@ -375,7 +378,7 @@ public class TransformService {
      * @return
      * @throws Exception
      */
-    public HashMap<String,List<List<String>>> calByMatL(String flag) throws Exception {
+    public HashMap<String,List<List<String>>> calByLP(String flag) throws Exception {
 
         List<List<String>> sensor = dbRelation.readSensor();
         List<List<String>> gateway = dbRelation.readGateway();
@@ -400,7 +403,10 @@ public class TransformService {
         // 计算结果
         ArrayList<String> resultWithName = null;
 //        try {
-        resultWithName = countSet.test05(all_gateway, all_sensor, flag);
+        // ortools 线性规划
+        resultWithName = countSet.calByorLP(all_gateway, all_sensor, flag);
+        // matlab 线性规划
+//        resultWithName = countSet.calByMatLP(all_gateway, all_sensor, flag);
 //        } catch (Exception e) {
 //            System.out.println("错误信息："+e.getMessage());
 //            throw e;
