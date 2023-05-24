@@ -52,7 +52,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //备份 新增
+    //备份
     @ResponseBody
     @RequestMapping(value = "/hhback", method = RequestMethod.POST)
     public ResultEntity<String> backup() {
@@ -67,7 +67,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //162 新增
+    //162
     @ResponseBody
     @RequestMapping(value = "/hh1056", method = RequestMethod.POST)
     public ResultEntity<String> t1056() {
@@ -75,7 +75,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //321 新增
+    //232
     @ResponseBody
     @RequestMapping(value = "/hh232", method = RequestMethod.POST)
     public ResultEntity<String> t232() {
@@ -184,10 +184,10 @@ public class MessageHandler {
     //用matlab线性规划计算，数据保存在txt
     @ResponseBody
     @RequestMapping(value = "/hhfive", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByMatlabL(@RequestParam(value = "crosFlag") String flag) throws Exception {
+    public ResultEntity<HashMap<String, List<List<String>>>> calByLP(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
 //        try {
-        strings = transformService.calByMatL(flag);
+        strings = transformService.calByLP(flag);
         System.out.println("Success");
 //        } catch (Exception e) {
 //            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
@@ -203,15 +203,15 @@ public class MessageHandler {
     @RequestMapping(value = "/hhaco", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByAco(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
-        try {
-            strings = transformService.calByAco_upload(flag);
-            System.out.println("Success");
-        } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            System.out.println("Exception");
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
-        }
+//        try {
+        strings = transformService.calByAco_upload(flag);
+        System.out.println("Success");
+//        } catch (Exception e) {
+//            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+//            System.out.println("Exception");
+//            listResultEntity.setMessage(e.getMessage());
+//            return listResultEntity;
+//        }
         return ResultEntity.sucessWithData(strings);
     }
 

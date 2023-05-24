@@ -19,8 +19,8 @@ public class FileRelation {
     CountSet countSet;
 
 
-    /**0.00005913
-     * 计算各个坐标与中心点的距离，从而算出路口的点 实现
+    /**
+     * 计算各个坐标与中心点的距离，从而算出路口的点
      * @param b1_longitude   坐标1 经度
      * @param b1_laitude     坐标1 纬度
      * @param b2_longitude   坐标2 经度

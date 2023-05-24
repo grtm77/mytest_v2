@@ -58,8 +58,6 @@ public class ResultEntity<T> {
                 '}';
     }
 
-
-
     public static <E> ResultEntity<E> successWithoutData() {
         return new ResultEntity<E>(SUCCESS,null,null);
     }

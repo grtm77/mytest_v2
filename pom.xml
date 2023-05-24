@@ -17,12 +17,11 @@
         <java.version>8</java.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.google.ortools/ortools-java -->
         <dependency>
-            <groupId>my</groupId>
-            <artifactId>my.aco</artifactId>
-            <version>0.0.1</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/aco-scp.jar</systemPath>
+            <groupId>com.google.ortools</groupId>
+            <artifactId>ortools-java</artifactId>
+            <version>9.6.2534</version>
         </dependency>
         <dependency>
             <groupId>matlabfunc</groupId>
@@ -132,6 +131,13 @@
             <groupId>org.ujmp</groupId>
             <artifactId>ujmp-core</artifactId>
             <version>0.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>my</groupId>
+            <artifactId>my.aco</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/aco-scp.jar</systemPath>
         </dependency>
     </dependencies>
 
