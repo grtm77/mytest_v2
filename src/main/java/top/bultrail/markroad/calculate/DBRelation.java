@@ -22,9 +22,16 @@ public class DBRelation {
         Connection conn;
         try {
             cpds.setDriverClass("com.mysql.cj.jdbc.Driver");
-            cpds.setJdbcUrl("jdbc:mysql://10.45.39.13:3306/Marks");
-            cpds.setUser("mytest");
-            cpds.setPassword("12345678");
+            // 用户 mytest
+//            cpds.setJdbcUrl("jdbc:mysql://10.45.39.13:3306/Marks");
+//            cpds.setUser("mytest");
+//            cpds.setPassword("12345678");
+
+            // 用户 mytest2
+            cpds.setJdbcUrl("jdbc:mysql://10.45.39.13:3306/Marks2");
+            cpds.setUser("mytest2");
+            cpds.setPassword("12345Qq@");
+
             cpds.setMinPoolSize(5);
             cpds.setAcquireIncrement(5);
             cpds.setMaxPoolSize(10);
