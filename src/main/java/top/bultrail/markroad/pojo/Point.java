@@ -18,3 +18,5 @@ public class Point implements Serializable {
     private String pointType;
 
 }
+
+

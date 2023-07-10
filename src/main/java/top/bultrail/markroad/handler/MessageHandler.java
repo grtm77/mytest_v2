@@ -1,6 +1,7 @@
 package top.bultrail.markroad.handler;
 
 import top.bultrail.markroad.pojo.Point;
+import top.bultrail.markroad.pojo.QuickSave;
 import top.bultrail.markroad.service.TransformService;
 import top.bultrail.markroad.util.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,25 @@ public class MessageHandler {
     @Autowired
     TransformService transformService;
 
-    //保存数据 实现
+    // 一键保存
+    @ResponseBody
+    @RequestMapping(value = "/hhquicksave", method = RequestMethod.POST)
+    public ResultEntity<String> quicksave(QuickSave quick_save) {
+        // 将数据保存在数据库
+        try {
+            transformService.quicksaveDB(quick_save);
+            return ResultEntity.successWithoutData();
+//            if (quick_save.getCross_points() == null) {
+//                return ResultEntity.failed("You haven't set marks yet！");
+//            } else {
+//                transformService.quicksaveDB(quick_save);
+//                return ResultEntity.successWithoutData();
+//            }
+        } catch (Exception e) {
+            return ResultEntity.failed(e.getMessage());
+        }
+    }
+    //保存数据
     @ResponseBody
     @RequestMapping(value = "/hha", method = RequestMethod.POST)
     public ResultEntity<String> save02(Point point) {
@@ -59,7 +78,7 @@ public class MessageHandler {
         transformService.bkDB();
         return ResultEntity.successWithoutData();
     }
-
+    //1500
     @ResponseBody
     @RequestMapping(value = "/hh1500", method = RequestMethod.POST)
     public ResultEntity<String> t1500() {
@@ -67,7 +86,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //162
+    //1056
     @ResponseBody
     @RequestMapping(value = "/hh1056", method = RequestMethod.POST)
     public ResultEntity<String> t1056() {
@@ -83,7 +102,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //518 新增
+    //466
     @ResponseBody
     @RequestMapping(value = "/hh466", method = RequestMethod.POST)
     public ResultEntity<String> t466() {
@@ -91,6 +110,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
+    //484
     @ResponseBody
     @RequestMapping(value = "/hh15002", method = RequestMethod.POST)
     public ResultEntity<String> t15002() {
@@ -98,7 +118,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //162 新增
+    //354
     @ResponseBody
     @RequestMapping(value = "/hh10562", method = RequestMethod.POST)
     public ResultEntity<String> t10562() {
@@ -106,7 +126,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //321 新增
+    //114
     @ResponseBody
     @RequestMapping(value = "/hh2322", method = RequestMethod.POST)
     public ResultEntity<String> t2322() {
@@ -114,7 +134,7 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //518 新增
+    //228
     @ResponseBody
     @RequestMapping(value = "/hh4662", method = RequestMethod.POST)
     public ResultEntity<String> t4662() {
@@ -181,13 +201,14 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
-    //用matlab线性规划计算，数据保存在txt
+    //用线性规划计算，数据保存在txt
     @ResponseBody
-    @RequestMapping(value = "/hhfive", method = RequestMethod.POST)
+    @RequestMapping(value = "/hhLP", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByLP(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
 //        try {
-        strings = transformService.calByLP(flag);
+//        strings = transformService.calByLP(flag);
+        strings = transformService.calByLP_new();
         System.out.println("Success");
 //        } catch (Exception e) {
 //            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
@@ -232,6 +253,7 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
+    //使用遗传算法计算
     @ResponseBody
     @RequestMapping(value = "/calByGA", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByGA(@RequestParam(value = "crosFlag") String flag) {

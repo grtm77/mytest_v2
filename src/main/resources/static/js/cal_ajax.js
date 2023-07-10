@@ -1,25 +1,81 @@
-// 生成数据，保存到数据库 新增
+// 生成数据，保存到数据库
+// $("#save").click(function () {
+//     var flag_cros = $("#nodeType").val() == "cros" ? 0 : 1;
+//     for (var i = flag_cros; i < pts.length; i++) {
+//         var a = [];
+//         a.push(pts[i].lng);
+//         a.push(pts[i].lat);
+//         str.push(a);
+//     }
+//
+//     pts = [];
+//     var roadName = $("#roadName").val();
+//     var points = str;
+//     var pointType = $("#nodeType").val();
+//
+//     $.ajax({
+//         "url": "hha",
+//         "type": "post",
+//         "data": {
+//             "roadName": roadName,
+//             "points": points,
+//             "pointType": pointType
+//         },
+//         "dataType": "json",
+//         "success": function (response) {
+//             layer.msg("Success!")
+//             pointArr = [];
+//             str = [];
+//         },
+//         "error": function (response) {
+//             layer.msg("Error!")
+//         }
+//     });
+// });
+
+// 一键保存所有节点信息，用于之后计算
 $("#save").click(function () {
-    var flag_cros = $("#nodeType").val() == "cros" ? 0 : 1;
-    for (var i = flag_cros; i < pts.length; i++) {
+    // 交叉路口节点数据
+    var cross_points = [];
+    for (var i = 0; i < cross.length; i++) {
         var a = [];
-        a.push(pts[i].lng);
-        a.push(pts[i].lat);
-        str.push(a);
+        a.push(cross[i].lng);
+        a.push(cross[i].lat);
+        cross_points.push(a);
+    }
+    // sensor节点数据
+    var sensor_array = []
+    for (var i = 0; i < all_sensor.length; i++) {
+        let sensor_points = [];
+        for(var j=0; j< all_sensor[i].length;j++){
+            let a = [];
+            a.push(all_sensor[i][j].lng);
+            a.push(all_sensor[i][j].lat);
+            sensor_points.push(a)
+        }
+        sensor_array.push(sensor_points)
+    }
+    // 网关节点数据
+    var gateway_array = []
+    for (var i = 0; i < all_gateway.length; i++) {
+        let gateway_points = [];
+        for(var j=0; j< all_gateway[i].length;j++){
+            let a = [];
+            a.push(all_gateway[i][j].lng);
+            a.push(all_gateway[i][j].lat);
+            gateway_points.push(a)
+        }
+        gateway_array.push(gateway_points)
     }
 
-    pts = [];
-    var roadName = $("#roadName").val();
-    var points = str;
-    var pointType = $("#nodeType").val();
-
     $.ajax({
-        "url": "hha",
+        "url": "hhquicksave",
         "type": "post",
         "data": {
-            "roadName": roadName,
-            "points": points,
-            "pointType": pointType
+            "cross_points": cross_points,
+            "gateway_array": gateway_array,
+            "sensor_array": sensor_array,
+            // "roadName": roadName,
         },
         "dataType": "json",
         "success": function (response) {
@@ -85,7 +141,7 @@ $("#calLinner").click(function () {
     });
 });
 
-// 生成完数据后，发送请求计算 有向贪心 （计算路口）新增
+// 生成完数据后，发送请求计算 分支限界
 $("#calBB").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
@@ -110,15 +166,15 @@ $("#calBB").click(function () {
     });
 });
 
-// 生成完数据后，发送请求计算 有向贪心 （计算路口）新增
-$("#calFive").click(function () {
+// 生成完数据后，发送请求计算 线性规划
+$("#calLP").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
     var loading = layer.load('Loading...', {
         shade: [0.5,'#fff'] //0.1透明度的白色背景
     });
     $.ajax({
-        "url": "hhfive",
+        "url": "hhLP",
         "type": "post",
         "data": {
             "crosFlag": "withCros"
@@ -160,7 +216,7 @@ $("#calAco").click(function () {
     });
 });
 
-// 生成完数据后，发送请求计算新线性规划 新增
+// 生成完数据后，发送请求计算新线性规划 未使用
 $("#calPulp").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
@@ -239,6 +295,8 @@ $("#calGreedyWithOutCros").click(function () {
 $("#gshIt").click(function () {
     //清空所有存放数据的数组
     all_sensor = [];
+    all_gateway = [];
+    cross = [];
     all = [];
     pointArr = [];
     str = [];

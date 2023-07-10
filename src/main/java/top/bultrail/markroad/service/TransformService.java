@@ -3,11 +3,15 @@ package top.bultrail.markroad.service;
 import top.bultrail.markroad.calculate.CountSet;
 import top.bultrail.markroad.calculate.DBRelation;
 import top.bultrail.markroad.calculate.FileRelation;
+import top.bultrail.markroad.calculate.cal_LP;
 import top.bultrail.markroad.config.RelatedProperties;
+import top.bultrail.markroad.calculate.CountSet;
+import top.bultrail.markroad.pojo.Coordinates;
 import top.bultrail.markroad.pojo.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.bultrail.markroad.pojo.QuickSave;
 
 import java.util.*;
 
@@ -41,6 +45,19 @@ public class TransformService {
         List<String[]> strings = Arrays.asList(points1);
         dbRelation.write_new(roadName, strings, pointType);
     }
+
+    public void quicksaveDB(QuickSave quickSave) {
+//        double[][] cross_points = quickSave.getCross_points();
+//        double[][][] sensor_array = quickSave.getSensor_array();
+//        double[][][] gateway_array = quickSave.getGateway_array();
+        String[][] cross_points = quickSave.getCross_points();
+        String[][][] sensor_array = quickSave.getSensor_array();
+        String[][][] gateway_array = quickSave.getGateway_array();
+//        List<String[]> strings = Arrays.asList(points1);
+        dbRelation.clear();
+        dbRelation.quick_write_new(cross_points, gateway_array, sensor_array);
+    }
+
 
     //清空数据库 新增
     public void clearDB() {
@@ -92,7 +109,7 @@ public class TransformService {
     }
 
 
-    //使用线性规划算法计算
+    //使用python线性规划算法计算
     public HashMap<String,List<List<String>>> calByPython_upload(String flag) throws Exception {
         List<List<String>> sensor = dbRelation.readSensor();
         List<List<String>> gateway = dbRelation.readGateway();
@@ -374,7 +391,78 @@ public class TransformService {
     }
 
     /**
-     * 用matlab线性规划计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回
+     * 用matlab或者ortools线性规划计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回
+     * @return
+     * @throws Exception
+     */
+    public HashMap<String,List<List<String>>> calByLP_new() throws Exception {
+        // 从数据库读出的sensor、gateway数据
+        List<List<String>> sensor = dbRelation.readSensor_new();
+        List<List<String>> gateway = dbRelation.readGateway_new();
+        // 进行处理，在属性间添加逗号形成字符串
+        List<String> all_sensor = new ArrayList<String>();
+        List<String> all_gateway = new ArrayList<String>();
+        HashMap<String, List<List<String>>> hs = new HashMap<>();
+
+        Iterator<List<String>> it1 = sensor.iterator();
+        Iterator<List<String>> it2 = gateway.iterator();
+        while (it1.hasNext()) {
+            List<String> it1next = it1.next();
+            String temp1 = it1next.get(0) + "," + it1next.get(1) + it1next.get(2) + "," +  it1next.get(3) + "," + it1next.get(4);
+            all_sensor.add(temp1);
+        }
+        while (it2.hasNext()) {
+            List<String> it2next = it2.next();
+            String temp2 = it2next.get(0) + "," + it2next.get(1) + it2next.get(2) + "," +  it2next.get(3) + "," + it2next.get(4);
+            all_gateway.add(temp2);
+        }
+
+        // 由网关集与传感器集获得matrix 与 hsc1
+        double[][] matrix = countSet.getMatrix(all_gateway, all_sensor);
+
+        // 0、1结果数组
+        int[] sol = cal_LP.linprog(matrix);
+        ArrayList<Integer> chosed_gateway_no = new ArrayList<>();
+        for(int i = 0; i < sol.length; i++){
+            if(sol[i] == 1){
+                chosed_gateway_no.add(i+1);
+            }
+        }
+
+        // 计算结果，返回选中的网关坐标
+        ArrayList<String> resultWithCoordinate = new ArrayList<>();
+        // 计算结果，返回选中的网关信息，与all_gateway格式一致
+        ArrayList<String> resultTmp = new ArrayList<>();
+        for (String s : all_gateway) {
+            String[] split = s.split(",");
+            if (chosed_gateway_no.contains(Integer.parseInt(split[0]))) {
+                String data = split[2] + "," + split[3];
+                resultWithCoordinate.add(data);
+                resultTmp.add(s);
+            }
+        }
+
+
+        // matlab 线性规划
+//        resultWithName = countSet.calByMatLP(all_gateway, all_sensor, flag);
+//        } catch (Exception e) {
+//            System.out.println("错误信息："+e.getMessage());
+//            throw e;
+//        }
+
+        //获取所有传感器的数据放入map，一起返回
+        List<List<String>> all_gateway02 = new ArrayList<>();
+        all_gateway02.add((resultWithCoordinate));
+        hs.put("gatewayList", all_gateway02);
+        hs.put("sensorList", sensor);
+
+        //生成分析结果
+//        fileRelation.creatResult(all_sensor,resultTmp);
+        return hs;
+    }
+
+    /**
+     * 用matlab或者ortools线性规划计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回
      * @return
      * @throws Exception
      */

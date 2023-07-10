@@ -216,6 +216,53 @@ public class CountSet {
      * @param radius    覆盖半径
      * @return  每个网关包含的节点集合
      */
+    public Map<Integer, Map<Integer, Vector<Double>>> countSet_my(Map<Integer, Vector<Double>> gateway, Map<Integer, Vector<Double>> sensor,  double radius) {
+
+        Map<Integer, Map<Integer, Vector<Double>>> coverMap = new HashMap<>();
+
+        for (Map.Entry<Integer, Vector<Double>> entry_gateway : gateway.entrySet()) {
+
+            // 计算每个网关的x，y坐标(经纬度)
+            Vector<Double> gateway_vc = entry_gateway.getValue();
+            double x_gateway_vc = gateway_vc.get(0);
+            double y_gateway_vc = gateway_vc.get(1);
+            // 新建一个map存放每个网关所能覆盖的节点
+            Map<Integer, Vector<Double>> coverMap_gateway = new HashMap<>();
+
+            for (Map.Entry<Integer, Vector<Double>> entry_sensor : sensor.entrySet()) {
+
+                // 计算每个节点的x，y坐标(经纬度)
+                Vector<Double> sensor_vc = entry_sensor.getValue();
+                double x_sensor_vc = sensor_vc.get(0);
+                double y_sensor_vc = sensor_vc.get(1);
+
+                // 计算网关与节点之间的距离
+                double distance = fileRelation.c_distance(x_gateway_vc, y_gateway_vc, x_sensor_vc, y_sensor_vc);
+                if(distance<radius){
+                    coverMap_gateway.put(entry_sensor.getKey(), entry_sensor.getValue());
+                }
+//                String string_gateway = entry_gateway.getKey().substring(0, 3);
+//                String string_sensor = entry_sensor.getKey().substring(0, 3);
+//
+//                // 如果距离在当前网关的覆盖之内，且属于同一路段，则把当前节点加入到当前网关的map集合
+//                if ((distance < radius) && (string_gateway.equals(string_sensor))) {
+//                    coverMap_gateway.put(entry_sensor.getKey(), entry_sensor.getValue());
+//                }
+            }
+            // 把当前网关和它所能覆盖到的节点加入到map集合
+            coverMap.put(entry_gateway.getKey(), coverMap_gateway);
+        }
+//        System.out.println("coverMap = " + coverMap);
+        return coverMap;
+    }
+    /**
+     * 计算每个网关能包含的节点集合，不包含路口的计算
+     *
+     * @param gateway   网关集
+     * @param sensor    传感器集
+     * @param radius    覆盖半径
+     * @return  每个网关包含的节点集合
+     */
     public Map<String, Map<String, Vector<Double>>> countSet(Map<String, Vector<Double>> gateway, Map<String, Vector<Double>> sensor,  double radius) {
 
         Map<String, Map<String, Vector<Double>>> coverMap = new HashMap<>();
@@ -255,7 +302,7 @@ public class CountSet {
     }
 
     /**
-     * //使用牛顿迭代法计算平方根_1
+     * 使用牛顿迭代法计算平方根_1
      *
      * @param num
      * @return
@@ -281,6 +328,91 @@ public class CountSet {
     }
 
     /**
+     * 通过网关集与传感器集计算覆盖矩阵
+     * @param strList1  网关集合  “DMXLS0,113.807255,22.816363”
+     * @param strList2  传感器集合
+     */
+    public double[][] getMatrix(List<String> strList1, List<String> strList2) throws Exception {
+        // 编号与位置对应
+        HashMap<Integer, Vector<Double>> hash_num2index1 = new HashMap<>();
+        HashMap<Integer, Vector<Double>> hash_num2index2 = new HashMap<>();
+
+        // 所有的传感器集合
+        HashSet<Integer> sensor_ints = new HashSet<>();
+
+        // 网关集
+        for (int i = 0; i < strList1.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = strList1.get(i).split(",");
+            vc.add(Double.parseDouble(split[2]));
+            vc.add(Double.parseDouble(split[3]));
+            hash_num2index1.put(Integer.parseInt(split[0]), vc);
+        }
+
+        // 传感器集
+        for (int i = 0; i < strList2.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = strList2.get(i).split(",");
+            vc.add(Double.parseDouble(split[2]));
+            vc.add(Double.parseDouble(split[3]));
+            sensor_ints.add(Integer.parseInt(split[0]));
+            hash_num2index2.put(Integer.parseInt(split[0]), vc);
+        }
+
+        double raius = relatedProperties.getGatewayRadius();
+        // 计算网关所覆盖的sensor集合    网关编号-sensor集
+        Map<Integer, Map<Integer, Vector<Double>>> hash_int2map = null;
+        hash_int2map = countSet_my(hash_num2index1, hash_num2index2, raius);
+
+        // 网关节点编号 - 覆盖的传感器集（编号表示）
+        HashMap<Integer, HashSet<Integer>> hash_int2ints = new HashMap<>();
+        for (Map.Entry<Integer, Map<Integer, Vector<Double>>> entryt : hash_int2map.entrySet()) {
+            Map<Integer, Vector<Double>> valu2e = entryt.getValue();
+            HashSet<Integer> hashss = new HashSet<>();
+            for (Map.Entry<Integer, Vector<Double>> maps : valu2e.entrySet()) {
+                Integer key = maps.getKey();
+                hashss.add(key);
+            }
+            hash_int2ints.put(entryt.getKey(), hashss);
+        }
+
+        //计算当前的所有灯柱能否包含所有传感器
+        //当前所有网关覆盖的集合
+        HashSet<Integer> coverd_sessors = new HashSet<>();
+        for (Map.Entry<Integer, HashSet<Integer>> entry : hash_int2ints.entrySet()) {
+            HashSet<Integer> value = entry.getValue();
+            coverd_sessors.addAll(value);
+        }
+
+        // 判断传感器有没有被全部覆盖到
+        if (coverd_sessors.size() != sensor_ints.size()) {
+            //找出未被覆盖的sensor
+            for (Integer value : sensor_ints) {
+                int f = 0;
+                for (Integer key : coverd_sessors) {
+                    if (value == key) {
+                        f = 1;
+                        break;
+                    }
+                }
+                if (f == 0) System.out.println(value);
+            }
+            throw new Exception("传感器没有被全部覆盖到!");
+        }
+
+        // sensor_size x gateway_size
+        double[][] matrix = new double[strList2.size()][strList1.size()];
+        for (Integer key : hash_int2ints.keySet()) {
+            for (Integer i : hash_int2ints.get(key)) {
+//                matrix[key-1][i-1] = 1.0;
+                matrix[i-1][key-1] = 1.0;
+            }
+        }
+        return matrix;
+    }
+
+
+    /**
      * 通过网关集与传感器集计算覆盖矩阵 及 hsc1
      * @param strList1  网关集合  “DMXLS0,113.807255,22.816363”
      * @param strList2  传感器集合
@@ -288,6 +420,9 @@ public class CountSet {
      */
 
     public Coordinates getMatrixHsc1(List<String> strList1, List<String> strList2, String flag) throws Exception {
+        // 编号与位置对应
+//        HashMap<Integer, Vector<Double>> hash_num2index1 = new HashMap<>();
+//        HashMap<Integer, Vector<Double>> hash_num2index2 = new HashMap<>();
         // 节点名与位置对应
         HashMap<String, Vector<Double>> hs1 = new HashMap<>();
         HashMap<String, Vector<Double>> hs2 = new HashMap<>();
@@ -300,6 +435,7 @@ public class CountSet {
         // 所有的传感器集合
         HashSet<String> hashSet = new HashSet<>();
 
+        // 网关集
         for (int i = 0; i < strList1.size(); i++) {
             Vector<Double> vc = new Vector<>();
             String[] split = strList1.get(i).split(",");
@@ -308,7 +444,10 @@ public class CountSet {
             hs1.put(split[0], vc);
             hsc1.put(i, split[0]);
             hsc1b.put(split[0], i);
+//            hash_num2index1.put(i, vc);
         }
+
+        // 传感器集
         for (int i = 0; i < strList2.size(); i++) {
             Vector<Double> vc = new Vector<>();
             String[] split = strList2.get(i).split(",");
@@ -318,6 +457,7 @@ public class CountSet {
             hs2.put(split[0], vc);
             hsc2.put(i, split[0]);
             hsc2b.put(split[0], i);
+//            hash_num2index2.put(i, vc);
         }
 
         double raius = relatedProperties.getGatewayRadius();
@@ -577,6 +717,29 @@ public class CountSet {
 
         return result;
     }
+
+    /**
+     * ortools 线性规划
+     * @param strList1 网关
+     * @param strList2 传感器
+     */
+
+    public ArrayList<Integer> calByorLP_new(List<String> strList1, List<String> strList2) throws Exception {
+        // 由网关集与传感器集获得matrix 与 hsc1
+        double[][] matrix = getMatrix(strList1, strList2);
+
+        // 0、1结果数组
+        int[] sol = cal_LP.linprog(matrix);
+        ArrayList<Integer> chosed_gateway_no = new ArrayList<>();
+        for(int i = 0; i < sol.length; i++){
+            if(sol[i] == 1){
+                chosed_gateway_no.add(i);
+            }
+        }
+        return chosed_gateway_no;
+    }
+
+
     /**
      * ortools 线性规划
      * @param strList1 网关

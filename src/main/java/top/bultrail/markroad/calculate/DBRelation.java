@@ -41,8 +41,54 @@ public class DBRelation {
         }
         return conn;
     }
-
-    //写入数据 新增
+    // 一键保存
+    public void write_all(String roadName, List<String[]> strList1, String pointType) {
+        Connection conn = setConnection();
+        if ("sensor".equals(pointType)) {
+            for (int i = 0; i < strList1.size(); i++) {
+                try {
+                    //准备SQL语句
+                    String sql = "INSERT INTO sensor(roadName,numberInRoad,Lng,Lat) VALUES (?, ?, ?, ?)";
+//                    System.out.println(sql);
+                    Object[] obj = {roadName, i, strList1.get(i)[0], strList1.get(i)[1]};
+                    //执行，抛出异常
+                    qr.update(conn, sql, obj);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if ("gateway".equals(pointType)) {
+            for (int i = 0; i < strList1.size(); i++) {
+                try {
+                    String sql = "INSERT INTO gateway(roadName,numberInRoad,Lng,Lat) VALUES (?, ?, ?, ?)";
+//                    System.out.println(sql);
+                    Object[] obj = {roadName, i, strList1.get(i)[0], strList1.get(i)[1]};
+                    //执行，抛出异常
+                    qr.update(conn, sql, obj);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if ("cros".equals(pointType)) {
+            for (int i = 0; i < strList1.size(); i++) {
+                try {
+                    String sql = "INSERT INTO crossing(roadName,numberInRoad,Lng,Lat) VALUES (?, ?, ?, ?)";
+//                    System.out.println(sql);
+                    Object[] obj = {roadName, i, strList1.get(i)[0], strList1.get(i)[1]};
+                    //执行，抛出异常
+                    qr.update(conn, sql, obj);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //写入数据
     public void write_new(String roadName, List<String[]> strList1, String pointType) {
         Connection conn = setConnection();
         if ("sensor".equals(pointType)) {
@@ -89,6 +135,57 @@ public class DBRelation {
             e.printStackTrace();
         }
     }
+
+//    public void quick_write_new(String roadName, List<String[]> strList1, String pointType) {
+//    public void quick_write_new(double[][] cross_points, double[][][] gateway_array, double[][][] sensor_array) {
+    public void quick_write_new(String[][] cross_points, String[][][] gateway_array, String[][][] sensor_array) {
+        Connection conn = setConnection();
+        for (int i = 0; i < sensor_array.length; i++) {
+            for(int j=0; j< sensor_array[i].length; j++){
+                try {
+                    //准备SQL语句
+                    String sql = "INSERT INTO sensor(Lng,Lat) VALUES (?, ?)";
+//                    System.out.println(sql);
+                    Object[] obj = {sensor_array[i][j][0], sensor_array[i][j][1]};
+                    //执行，抛出异常
+                    qr.update(conn, sql, obj);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        for (int i = 0; i < gateway_array.length; i++) {
+            for(int j=0; j< gateway_array[i].length; j++){
+                try {
+                    //准备SQL语句
+                    String sql = "INSERT INTO gateway(Lng,Lat) VALUES (?, ?)";
+//                    System.out.println(sql);
+                    Object[] obj = {gateway_array[i][j][0], gateway_array[i][j][1]};
+                    //执行，抛出异常
+                    qr.update(conn, sql, obj);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        for (int i = 0; i < cross_points.length; i++) {
+            try {
+                String sql = "INSERT INTO crossing(Lng,Lat) VALUES (?, ?)";
+//                    System.out.println(sql);
+                Object[] obj = {cross_points[i][0], cross_points[i][1]};
+                //执行，抛出异常
+                qr.update(conn, sql, obj);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //清空数据表 新增
     public void clear() {
@@ -213,7 +310,57 @@ public class DBRelation {
         }
     }
 
-    //    读取senor 新增
+    // 读取senor
+    public List<List<String>> readSensor_new() {
+
+        String sql = "SELECT * FROM sensor";
+        List<String> lis;
+        List<List<String>> bk = new ArrayList();
+        try {
+            Connection conn = setConnection();
+            List<Point> rs = qr.query(conn, sql, new BeanListHandler<>(Point.class));
+            for(Point p : rs) {
+                lis = new ArrayList();
+                lis.add(Integer.toString(p.getId()));
+                lis.add(p.getRoadName());
+                lis.add(p.getNumberInRoad());
+                lis.add(p.getLng());
+                lis.add(p.getLat());
+                bk.add(lis);
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bk;
+    }
+
+    public List<List<String>> readGateway_new() {
+
+        String sql = "SELECT * FROM gateway";
+        List<String> lis;
+        List<List<String>> bk = new ArrayList();
+        try {
+            Connection conn = setConnection();
+            List<Point> rs = qr.query(conn, sql, new BeanListHandler<>(Point.class));
+            for(Point p : rs) {
+                lis = new ArrayList();
+//                lis.add(p.getId());
+                lis.add(Integer.toString(p.getId()));
+                lis.add(p.getRoadName());
+                lis.add(p.getNumberInRoad());
+                lis.add(p.getLng());
+                lis.add(p.getLat());
+                bk.add(lis);
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bk;
+    }
+
+    // 读取senor
     public List<List<String>> readSensor() {
 
         String sql = "SELECT * FROM sensor";
