@@ -207,8 +207,8 @@ public class MessageHandler {
     public ResultEntity<HashMap<String, List<List<String>>>> calByLP(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
 //        try {
-//        strings = transformService.calByLP(flag);
-        strings = transformService.calByLP_new();
+        strings = transformService.calByLP(flag);
+//        strings = transformService.calByLP_new();
         System.out.println("Success");
 //        } catch (Exception e) {
 //            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();

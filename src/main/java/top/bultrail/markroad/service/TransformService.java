@@ -490,15 +490,15 @@ public class TransformService {
 
         // 计算结果
         ArrayList<String> resultWithName = null;
-//        try {
+        try {
         // ortools 线性规划
-        resultWithName = countSet.calByorLP(all_gateway, all_sensor, flag);
+//        resultWithName = countSet.calByorLP(all_gateway, all_sensor, flag);
         // matlab 线性规划
-//        resultWithName = countSet.calByMatLP(all_gateway, all_sensor, flag);
-//        } catch (Exception e) {
-//            System.out.println("错误信息："+e.getMessage());
-//            throw e;
-//        }
+        resultWithName = countSet.calByMatLP(all_gateway, all_sensor, flag);
+        } catch (Exception e) {
+            System.out.println("错误信息："+e.getMessage());
+            throw e;
+        }
 
         ArrayList<String> resultWithCoordinate = new ArrayList<>();
         ArrayList<String> resultTmp = new ArrayList<>();
