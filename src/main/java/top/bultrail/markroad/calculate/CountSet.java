@@ -255,6 +255,7 @@ public class CountSet {
 //        System.out.println("coverMap = " + coverMap);
         return coverMap;
     }
+
     /**
      * 计算每个网关能包含的节点集合，不包含路口的计算
      *
@@ -404,7 +405,6 @@ public class CountSet {
         double[][] matrix = new double[strList2.size()][strList1.size()];
         for (Integer key : hash_int2ints.keySet()) {
             for (Integer i : hash_int2ints.get(key)) {
-//                matrix[key-1][i-1] = 1.0;
                 matrix[i-1][key-1] = 1.0;
             }
         }
@@ -524,6 +524,23 @@ public class CountSet {
 
     /**
      * 调用matlab朴素贪心
+     * @param all_gateway 网关
+     * @param all_sensor 传感器
+     */
+    public int[] calByGreedy(List<String> all_gateway, List<String> all_sensor) throws Exception {
+        // 由网关集与传感器集获得matrix
+        double[][] matrix = getMatrix(all_gateway, all_sensor);
+        // matlab朴素贪心
+        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+        select_random_greedy_zsj.Class1 test = new select_random_greedy_zsj.Class1();
+        Object[] sresult = test.select_random_greedy_zsj(2, input);
+        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+        return sol;
+    }
+
+
+    /**
+     * 调用matlab朴素贪心
      * @param strList1 网关
      * @param strList2 传感器
      */
@@ -556,6 +573,23 @@ public class CountSet {
 
     /**
      * 调用matlab分支限界代码
+     * @param all_gateway 网关
+     * @param all_sensor 传感器
+     */
+    public int[] calByBB_new(List<String> all_gateway, List<String> all_sensor) throws Exception {
+        // 由网关集与传感器集获得matrix
+        double[][] matrix = getMatrix(all_gateway, all_sensor);
+        //分支限界 Matlab代码测试
+        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+        branch_bound_algorithm.Class1 test = new branch_bound_algorithm.Class1();
+        Object[] sresult = test.branch_bound_algorithm(2, input);
+        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+        return sol;
+    }
+
+
+    /**
+     * 调用matlab分支限界代码
      * @param strList1 网关
      * @param strList2 传感器
      */
@@ -579,7 +613,99 @@ public class CountSet {
         return result;
     }
 
+    /**
+     * 有向贪心
+     * @param all_gateway 网关
+     * @param all_sensor 传感器
+     */
+    public int[] test03_new(List<String> all_gateway, List<String> all_sensor,String flag) throws Exception {
+        // 编号与位置对应
+        HashMap<Integer, Vector<Double>> hash_num2index1 = new HashMap<>();
+        HashMap<Integer, Vector<Double>> hash_num2index2 = new HashMap<>();
 
+        // 所有的传感器集合
+        HashSet<Integer> sensor_ints = new HashSet<>();
+
+        // 网关集
+        for (int i = 0; i < all_gateway.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = all_gateway.get(i).split(",");
+            vc.add(Double.parseDouble(split[2]));
+            vc.add(Double.parseDouble(split[3]));
+            hash_num2index1.put(Integer.parseInt(split[0]), vc);
+        }
+
+        // 传感器集
+        for (int i = 0; i < all_sensor.size(); i++) {
+            Vector<Double> vc = new Vector<>();
+            String[] split = all_sensor.get(i).split(",");
+            vc.add(Double.parseDouble(split[2]));
+            vc.add(Double.parseDouble(split[3]));
+            sensor_ints.add(Integer.parseInt(split[0]));
+            hash_num2index2.put(Integer.parseInt(split[0]), vc);
+        }
+
+        // 计算路口集合
+        HashMap<String, Vector<Double>> crossingMap = countCrossing();
+
+        double raius = relatedProperties.getGatewayRadius();
+        // 计算网关所覆盖的sensor集合    网关编号-sensor集
+        Map<Integer, Map<Integer, Vector<Double>>> hash_int2map = null;
+        hash_int2map = countSet_my(hash_num2index1, hash_num2index2, raius);
+
+        // 网关节点编号 - 覆盖的传感器集（编号表示）
+        HashMap<Integer, HashSet<Integer>> hash_int2ints = new HashMap<>();
+        for (Map.Entry<Integer, Map<Integer, Vector<Double>>> entryt : hash_int2map.entrySet()) {
+            Map<Integer, Vector<Double>> valu2e = entryt.getValue();
+            HashSet<Integer> hashss = new HashSet<>();
+            for (Map.Entry<Integer, Vector<Double>> maps : valu2e.entrySet()) {
+                Integer key = maps.getKey();
+                hashss.add(key);
+            }
+            hash_int2ints.put(entryt.getKey(), hashss);
+        }
+
+        //计算当前的所有灯柱能否包含所有传感器
+        //当前所有网关覆盖的集合
+        HashSet<Integer> coverd_sessors = new HashSet<>();
+        for (Map.Entry<Integer, HashSet<Integer>> entry : hash_int2ints.entrySet()) {
+            HashSet<Integer> value = entry.getValue();
+            coverd_sessors.addAll(value);
+        }
+
+        // 判断传感器有没有被全部覆盖到
+        if (coverd_sessors.size() != sensor_ints.size()) {
+            //找出未被覆盖的sensor
+            for (Integer value : sensor_ints) {
+                int f = 0;
+                for (Integer key : coverd_sessors) {
+                    if (value == key) {
+                        f = 1;
+                        break;
+                    }
+                }
+                if (f == 0) System.out.println(value);
+            }
+            throw new Exception("传感器没有被全部覆盖到!");
+        }
+
+
+        //TODO
+        //计算数据（与贪心计算有关），这里分包含路口的计算和不包含路口的计算
+//        Map<String, Map<String, Vector<Double>>> stringMapMap = null;
+
+//        Map<String, Map<String, Vector<Double>>> hash_string2Map = null;
+//        if("withoutCros".equals(flag)){
+//            hash_string2Map = countSet(hs1, hs2, raius);
+//        }else{
+//            hash_string2Map = countSet(hs1, hs2, crossingMap, raius);
+//        }
+
+        // 调用Detection中的近似贪心算法计算
+        int[] result = Detection.calByLinner_new(all_sensor, all_gateway, hash_int2ints);
+//        System.out.println(result);
+        return result;
+    }
 
     /**
      * 有向贪心
@@ -657,6 +783,39 @@ public class CountSet {
 
     /**
      * 蚁群
+     * @param all_gateway 网关
+     * @param all_sensor 传感器
+     */
+    public int[] calByAco(List<String> all_gateway, List<String> all_sensor) throws Exception {
+        // 由网关集与传感器集获得matrix
+        double[][] doubleMatrix = getMatrix(all_gateway, all_sensor);
+        boolean[][] matrix = doubleToBool.trans(doubleMatrix);
+        // 调用蚁群算法模块
+        SCProblem problem = MatConvert.Mat_to_SCP(matrix);
+        AlgorithmConfiguration_self Alg_config = new AlgorithmConfiguration_self();
+        AbstractAlgorithm aco_algorithm = Alg_config.create(problem);
+
+        // ACO算法开始执行
+        aco_algorithm.run();
+        // 获取统计信息
+        Statistics statistics = aco_algorithm.getStatistics();
+        SCPSolution solution = (SCPSolution) statistics.getGlobalMinSolution();
+        boolean[] booleanSol = solution.getVars();
+        //打印结果
+//        for (boolean i : booleanSol) {
+//            System.out.print(i);
+//            System.out.print(" ");
+//        }
+        int[] sol = new int[booleanSol.length];
+        for (int i = 0; i < booleanSol.length; i++) {
+            sol[i] = booleanSol[i] ? 1 : 0;
+        }
+
+        return sol;
+    }
+
+    /**
+     * 蚁群
      * @param strList1 网关
      * @param strList2 传感器
      */
@@ -690,6 +849,23 @@ public class CountSet {
         }
 
         return result;
+    }
+
+    /**
+     * 调用 matlab 线性规划
+     * @param all_gateway 网关
+     * @param all_sensor 传感器
+     */
+    public int[] calByMatLP_new(List<String> all_gateway, List<String> all_sensor) throws Exception {
+        // 由网关集与传感器集获得matrix
+        double[][] matrix = getMatrix(all_gateway, all_sensor);
+        // 调用matlab计算
+        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+        select_linprog.Class1 test = new select_linprog.Class1();
+        Object[] sresult = test.select_linprog(2, input);
+        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+
+        return sol;
     }
 
     /**
@@ -761,6 +937,20 @@ public class CountSet {
             }
         }
         return result;
+    }
+
+    /**
+     * 遗传算法
+     */
+    public int[] calByGA(List<String> all_gateway, List<String> all_sensor) throws Exception {
+        // 由网关集与传感器集获得matrix
+        double[][] matrix = getMatrix(all_gateway, all_sensor);
+        // 遗传算法
+        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
+        GA_parse.Class1 test = new GA_parse.Class1();
+        Object[] sresult = test.GA_parse(2, input);
+        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
+        return sol;
     }
 
     /**
