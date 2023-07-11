@@ -216,31 +216,6 @@ $("#calAco").click(function () {
     });
 });
 
-// 生成完数据后，发送请求计算新线性规划 未使用
-$("#calPulp").click(function () {
-    // 清楚地图上已经标记的点
-    map.clearOverlays();
-    var loading = layer.load('Loading...', {
-        shade: [0.5,'#fff'] //0.1透明度的白色背景
-    });
-    $.ajax({
-        "url": "calByPython",
-        "type": "post",
-        "data": {
-            "crosFlag": "withCros"
-        },
-        "success": function (response) {
-            layer.close(loading);
-            layer.msg("网关绘制完成");
-            drawPoints(response);
-        },
-        "error": function (response) {
-            layer.close(loading);
-            layer.msg("请求失败")
-        }
-    });
-});
-
 // 生成完数据后，发送请求计算遗传算法 新增
 $("#calGA").click(function () {
     // 清楚地图上已经标记的点
@@ -361,6 +336,7 @@ $("#restore").click(function () {
     });
 });
 
+// 绘图时需要使用
 function sensorupload() {
     var loading = layer.load('Loading...', {
         shade: [0.5,'#fff'] //0.1透明度的白色背景
@@ -373,7 +349,7 @@ function sensorupload() {
             console.log(sensors);
             //在地图上标记
             for (var i = 0; i < sensors.length; i++) {
-                var point1 = new BMap.Point(sensors[i][2], sensors[i][3]);
+                var point1 = new BMap.Point(sensors[i][3], sensors[i][4]);
                 var marker1 = new BMap.Marker(point1, {icon: sIcon});
                 map.addOverlay(marker1);
             }
@@ -382,6 +358,7 @@ function sensorupload() {
         }
     });
 };
+
 //sensor数据库读取 新增
 $("#sensorupload").click(function(){sensorupload()});
 
@@ -395,7 +372,7 @@ $("#gatewayupload").click(function () {
             // console.log(gateways);
             //在地图上标记
             for (var i = 0; i < gateways.length; i++) {
-                var point2 = new BMap.Point(gateways[i][2], gateways[i][3]);
+                var point2 = new BMap.Point(gateways[i][3], gateways[i][4]);
                 var marker2 = new BMap.Marker(point2, {icon: gIcon});
                 map.addOverlay(marker2);
                 marker2.setTop(true);

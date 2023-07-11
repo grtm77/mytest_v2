@@ -411,117 +411,6 @@ public class CountSet {
         return matrix;
     }
 
-
-    /**
-     * 通过网关集与传感器集计算覆盖矩阵 及 hsc1
-     * @param strList1  网关集合  “DMXLS0,113.807255,22.816363”
-     * @param strList2  传感器集合
-     * @param flag 是否考虑路口
-     */
-
-    public Coordinates getMatrixHsc1(List<String> strList1, List<String> strList2, String flag) throws Exception {
-        // 编号与位置对应
-//        HashMap<Integer, Vector<Double>> hash_num2index1 = new HashMap<>();
-//        HashMap<Integer, Vector<Double>> hash_num2index2 = new HashMap<>();
-        // 节点名与位置对应
-        HashMap<String, Vector<Double>> hs1 = new HashMap<>();
-        HashMap<String, Vector<Double>> hs2 = new HashMap<>();
-        // 编号与节点名对应
-        HashMap<Integer, String> hsc1 = new HashMap<>();
-        HashMap<Integer, String> hsc2 = new HashMap<>();
-        // 节点名与编号对应
-        HashMap<String, Integer> hsc1b = new HashMap<>();
-        HashMap<String, Integer> hsc2b = new HashMap<>();
-        // 所有的传感器集合
-        HashSet<String> hashSet = new HashSet<>();
-
-        // 网关集
-        for (int i = 0; i < strList1.size(); i++) {
-            Vector<Double> vc = new Vector<>();
-            String[] split = strList1.get(i).split(",");
-            vc.add(Double.parseDouble(split[1]));
-            vc.add(Double.parseDouble(split[2]));
-            hs1.put(split[0], vc);
-            hsc1.put(i, split[0]);
-            hsc1b.put(split[0], i);
-//            hash_num2index1.put(i, vc);
-        }
-
-        // 传感器集
-        for (int i = 0; i < strList2.size(); i++) {
-            Vector<Double> vc = new Vector<>();
-            String[] split = strList2.get(i).split(",");
-            vc.add(Double.parseDouble(split[1]));
-            vc.add(Double.parseDouble(split[2]));
-            hashSet.add(split[0]);
-            hs2.put(split[0], vc);
-            hsc2.put(i, split[0]);
-            hsc2b.put(split[0], i);
-//            hash_num2index2.put(i, vc);
-        }
-
-        double raius = relatedProperties.getGatewayRadius();
-
-        Map<String, Map<String, Vector<Double>>> stringMapMap = null;
-        if ("withoutCros".equals(flag)) {
-            stringMapMap = countSet(hs1, hs2, raius);
-        } else {
-            // 计算路口集合
-            HashMap<String, Vector<Double>> crossingMap = countCrossing();
-            stringMapMap = countSet(hs1, hs2, crossingMap, raius);
-        }
-
-        // 节点名之间的对应关系
-        HashMap<String, HashSet<String>> stringHashSetHashMap = new HashMap<>();
-
-        for (Map.Entry<String, Map<String, Vector<Double>>> entryt : stringMapMap.entrySet()) {
-            Map<String, Vector<Double>> valu2e = entryt.getValue();
-            HashSet<String> hashss = new HashSet<>();
-            for (Map.Entry<String, Vector<Double>> maps : valu2e.entrySet()) {
-                String key = maps.getKey();
-                hashss.add(key);
-            }
-            stringHashSetHashMap.put(entryt.getKey(), hashss);
-        }
-
-        //计算当前的所有灯柱能否包含所有传感器
-        //当前所有网关覆盖的集合
-        HashSet<String> resultash = new HashSet<>();
-        for (Map.Entry<String, HashSet<String>> entry : stringHashSetHashMap.entrySet()) {
-            HashSet<String> value = entry.getValue();
-            Iterator<String> iterator1 = value.iterator();
-            while (iterator1.hasNext()) {
-                resultash.add(iterator1.next());
-            }
-        }
-
-        // 判断传感器有没有被全部覆盖到
-        if (resultash.size() != hashSet.size()) {
-            //找出未被覆盖的sensor
-            for (String value : hashSet) {
-                int f = 0;
-                for (String key : resultash) {
-                    if (value == key) {
-                        f = 1;
-                        break;
-                    }
-                }
-                if (f == 0) System.out.println(value);
-            }
-            throw new Exception("传感器没有被全部覆盖到!");
-        }
-
-//        对stringHashSetHashMap操作
-        // sensor_size x gateway_size
-        double[][] matrix = new double[strList2.size()][strList1.size()];
-        for (String key : stringHashSetHashMap.keySet()) {
-            for (String i : stringHashSetHashMap.get(key)) {
-                matrix[hsc2b.get(i)][hsc1b.get(key)] = 1.0;
-            }
-        }
-        return new Coordinates(matrix, hsc1);
-    }
-
     /**
      * 调用matlab朴素贪心
      * @param all_gateway 网关
@@ -538,38 +427,6 @@ public class CountSet {
         return sol;
     }
 
-
-    /**
-     * 调用matlab朴素贪心
-     * @param strList1 网关
-     * @param strList2 传感器
-     */
-    public ArrayList<String> test01(List<String> strList1, List<String> strList2, String flag) throws Exception {
-        // 由网关集与传感器集获得matrix 与 hsc1
-        Coordinates myCoor = getMatrixHsc1(strList1, strList2, flag);
-        double[][] matrix = myCoor.getMatrix();
-        HashMap<Integer, String> hsc1 = myCoor.getHsc1();
-        // matlab朴素贪心
-        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        select_random_greedy_zsj.Class1 test = new select_random_greedy_zsj.Class1();
-        Object[] sresult = test.select_random_greedy_zsj(2, input);
-
-        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
-
-//        打印结果
-//        for (int i : sol) {
-//            System.out.print(i);
-//            System.out.print(" ");
-//        }
-        ArrayList<String> result = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                result.add(hsc1.get(i));
-            }
-        }
-
-        return result;
-    }
 
     /**
      * 调用matlab分支限界代码
@@ -589,36 +446,11 @@ public class CountSet {
 
 
     /**
-     * 调用matlab分支限界代码
-     * @param strList1 网关
-     * @param strList2 传感器
-     */
-    public ArrayList<String> calByBB(List<String> strList1, List<String> strList2, String flag) throws Exception {
-        // 由网关集与传感器集获得matrix 与 hsc1
-        Coordinates myCoor = getMatrixHsc1(strList1, strList2, flag);
-        double[][] matrix = myCoor.getMatrix();
-        HashMap<Integer, String> hsc1 = myCoor.getHsc1();
-        //分支限界 Matlab代码测试
-        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        branch_bound_algorithm.Class1 test = new branch_bound_algorithm.Class1();
-        Object[] sresult = test.branch_bound_algorithm(2, input);
-        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
-
-        ArrayList<String> result = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                result.add(hsc1.get(i));
-            }
-        }
-        return result;
-    }
-
-    /**
      * 有向贪心
      * @param all_gateway 网关
      * @param all_sensor 传感器
      */
-    public int[] test03_new(List<String> all_gateway, List<String> all_sensor,String flag) throws Exception {
+    public int[] calByLinner(List<String> all_gateway, List<String> all_sensor,String flag) throws Exception {
         // 编号与位置对应
         HashMap<Integer, Vector<Double>> hash_num2index1 = new HashMap<>();
         HashMap<Integer, Vector<Double>> hash_num2index2 = new HashMap<>();
@@ -814,42 +646,6 @@ public class CountSet {
         return sol;
     }
 
-    /**
-     * 蚁群
-     * @param strList1 网关
-     * @param strList2 传感器
-     */
-    public ArrayList<String> test04(List<String> strList1, List<String> strList2, String flag) throws Exception {
-        // 由网关集与传感器集获得matrix 与 hsc1
-        Coordinates myCoor = getMatrixHsc1(strList1, strList2, flag);
-        double[][] doubleMatrix = myCoor.getMatrix();
-        boolean[][] matrix = doubleToBool.trans(doubleMatrix);
-        HashMap<Integer, String> hsc1 = myCoor.getHsc1();
-        // 调用蚁群算法模块
-        SCProblem problem = MatConvert.Mat_to_SCP(matrix);
-        AlgorithmConfiguration_self Alg_config = new AlgorithmConfiguration_self();
-        AbstractAlgorithm aco_algorithm = Alg_config.create(problem);
-
-        // ACO算法开始执行
-        aco_algorithm.run();
-        // 获取统计信息
-        Statistics statistics = aco_algorithm.getStatistics();
-        SCPSolution solution = (SCPSolution) statistics.getGlobalMinSolution();
-        boolean[] sol = solution.getVars();
-        //打印结果
-//        for (boolean i : sol) {
-//            System.out.print(i);
-//            System.out.print(" ");
-//        }
-        ArrayList<String> result = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i]){
-                result.add(hsc1.get(i));
-            }
-        }
-
-        return result;
-    }
 
     /**
      * 调用 matlab 线性规划
@@ -868,75 +664,17 @@ public class CountSet {
         return sol;
     }
 
-    /**
-     * 调用 matlab 线性规划
-     * @param strList1 网关
-     * @param strList2 传感器
-     */
-    public ArrayList<String> calByMatLP(List<String> strList1, List<String> strList2, String flag) throws Exception {
-        // 由网关集与传感器集获得matrix 与 hsc1
-        Coordinates myCoor = getMatrixHsc1(strList1, strList2, flag);
-        double[][] matrix = myCoor.getMatrix();
-        HashMap<Integer, String> hsc1 = myCoor.getHsc1();
-        // 调用matlab计算
-        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        select_linprog.Class1 test = new select_linprog.Class1();
-        Object[] sresult = test.select_linprog(2, input);
-        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
-
-        ArrayList<String> result = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                result.add(hsc1.get(i));
-            }
-        }
-
-        return result;
-    }
 
     /**
      * ortools 线性规划
-     * @param strList1 网关
-     * @param strList2 传感器
+     * @param all_gateway 网关
+     * @param all_sensor 传感器
      */
-
-    public ArrayList<Integer> calByorLP_new(List<String> strList1, List<String> strList2) throws Exception {
-        // 由网关集与传感器集获得matrix 与 hsc1
-        double[][] matrix = getMatrix(strList1, strList2);
-
-        // 0、1结果数组
+    public int[] calByorLP_new(List<String> all_gateway, List<String> all_sensor) throws Exception {
+        // 由网关集与传感器集获得matrix
+        double[][] matrix = getMatrix(all_gateway, all_sensor);
         int[] sol = cal_LP.linprog(matrix);
-        ArrayList<Integer> chosed_gateway_no = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                chosed_gateway_no.add(i);
-            }
-        }
-        return chosed_gateway_no;
-    }
-
-
-    /**
-     * ortools 线性规划
-     * @param strList1 网关
-     * @param strList2 传感器
-     */
-
-    public ArrayList<String> calByorLP(List<String> strList1, List<String> strList2, String flag) throws Exception {
-        // 由网关集与传感器集获得matrix 与 hsc1
-        Coordinates myCoor = getMatrixHsc1(strList1, strList2, flag);
-        double[][] matrix = myCoor.getMatrix();
-        HashMap<Integer, String> hsc1 = myCoor.getHsc1();
-
-        int[] sol = cal_LP.linprog(matrix);
-
-        ArrayList<String> result = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                result.add(hsc1.get(i));
-            }
-        }
-        return result;
+        return sol;
     }
 
     /**
@@ -951,29 +689,5 @@ public class CountSet {
         Object[] sresult = test.GA_parse(2, input);
         int[] sol = ((MWNumericArray)sresult[0]).getIntData();
         return sol;
-    }
-
-    /**
-     * 遗传算法
-     */
-    public ArrayList<String> test06(List<String> strList1, List<String> strList2, String flag) throws Exception {
-        // 由网关集与传感器集获得matrix 与 hsc1
-        Coordinates myCoor = getMatrixHsc1(strList1, strList2, flag);
-        double[][] matrix = myCoor.getMatrix();
-        HashMap<Integer, String> hsc1 = myCoor.getHsc1();
-        // 遗传算法
-        MWNumericArray input = new MWNumericArray(matrix, MWClassID.DOUBLE);
-        GA_parse.Class1 test = new GA_parse.Class1();
-        Object[] sresult = test.GA_parse(2, input);
-        int[] sol = ((MWNumericArray)sresult[0]).getIntData();
-
-        ArrayList<String> result = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                result.add(hsc1.get(i));
-            }
-        }
-
-        return result;
     }
 }

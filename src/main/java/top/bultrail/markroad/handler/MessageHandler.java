@@ -156,8 +156,7 @@ public class MessageHandler {
     public ResultEntity<HashMap<String, List<List<String>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
-//            strings = transformService.calByGreedy_upload(flag);
-            strings = transformService.calByGreedy_upload_new();
+            strings = transformService.calByGreedy_upload();
             System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
@@ -173,16 +172,16 @@ public class MessageHandler {
     @RequestMapping(value = "/hhln", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
-//        try {
+        try {
 //            strings = transformService.calByLinner_upload(flag);
-            strings = transformService.calByLinner_upload_new(flag);
+            strings = transformService.calByLinner_upload(flag);
             System.out.println("Success");
-//        } catch (Exception e) {
-//            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-//            System.out.println("Exception");
-//            listResultEntity.setMessage(e.getMessage());
-//            return listResultEntity;
-//        }
+        } catch (Exception e) {
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            System.out.println("Exception");
+            listResultEntity.setMessage(e.getMessage());
+            return listResultEntity;
+        }
         return ResultEntity.sucessWithData(strings);
     }
 
@@ -191,16 +190,15 @@ public class MessageHandler {
     @RequestMapping(value = "/hhbb", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByBB(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
-//        try {
-//        strings = transformService.calByBB(flag);
-        strings = transformService.calByBB_new();
+        try {
+        strings = transformService.calByBB();
         System.out.println("Success");
-//        } catch (Exception e) {
-//            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-//            System.out.println("Exception");
-//            listResultEntity.setMessage(e.getMessage());
-//            return listResultEntity;
-//        }
+        } catch (Exception e) {
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            System.out.println("Exception");
+            listResultEntity.setMessage(e.getMessage());
+            return listResultEntity;
+        }
         return ResultEntity.sucessWithData(strings);
     }
 
@@ -209,16 +207,15 @@ public class MessageHandler {
     @RequestMapping(value = "/hhLP", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByLP(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
-//        try {
-//        strings = transformService.calByLP(flag);
-        strings = transformService.calByLP_new();
+        try {
+        strings = transformService.calByLP();
         System.out.println("Success");
-//        } catch (Exception e) {
-//            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-//            System.out.println("Exception");
-//            listResultEntity.setMessage(e.getMessage());
-//            return listResultEntity;
-//        }
+        } catch (Exception e) {
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            System.out.println("Exception");
+            listResultEntity.setMessage(e.getMessage());
+            return listResultEntity;
+        }
         return ResultEntity.sucessWithData(strings);
     }
 
@@ -227,16 +224,15 @@ public class MessageHandler {
     @RequestMapping(value = "/hhaco", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByAco(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
-//        try {
-//        strings = transformService.calByAco_upload(flag);
-        strings = transformService.calByAco_upload_new();
-        System.out.println("Success");
-//        } catch (Exception e) {
-//            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-//            System.out.println("Exception");
-//            listResultEntity.setMessage(e.getMessage());
-//            return listResultEntity;
-//        }
+        try {
+            strings = transformService.calByAco_upload();
+            System.out.println("Success");
+        } catch (Exception e) {
+            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
+            System.out.println("Exception");
+            listResultEntity.setMessage(e.getMessage());
+            return listResultEntity;
+        }
         return ResultEntity.sucessWithData(strings);
     }
 
@@ -247,8 +243,7 @@ public class MessageHandler {
     public ResultEntity<HashMap<String, List<List<String>>>> calByGA(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
-//            strings = transformService.calByGA_upload(flag);
-            strings = transformService.calByGA_upload_new();
+            strings = transformService.calByGA_upload();
             System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();

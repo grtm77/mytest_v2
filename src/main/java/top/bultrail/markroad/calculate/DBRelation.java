@@ -311,56 +311,6 @@ public class DBRelation {
     }
 
     // 读取senor
-    public List<List<String>> readSensor_new() {
-
-        String sql = "SELECT * FROM sensor";
-        List<String> lis;
-        List<List<String>> bk = new ArrayList();
-        try {
-            Connection conn = setConnection();
-            List<Point> rs = qr.query(conn, sql, new BeanListHandler<>(Point.class));
-            for(Point p : rs) {
-                lis = new ArrayList();
-                lis.add(Integer.toString(p.getId()));
-                lis.add(p.getRoadName());
-                lis.add(p.getNumberInRoad());
-                lis.add(p.getLng());
-                lis.add(p.getLat());
-                bk.add(lis);
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return bk;
-    }
-
-    public List<List<String>> readGateway_new() {
-
-        String sql = "SELECT * FROM gateway";
-        List<String> lis;
-        List<List<String>> bk = new ArrayList();
-        try {
-            Connection conn = setConnection();
-            List<Point> rs = qr.query(conn, sql, new BeanListHandler<>(Point.class));
-            for(Point p : rs) {
-                lis = new ArrayList();
-//                lis.add(p.getId());
-                lis.add(Integer.toString(p.getId()));
-                lis.add(p.getRoadName());
-                lis.add(p.getNumberInRoad());
-                lis.add(p.getLng());
-                lis.add(p.getLat());
-                bk.add(lis);
-            }
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return bk;
-    }
-
-    // 读取senor
     public List<List<String>> readSensor() {
 
         String sql = "SELECT * FROM sensor";
@@ -371,6 +321,7 @@ public class DBRelation {
             List<Point> rs = qr.query(conn, sql, new BeanListHandler<>(Point.class));
             for(Point p : rs) {
                 lis = new ArrayList();
+                lis.add(Integer.toString(p.getId()));
                 lis.add(p.getRoadName());
                 lis.add(p.getNumberInRoad());
                 lis.add(p.getLng());
@@ -394,6 +345,8 @@ public class DBRelation {
             List<Point> rs = qr.query(conn, sql, new BeanListHandler<>(Point.class));
             for(Point p : rs) {
                 lis = new ArrayList();
+//                lis.add(p.getId());
+                lis.add(Integer.toString(p.getId()));
                 lis.add(p.getRoadName());
                 lis.add(p.getNumberInRoad());
                 lis.add(p.getLng());
