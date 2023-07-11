@@ -23,7 +23,7 @@ public class DBRelation {
         try {
             cpds.setDriverClass("com.mysql.cj.jdbc.Driver");
             // 用户 mytest
-//            cpds.setJdbcUrl("jdbc:mysql://10.45.39.13:3306/Marks");
+//            cpds.setJdbcUrl("jdbc:mysql://10.45.39.13:3306/Marks_new");
 //            cpds.setUser("mytest");
 //            cpds.setPassword("12345678");
 

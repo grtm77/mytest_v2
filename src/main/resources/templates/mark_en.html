@@ -433,6 +433,9 @@
                             let point1 = new BMap.Point(all_gateway[j][k].lng, all_gateway[j][k].lat);
                             marker1 = new BMap.Marker(point1, {
                                 icon: gIcon})
+                            var offset = new BMap.Size(-10,-10)
+                            marker1.setOffset(offset)
+                            console.log(marker1.getOffset())
                             map.addOverlay(marker1)
                         }
                     }
