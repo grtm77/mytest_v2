@@ -156,7 +156,7 @@ public class MessageHandler {
     public ResultEntity<HashMap<String, List<List<String>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
-            strings = transformService.calByGreedy_upload();
+            strings = transformService.calAlgorithm("Greedy");
             System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
@@ -191,8 +191,8 @@ public class MessageHandler {
     public ResultEntity<HashMap<String, List<List<String>>>> calByBB(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
         try {
-        strings = transformService.calByBB();
-        System.out.println("Success");
+            strings = transformService.calAlgorithm("BB");
+            System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
             System.out.println("Exception");
@@ -208,8 +208,8 @@ public class MessageHandler {
     public ResultEntity<HashMap<String, List<List<String>>>> calByLP(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
         try {
-        strings = transformService.calByLP();
-        System.out.println("Success");
+            strings = transformService.calAlgorithm("LP");
+            System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
             System.out.println("Exception");
@@ -225,7 +225,7 @@ public class MessageHandler {
     public ResultEntity<HashMap<String, List<List<String>>>> calByAco(@RequestParam(value = "crosFlag") String flag) throws Exception {
         HashMap<String, List<List<String>>> strings = null;
         try {
-            strings = transformService.calByAco_upload();
+            strings = transformService.calAlgorithm("Aco");
             System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
@@ -236,14 +236,13 @@ public class MessageHandler {
         return ResultEntity.sucessWithData(strings);
     }
 
-
     //使用遗传算法计算
     @ResponseBody
     @RequestMapping(value = "/calByGA", method = RequestMethod.POST)
     public ResultEntity<HashMap<String, List<List<String>>>> calByGA(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
-            strings = transformService.calByGA_upload();
+            strings = transformService.calAlgorithm("GA");
             System.out.println("Success");
         } catch (Exception e) {
             ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();

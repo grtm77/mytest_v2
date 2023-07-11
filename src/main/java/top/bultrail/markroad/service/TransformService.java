@@ -110,13 +110,12 @@ public class TransformService {
         dbRelation.res();
     }
 
-
     /**
-     * 使用遗传算法计算
+     * 使用各种算法计算
      * @return
      * @throws Exception
      */
-    public HashMap<String,List<List<String>>> calByGA_upload() throws Exception {
+    public HashMap<String,List<List<String>>> calAlgorithm(String algorithm) throws Exception {
 
         // 从数据库读出的sensor、gateway数据
         List<List<String>> sensor = dbRelation.readSensor();
@@ -143,7 +142,26 @@ public class TransformService {
         // 存放0、1结果数组
         int[] sol;
         try {
-            sol = countSet.calByGA(all_gateway, all_sensor);
+            switch (algorithm) {
+                case "GA":
+                    sol = countSet.calByGA(all_gateway, all_sensor);
+                    break;
+                case "Greedy":
+                    sol = countSet.calByGreedy(all_gateway, all_sensor);
+                    break;
+                case "Aco":
+                    sol = countSet.calByAco(all_gateway, all_sensor);
+                    break;
+                case "BB":
+                    sol = countSet.calByBB(all_gateway, all_sensor);
+                    break;
+                case "LP":
+                    sol = countSet.calByorLP_new(all_gateway, all_sensor);
+//                    sol = countSet.calByMatLP_new(all_gateway, all_sensor);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid algorithm: " + algorithm);
+            }
         } catch (Exception e) {
             System.out.println("错误信息："+e.getMessage());
             throw e;
@@ -179,73 +197,6 @@ public class TransformService {
         return hs;
     }
 
-    /**
-     * 用贪心算法计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回 实现
-     * @return
-     * @throws Exception
-     */
-    public HashMap<String,List<List<String>>> calByGreedy_upload() throws Exception {
-
-        // 从数据库读出的sensor、gateway数据
-        List<List<String>> sensor = dbRelation.readSensor();
-        List<List<String>> gateway = dbRelation.readGateway();
-        // 进行处理，在属性间添加逗号形成字符串
-        List<String> all_sensor = new ArrayList<String>();
-        List<String> all_gateway = new ArrayList<String>();
-        // 存放结果数据返回至前端
-        HashMap<String, List<List<String>>> hs = new HashMap<>();
-
-        Iterator<List<String>> it1 = sensor.iterator();
-        Iterator<List<String>> it2 = gateway.iterator();
-        while (it1.hasNext()) {
-            List<String> it1next = it1.next();
-            String temp1 = it1next.get(0) + "," + it1next.get(1) + it1next.get(2) + "," +  it1next.get(3) + "," + it1next.get(4);
-            all_sensor.add(temp1);
-        }
-        while (it2.hasNext()) {
-            List<String> it2next = it2.next();
-            String temp2 = it2next.get(0) + "," + it2next.get(1) + it2next.get(2) + "," +  it2next.get(3) + "," + it2next.get(4);
-            all_gateway.add(temp2);
-        }
-
-        // 存放0、1结果数组
-        int[] sol;
-        try {
-            sol = countSet.calByGreedy(all_gateway, all_sensor);
-        } catch (Exception e) {
-            System.out.println("错误信息："+e.getMessage());
-            throw e;
-        }
-
-        ArrayList<Integer> chosed_gateway_no = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                chosed_gateway_no.add(i+1);
-            }
-        }
-
-        // 计算结果，返回选中的网关坐标
-        ArrayList<String> resultWithCoordinate = new ArrayList<>();
-        // 计算结果，返回选中的网关信息，与all_gateway格式一致，用于分析
-//        ArrayList<String> resultTmp = new ArrayList<>();
-        for (String s : all_gateway) {
-            String[] split = s.split(",");
-            if (chosed_gateway_no.contains(Integer.parseInt(split[0]))) {
-                String data = split[2] + "," + split[3];
-                resultWithCoordinate.add(data);
-//                resultTmp.add(s);
-            }
-        }
-        //获取所有传感器的数据放入map，一起返回
-        List<List<String>> all_gateway02 = new ArrayList<>();
-        all_gateway02.add((resultWithCoordinate));
-        hs.put("gatewayList", all_gateway02);
-        hs.put("sensorList", sensor);
-
-        //生成分析结果
-//        fileRelation.creatResult(all_sensor,resultTmp);
-        return hs;
-    }
 
     /**
      * 用有向贪心计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回 新增
@@ -279,215 +230,6 @@ public class TransformService {
         int[] sol;
         try {
             sol = countSet.calByLinner(all_gateway, all_sensor, flag);
-        } catch (Exception e) {
-            System.out.println("错误信息："+e.getMessage());
-            throw e;
-        }
-
-        ArrayList<Integer> chosed_gateway_no = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                chosed_gateway_no.add(i+1);
-            }
-        }
-
-        // 计算结果，返回选中的网关坐标
-        ArrayList<String> resultWithCoordinate = new ArrayList<>();
-        // 计算结果，返回选中的网关信息，与all_gateway格式一致，用于分析
-//        ArrayList<String> resultTmp = new ArrayList<>();
-        for (String s : all_gateway) {
-            String[] split = s.split(",");
-            if (chosed_gateway_no.contains(Integer.parseInt(split[0]))) {
-                String data = split[2] + "," + split[3];
-                resultWithCoordinate.add(data);
-//                resultTmp.add(s);
-            }
-        }
-
-        //获取所有传感器的数据放入map，一起返回
-        List<List<String>> all_gateway02 = new ArrayList<>();
-        all_gateway02.add((resultWithCoordinate));
-        hs.put("gatewayList", all_gateway02);
-        hs.put("sensorList", sensor);
-
-        //生成分析结果
-//        fileRelation.creatResult(all_sensor,resultTmp);
-        return hs;
-    }
-
-
-    /**
-     * 用分支限界计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回
-     * @return
-     * @throws Exception
-     */
-    public HashMap<String,List<List<String>>> calByBB() throws Exception {
-        // 从数据库读出的sensor、gateway数据
-        List<List<String>> sensor = dbRelation.readSensor();
-        List<List<String>> gateway = dbRelation.readGateway();
-        // 进行处理，在属性间添加逗号形成字符串
-        List<String> all_sensor = new ArrayList<String>();
-        List<String> all_gateway = new ArrayList<String>();
-        // 存放结果数据返回至前端
-        HashMap<String, List<List<String>>> hs = new HashMap<>();
-
-        Iterator<List<String>> it1 = sensor.iterator();
-        Iterator<List<String>> it2 = gateway.iterator();
-        while (it1.hasNext()) {
-            List<String> it1next = it1.next();
-            String temp1 = it1next.get(0) + "," + it1next.get(1) + it1next.get(2) + "," +  it1next.get(3) + "," + it1next.get(4);
-            all_sensor.add(temp1);
-        }
-        while (it2.hasNext()) {
-            List<String> it2next = it2.next();
-            String temp2 = it2next.get(0) + "," + it2next.get(1) + it2next.get(2) + "," +  it2next.get(3) + "," + it2next.get(4);
-            all_gateway.add(temp2);
-        }
-
-        // 存放0、1结果数组
-        int[] sol;
-        try {
-            sol = countSet.calByBB_new(all_gateway, all_sensor);
-        } catch (Exception e) {
-            System.out.println("错误信息："+e.getMessage());
-            throw e;
-        }
-
-        ArrayList<Integer> chosed_gateway_no = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                chosed_gateway_no.add(i+1);
-            }
-        }
-
-        // 计算结果，返回选中的网关坐标
-        ArrayList<String> resultWithCoordinate = new ArrayList<>();
-        // 计算结果，返回选中的网关信息，与all_gateway格式一致，用于分析
-//        ArrayList<String> resultTmp = new ArrayList<>();
-        for (String s : all_gateway) {
-            String[] split = s.split(",");
-            if (chosed_gateway_no.contains(Integer.parseInt(split[0]))) {
-                String data = split[2] + "," + split[3];
-                resultWithCoordinate.add(data);
-//                resultTmp.add(s);
-            }
-        }
-
-        //获取所有传感器的数据放入map，一起返回
-        List<List<String>> all_gateway02 = new ArrayList<>();
-        all_gateway02.add((resultWithCoordinate));
-        hs.put("gatewayList", all_gateway02);
-        hs.put("sensorList", sensor);
-
-        //生成分析结果
-//        fileRelation.creatResult(all_sensor,resultTmp);
-        return hs;
-    }
-
-    /**
-     * 用matlab或者ortools线性规划计算，数据保存在txt中,计算上传的文件数据相关 把传感器与网关的信息存入map返回
-     * @return
-     * @throws Exception
-     */
-    public HashMap<String,List<List<String>>> calByLP() throws Exception {
-        // 从数据库读出的sensor、gateway数据
-        List<List<String>> sensor = dbRelation.readSensor();
-        List<List<String>> gateway = dbRelation.readGateway();
-        // 进行处理，在属性间添加逗号形成字符串
-        List<String> all_sensor = new ArrayList<String>();
-        List<String> all_gateway = new ArrayList<String>();
-        // 存放结果数据返回至前端
-        HashMap<String, List<List<String>>> hs = new HashMap<>();
-
-        Iterator<List<String>> it1 = sensor.iterator();
-        Iterator<List<String>> it2 = gateway.iterator();
-        while (it1.hasNext()) {
-            List<String> it1next = it1.next();
-            String temp1 = it1next.get(0) + "," + it1next.get(1) + it1next.get(2) + "," +  it1next.get(3) + "," + it1next.get(4);
-            all_sensor.add(temp1);
-        }
-        while (it2.hasNext()) {
-            List<String> it2next = it2.next();
-            String temp2 = it2next.get(0) + "," + it2next.get(1) + it2next.get(2) + "," +  it2next.get(3) + "," + it2next.get(4);
-            all_gateway.add(temp2);
-        }
-
-        // 存放0、1结果数组
-        int[] sol;
-        try {
-            // ortools 线性规划
-//            sol = cal_LP.linprog(matrix);
-            sol = countSet.calByorLP_new(all_gateway, all_sensor);
-            // 调用matlab计算
-//            sol = countSet.calByMatLP_new(all_gateway, all_sensor);
-        } catch (Exception e) {
-            System.out.println("错误信息："+e.getMessage());
-            throw e;
-        }
-
-        ArrayList<Integer> chosed_gateway_no = new ArrayList<>();
-        for(int i = 0; i < sol.length; i++){
-            if(sol[i] == 1){
-                chosed_gateway_no.add(i+1);
-            }
-        }
-
-        // 计算结果，返回选中的网关坐标
-        ArrayList<String> resultWithCoordinate = new ArrayList<>();
-        // 计算结果，返回选中的网关信息，与all_gateway格式一致，用于分析
-//        ArrayList<String> resultTmp = new ArrayList<>();
-        for (String s : all_gateway) {
-            String[] split = s.split(",");
-            if (chosed_gateway_no.contains(Integer.parseInt(split[0]))) {
-                String data = split[2] + "," + split[3];
-                resultWithCoordinate.add(data);
-//                resultTmp.add(s);
-            }
-        }
-
-        //获取所有传感器的数据放入map，一起返回
-        List<List<String>> all_gateway02 = new ArrayList<>();
-        all_gateway02.add((resultWithCoordinate));
-        hs.put("gatewayList", all_gateway02);
-        hs.put("sensorList", sensor);
-
-        //生成分析结果
-//        fileRelation.creatResult(all_sensor,resultTmp);
-        return hs;
-    }
-
-    /**
-     * 用蚁群计算，计算上传的文件数据相关 把传感器与网关的信息存入map返回 新增
-     * @return
-     * @throws Exception
-     */
-    public HashMap<String,List<List<String>>> calByAco_upload() throws Exception {
-        // 从数据库读出的sensor、gateway数据
-        List<List<String>> sensor = dbRelation.readSensor();
-        List<List<String>> gateway = dbRelation.readGateway();
-        // 进行处理，在属性间添加逗号形成字符串
-        List<String> all_sensor = new ArrayList<String>();
-        List<String> all_gateway = new ArrayList<String>();
-        // 存放结果数据返回至前端
-        HashMap<String, List<List<String>>> hs = new HashMap<>();
-
-        Iterator<List<String>> it1 = sensor.iterator();
-        Iterator<List<String>> it2 = gateway.iterator();
-        while (it1.hasNext()) {
-            List<String> it1next = it1.next();
-            String temp1 = it1next.get(0) + "," + it1next.get(1) + it1next.get(2) + "," +  it1next.get(3) + "," + it1next.get(4);
-            all_sensor.add(temp1);
-        }
-        while (it2.hasNext()) {
-            List<String> it2next = it2.next();
-            String temp2 = it2next.get(0) + "," + it2next.get(1) + it2next.get(2) + "," +  it2next.get(3) + "," + it2next.get(4);
-            all_gateway.add(temp2);
-        }
-
-        // 存放0、1结果数组
-        int[] sol;
-        try {
-            sol = countSet.calByAco(all_gateway, all_sensor);
         } catch (Exception e) {
             System.out.println("错误信息："+e.getMessage());
             throw e;

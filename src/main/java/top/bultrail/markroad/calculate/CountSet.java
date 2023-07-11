@@ -433,7 +433,7 @@ public class CountSet {
      * @param all_gateway 网关
      * @param all_sensor 传感器
      */
-    public int[] calByBB_new(List<String> all_gateway, List<String> all_sensor) throws Exception {
+    public int[] calByBB(List<String> all_gateway, List<String> all_sensor) throws Exception {
         // 由网关集与传感器集获得matrix
         double[][] matrix = getMatrix(all_gateway, all_sensor);
         //分支限界 Matlab代码测试
