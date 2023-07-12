@@ -35,7 +35,7 @@
     <img src="https://img.shields.io/github/issues-pr/drggboy/mytest_v2?style=flat-square&color=blue" alt="GitHub pull requests">
   </a> -->
 
-  <a href="https://github.com/grtm77/mytest_v2/graphs/contributors" target="_blank">
+  <a href="https://github.com/drggboy/mytest_v2/graphs/contributors" target="_blank">
     <img alt="Contributors" src="https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square">
   </a>
 
