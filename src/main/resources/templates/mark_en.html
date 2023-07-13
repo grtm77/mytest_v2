@@ -8,10 +8,16 @@
     <!-- 引入 layui.css -->
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- 引入elementui样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- 引入 layui.js -->
     <script src="layui/layui.js"></script>
     <script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <!-- 引入elementui组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <title>Marked</title>
     <style type="text/css">
         html {
@@ -165,14 +171,34 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="calModalLabel">Calculation</h4>
                 </div>
-                <div class="modal-body" align="center">
-                    <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>
-                    <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>
-                    <button type="button" class="layui-btn layui-btn-warm" id="calBB">BB</button>
-                    <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">GD</button>
-                    <button type="button" class="layui-btn layui-btn-warm" id="calLP">LP</button>
-                    <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>
+                <div class="modal-body" align="center" id="app">
+                    <el-tooltip content="定向贪心" placement="top" id="calLinner">
+                        <el-button>LD</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="遗传算法" placement="top" id="calGA">
+                        <el-button>GA</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="分支限界算法" placement="top" id="calBB">
+                        <el-button>BB</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="朴素贪心算法" placement="top" id="calGreedy">
+                        <el-button>GD</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="线性规划算法" placement="top" id="calLP">
+                        <el-button>LP</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="蚁群算法" placement="top" id="calAco">
+                        <el-button>ACO</el-button>
+                    </el-tooltip>
                 </div>
+<!--                <div class="modal-body" align="center" id="app">-->
+<!--                    <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>-->
+<!--                    <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>-->
+<!--                    <button type="button" class="layui-btn layui-btn-warm" id="calBB">BB</button>-->
+<!--                    <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">GD</button>-->
+<!--                    <button type="button" class="layui-btn layui-btn-warm" id="calLP">LP</button>-->
+<!--                    <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>-->
+<!--                </div>-->
             </div>
         </div>
     </div>
@@ -199,6 +225,12 @@
 
 <!-- All js code -->
 <script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: function() {
+            return { visible: false }
+        }
+    })
     // 创建自定义网关图标
     var gIcon = new BMap.Icon("icon/jian.png", new BMap.Size(32, 32));
     // 传感器图标
@@ -226,6 +258,9 @@
     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
     map.disableDoubleClickZoom(true);
     map.addControl(new BMap.ScaleControl());  //添加比例尺
+    // map.setDefaultCursor("move");
+    map.setDefaultCursor("crosshair");
+    // map.setDraggingCursor("move");
     //突破19级限制
     var defaultMapType = map.getMapType();
     var defaultTileLayer = defaultMapType.getTileLayer();//创建了一个地图图层
@@ -433,7 +468,8 @@
                             let point1 = new BMap.Point(all_gateway[j][k].lng, all_gateway[j][k].lat);
                             marker1 = new BMap.Marker(point1, {
                                 icon: gIcon})
-                            var offset = new BMap.Size(-10,-10)
+                            // var offset = new BMap.Size(-10,-10) // 向左向上移
+                            var offset = new BMap.Size(0,-15)       // 向上移，使图标点对准指定点
                             marker1.setOffset(offset)
                             console.log(marker1.getOffset())
                             map.addOverlay(marker1)
