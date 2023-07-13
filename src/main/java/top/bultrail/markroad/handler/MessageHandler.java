@@ -78,66 +78,67 @@ public class MessageHandler {
         transformService.bkDB();
         return ResultEntity.successWithoutData();
     }
-    //1500
+
+    //1361
     @ResponseBody
-    @RequestMapping(value = "/hh1500", method = RequestMethod.POST)
-    public ResultEntity<String> t1500() {
-        transformService.td1500();
+    @RequestMapping(value = "/hh1361", method = RequestMethod.POST)
+    public ResultEntity<String> t1361() {
+        transformService.td1361();
         return ResultEntity.successWithoutData();
     }
 
-    //1056
+    //1052
     @ResponseBody
-    @RequestMapping(value = "/hh1056", method = RequestMethod.POST)
-    public ResultEntity<String> t1056() {
-        transformService.td1056();
+    @RequestMapping(value = "/hh1052", method = RequestMethod.POST)
+    public ResultEntity<String> t1052() {
+        transformService.td1052();
         return ResultEntity.successWithoutData();
     }
 
-    //232
+    //207
     @ResponseBody
-    @RequestMapping(value = "/hh232", method = RequestMethod.POST)
-    public ResultEntity<String> t232() {
-        transformService.td232();
+    @RequestMapping(value = "/hh207", method = RequestMethod.POST)
+    public ResultEntity<String> t207() {
+        transformService.td207();
         return ResultEntity.successWithoutData();
     }
 
-    //466
+    //461
     @ResponseBody
-    @RequestMapping(value = "/hh466", method = RequestMethod.POST)
-    public ResultEntity<String> t466() {
-        transformService.td466();
+    @RequestMapping(value = "/hh461", method = RequestMethod.POST)
+    public ResultEntity<String> t461() {
+        transformService.td461();
         return ResultEntity.successWithoutData();
     }
 
-    //484
+    //g484
     @ResponseBody
-    @RequestMapping(value = "/hh15002", method = RequestMethod.POST)
-    public ResultEntity<String> t15002() {
+    @RequestMapping(value = "/hhg484", method = RequestMethod.POST)
+    public ResultEntity<String> tg484() {
         transformService.tdGuo(484);
         return ResultEntity.successWithoutData();
     }
 
-    //354
+    //g354
     @ResponseBody
-    @RequestMapping(value = "/hh10562", method = RequestMethod.POST)
-    public ResultEntity<String> t10562() {
+    @RequestMapping(value = "/hhg354", method = RequestMethod.POST)
+    public ResultEntity<String> tg354() {
         transformService.tdGuo(354);
         return ResultEntity.successWithoutData();
     }
 
     //114
     @ResponseBody
-    @RequestMapping(value = "/hh2322", method = RequestMethod.POST)
-    public ResultEntity<String> t2322() {
+    @RequestMapping(value = "/hhg114", method = RequestMethod.POST)
+    public ResultEntity<String> tg114() {
         transformService.tdGuo(114);
         return ResultEntity.successWithoutData();
     }
 
     //228
     @ResponseBody
-    @RequestMapping(value = "/hh4662", method = RequestMethod.POST)
-    public ResultEntity<String> t4662() {
+    @RequestMapping(value = "/hhg228", method = RequestMethod.POST)
+    public ResultEntity<String> tg228() {
         transformService.tdGuo(228);
         return ResultEntity.successWithoutData();
     }

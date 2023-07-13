@@ -77,26 +77,26 @@ public class TransformService {
     }
 
     //162 新增
-    public void td232() {
+    public void td207() {
         dbRelation.clear();
-        dbRelation.tdata("232");
+        dbRelation.tdata("207");
     }
 
-    //321 新增
-    public void td466() {
+    //461 新增
+    public void td461() {
         dbRelation.clear();
-        dbRelation.tdata("466");
+        dbRelation.tdata("461");
     }
 
     //518 新增
-    public void td1056() {
+    public void td1052() {
         dbRelation.clear();
-        dbRelation.tdata("1056");
+        dbRelation.tdata("1052");
     }
 
-    public void td1500() {
+    public void td1361() {
         dbRelation.clear();
-        dbRelation.tdata("1500");
+        dbRelation.tdata("1361");
     }
 
     public void tdGuo(int num) {
