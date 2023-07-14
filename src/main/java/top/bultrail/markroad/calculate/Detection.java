@@ -138,7 +138,7 @@ public class Detection {
         // 0、1数组，1代表选中
         int[] sol = new int[gateways.size()];
         for (int i = 0; i < result.size(); i++) {
-            sol[result.get(i)] = 1;
+            sol[result.get(i)-1] = 1;
         }
         return sol;
     }
