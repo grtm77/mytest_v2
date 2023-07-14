@@ -7,7 +7,6 @@
     Built by
     <a href="https://github.com/drggboy">drggboy</a>,
     <a href="https://github.com/grtm77">grtm77</a>,
-    and the community!
   </sub>
 </p>
 
