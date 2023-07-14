@@ -49,13 +49,9 @@ public class TransformService {
     }
 
     public void quicksaveDB(QuickSave quickSave) {
-//        double[][] cross_points = quickSave.getCross_points();
-//        double[][][] sensor_array = quickSave.getSensor_array();
-//        double[][][] gateway_array = quickSave.getGateway_array();
         String[][] cross_points = quickSave.getCross_points();
         String[][][] sensor_array = quickSave.getSensor_array();
         String[][][] gateway_array = quickSave.getGateway_array();
-//        List<String[]> strings = Arrays.asList(points1);
         dbRelation.clear();
         dbRelation.quick_write_new(cross_points, gateway_array, sensor_array);
     }
@@ -231,7 +227,8 @@ public class TransformService {
         try {
             sol = countSet.calByLinner(all_gateway, all_sensor, flag);
         } catch (Exception e) {
-            System.out.println("错误信息："+e.getMessage());
+            System.out.println("错误信息："+ e);
+//            System.out.println("错误信息："+e.getMessage());
             throw e;
         }
 
