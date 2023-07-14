@@ -110,7 +110,10 @@ $("#calGreedy").click(function () {
         },
         "error": function (response) {
             layer.close(loading);
-            layer.msg("请求失败")
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
         }
     });
 
@@ -136,7 +139,10 @@ $("#calLinner").click(function () {
         },
         "error": function (response) {
             layer.close(loading);
-            layer.msg("请求失败")
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
         }
     });
 });
@@ -161,7 +167,10 @@ $("#calBB").click(function () {
         },
         "error": function (response) {
             layer.close(loading);
-            layer.msg("请求失败")
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
         }
     });
 });
@@ -186,12 +195,15 @@ $("#calLP").click(function () {
         },
         "error": function (response) {
             layer.close(loading);
-            layer.msg("请求失败")
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
         }
     });
 });
 
-// 生成完数据后，发送请求计算 蚁群算法 新增
+// 生成完数据后，发送请求计算 蚁群算法
 $("#calAco").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
@@ -211,12 +223,15 @@ $("#calAco").click(function () {
         },
         "error": function (response) {
             layer.close(loading);
-            layer.msg("请求失败")
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
         }
     });
 });
 
-// 生成完数据后，发送请求计算遗传算法 新增
+// 生成完数据后，发送请求计算遗传算法
 $("#calGA").click(function () {
     // 清楚地图上已经标记的点
     map.clearOverlays();
@@ -236,7 +251,10 @@ $("#calGA").click(function () {
         },
         "error": function (response) {
             layer.close(loading);
-            layer.msg("请求失败")
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
         }
     });
 });
@@ -261,7 +279,10 @@ $("#calGreedyWithOutCros").click(function () {
         },
         "error": function (response) {
             layer.close(loading);
-            layer.msg("请求失败")
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
         }
     });
 });

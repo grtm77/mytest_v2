@@ -388,6 +388,7 @@ public class CountSet {
         // 判断传感器有没有被全部覆盖到
         if (coverd_sessors.size() != sensor_ints.size()) {
             //找出未被覆盖的sensor
+            int num=0;
             for (Integer value : sensor_ints) {
                 int f = 0;
                 for (Integer key : coverd_sessors) {
@@ -396,8 +397,14 @@ public class CountSet {
                         break;
                     }
                 }
-                if (f == 0) System.out.println(value);
+                if (f == 0) {
+                    num = num +1;
+                    if (num == 1)
+                        System.out.println("以下传感器未被覆盖：");
+                    System.out.print(value+" ");
+                }
             }
+            System.out.print("\n");
             throw new Exception("传感器没有被全部覆盖到!");
         }
 
@@ -507,6 +514,7 @@ public class CountSet {
 
         // 判断传感器有没有被全部覆盖到
         if (coverd_sessors.size() != sensor_ints.size()) {
+            int num=0;
             //找出未被覆盖的sensor
             for (Integer value : sensor_ints) {
                 int f = 0;
@@ -516,8 +524,14 @@ public class CountSet {
                         break;
                     }
                 }
-                if (f == 0) System.out.println(value);
+                if (f == 0) {
+                    num = num +1;
+                    if (num == 1)
+                        System.out.println("以下传感器未被覆盖：");
+                    System.out.print(value+" ");
+                }
             }
+            System.out.print("\n");
             throw new Exception("传感器没有被全部覆盖到!");
         }
 

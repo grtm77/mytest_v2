@@ -1,15 +1,14 @@
 package top.bultrail.markroad.handler;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import top.bultrail.markroad.pojo.Point;
 import top.bultrail.markroad.pojo.QuickSave;
 import top.bultrail.markroad.service.TransformService;
 import top.bultrail.markroad.util.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -154,103 +153,91 @@ public class MessageHandler {
     //用贪心算法计算，数据保存在txt 实现
     @ResponseBody
     @RequestMapping(value = "/hhe", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag) {
+    public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calAlgorithm("Greedy");
             System.out.println("Success");
         } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            System.out.println("Exception");
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
+            ResultEntity<HashMap<String, List<List<String>>>> errorResponse = ResultEntity.failedWithMessage(e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResultEntity.sucessWithData(strings);
+        return ResponseEntity.ok(ResultEntity.sucessWithData(strings));
     }
 
-    //用有向贪心算法计算，数据保存在txt 实现
+    //有向贪心
     @ResponseBody
     @RequestMapping(value = "/hhln", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) throws Exception {
+    public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
-//            strings = transformService.calByLinner_upload(flag);
             strings = transformService.calByLinner_upload(flag);
             System.out.println("Success");
         } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            System.out.println("Exception");
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
+            ResultEntity<HashMap<String, List<List<String>>>> errorResponse = ResultEntity.failedWithMessage(e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResultEntity.sucessWithData(strings);
+        return ResponseEntity.ok(ResultEntity.sucessWithData(strings));
     }
 
     //用分支限界算法计算，数据保存在txt
     @ResponseBody
     @RequestMapping(value = "/hhbb", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByBB(@RequestParam(value = "crosFlag") String flag) throws Exception {
+    public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByBB(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calAlgorithm("BB");
             System.out.println("Success");
         } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            System.out.println("Exception");
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
+            ResultEntity<HashMap<String, List<List<String>>>> errorResponse = ResultEntity.failedWithMessage(e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResultEntity.sucessWithData(strings);
+        return ResponseEntity.ok(ResultEntity.sucessWithData(strings));
     }
 
-    //用线性规划计算，数据保存在txt
+    //用线性规划计算
     @ResponseBody
     @RequestMapping(value = "/hhLP", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByLP(@RequestParam(value = "crosFlag") String flag) throws Exception {
+    public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByLP(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calAlgorithm("LP");
             System.out.println("Success");
         } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            System.out.println("Exception");
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
+            ResultEntity<HashMap<String, List<List<String>>>> errorResponse = ResultEntity.failedWithMessage(e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResultEntity.sucessWithData(strings);
+        return ResponseEntity.ok(ResultEntity.sucessWithData(strings));
     }
 
-    // 蚁群算法计算
+    //用蚁群算法计算
     @ResponseBody
     @RequestMapping(value = "/hhaco", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByAco(@RequestParam(value = "crosFlag") String flag) throws Exception {
+    public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByAco(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calAlgorithm("Aco");
             System.out.println("Success");
         } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            System.out.println("Exception");
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
+            ResultEntity<HashMap<String, List<List<String>>>> errorResponse = ResultEntity.failedWithMessage(e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResultEntity.sucessWithData(strings);
+        return ResponseEntity.ok(ResultEntity.sucessWithData(strings));
     }
 
-    //使用遗传算法计算
+    //用遗传算法计算
     @ResponseBody
     @RequestMapping(value = "/calByGA", method = RequestMethod.POST)
-    public ResultEntity<HashMap<String, List<List<String>>>> calByGA(@RequestParam(value = "crosFlag") String flag) {
+    public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByGA(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
             strings = transformService.calAlgorithm("GA");
             System.out.println("Success");
         } catch (Exception e) {
-            ResultEntity<HashMap<String, List<List<String>>>> listResultEntity = new ResultEntity<>();
-            listResultEntity.setMessage(e.getMessage());
-            return listResultEntity;
+            ResultEntity<HashMap<String, List<List<String>>>> errorResponse = ResultEntity.failedWithMessage(e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResultEntity.sucessWithData(strings);
+        return ResponseEntity.ok(ResultEntity.sucessWithData(strings));
     }
 
 }

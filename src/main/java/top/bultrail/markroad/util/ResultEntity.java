@@ -68,6 +68,11 @@ public class ResultEntity<T> {
     public static <E> ResultEntity<E> failed(E data) {
         return new ResultEntity<E>(FAILED,null,data  );
     }
+    public static <E> ResultEntity<E> failedWithMessage(String message) {
+        return new ResultEntity<E>(FAILED, message,null);
+    }
+
+
     public static ResultEntity<List<String>> successWithData(List<String> strings,String message) {
         return new ResultEntity<List<String>>(SUCCESS,message,strings  );
     }
