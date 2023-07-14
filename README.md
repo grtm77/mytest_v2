@@ -18,12 +18,12 @@
     <img alt="matlab release" src="https://img.shields.io/badge/matlab-R2016b-blue">
   </a>
   </br>
-  <a href="https://github.com/grtm77/mytest_v2/releases" target="_blank">
-    <img alt="GitHub release" src="https://img.shields.io/github/v/release/grtm77/mytest_v2?include_prereleases&style=flat-square">
+  <a href="https://github.com/drggboy/mytest_v2/releases" target="_blank">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/drggboy/mytest_v2?include_prereleases&style=flat-square">
   </a>
   
-  <a href="https://github.com/grtm77/mytest_v2/commits/master" target="_blank">
-    <img src="https://img.shields.io/github/last-commit/grtm77/mytest_v2?style=flat-square" alt="GitHub last commit">
+  <a href="https://github.com/drggboy/mytest_v2/commits/master" target="_blank">
+    <img src="https://img.shields.io/github/last-commit/drggboy/mytest_v2?style=flat-square" alt="GitHub last commit">
   </a>
 
   <!-- <a href="https://github.com/drggboy/mytest_v2/issues" target="_blank">
@@ -39,8 +39,8 @@
   </a>
 
 
-  <a href="https://github.com/grtm77/mytest_v2/blob/master/LICENSE" target="_blank">
-    <img alt="LICENSE" src="https://img.shields.io/github/license/grtm77/mytest_v2?style=flat-square&color=yellow">
+  <a href="https://github.com/drggboy/mytest_v2/blob/master/LICENSE" target="_blank">
+    <img alt="LICENSE" src="https://img.shields.io/github/license/drggboy/mytest_v2?style=flat-square&color=yellow">
   <a/>
 </p>
 <hr>
