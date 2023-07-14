@@ -67,6 +67,8 @@
                         <option value="sensor" selected="">sensor</option>
                         <option value="gateway">gateway</option>
                         <option value="cros">crossing</option>
+                        <option value="sensor_single">sensor_single</option>
+                        <option value="gateway_single">gateway_single</option>
                     </select>
                 </div>
             </div>
@@ -246,7 +248,7 @@
     var all_gateway = [];   //存放地图上所有的网关节点
     var cross = [];         //存放地图上所有的交叉路口
     var pointArr = [];      //存放一条路的起点与终点
-    var pts = [];           //存放一条路所有的传感器节点
+    var pts = [];           //存放一条路所有的传感器节点或者网关节点
     var str = [];
     var pointIndex = 0;     //初始化节点之间的距离
     var all = [];           //存放地图上所有标记的节点
@@ -254,7 +256,7 @@
     // var point = new BMap.Point(113.80848202641658,22.816506505348503);// lyj标注位置
     var point = new BMap.Point(112.8835, 22.9082);   // gxh上传
 
-    // var point = new BMap.Point(113.87908182502431, 22.91486091203956);  //东莞理工学院北门坐标
+    var point = new BMap.Point(113.87908182502431, 22.91486091203956);  //东莞理工学院北门坐标
     map.centerAndZoom(point, 19);// 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
     map.disableDoubleClickZoom(true);
@@ -267,12 +269,13 @@
     var defaultTileLayer = defaultMapType.getTileLayer();//创建了一个地图图层
     var newMapType = new BMap.MapType('新地图', defaultTileLayer, { minZoom: 18, maxZoom: 21 });
     map.setMapType(newMapType);
-    map.addControl(new BMap.MapTypeControl({
-        mapTypes: [
-            BMAP_NORMAL_MAP,//正常
-            // BMAP_HYBRID_MAP//混合
-        ]
-    }));
+    // 此控件添加后点击会存在突破缩放的问题
+    // map.addControl(new BMap.MapTypeControl({
+    //     mapTypes: [
+    //         BMAP_NORMAL_MAP,//正常
+    //         // BMAP_HYBRID_MAP//混合
+    //     ]
+    // }));
 
     // // 添加自定义组件
     // // 定义一个控件类，即function
@@ -335,6 +338,8 @@
             var marker1 = new BMap.Marker(point1, {
                 icon: gIcon
             });
+            let offset = new BMap.Size(0,-15)       // 向上移，使图标点对准指定点
+            marker1.setOffset(offset)
             map.addOverlay(marker1);
             marker1.setTop(true);
             // 绘制圆
@@ -394,15 +399,36 @@
     //     }
     // }
     function handleClick(e) {
-        var cros = $("#nodeType").val();
-        if (cros == "cros") {
+        var nodetype = $("#nodeType").val();
+        if (nodetype == "cros") {
             cros_point = e.point;
             cross.push(cros_point);
             var markerCros = new BMap.Marker(e.point, {
                 icon: cIcon
             });
             map.addOverlay(markerCros);
-        } else {
+        }
+        else if (nodetype === "sensor_single"){
+            let tmp = []
+            tmp.push(e.point)
+            all_sensor.push(tmp)
+            var markerSingleSessor = new BMap.Marker(e.point, {
+                icon: sIcon
+            });
+            map.addOverlay(markerSingleSessor);
+        }
+        else if (nodetype === "gateway_single"){
+            let tmp2 = []
+            tmp2.push(e.point)
+            all_gateway.push(tmp2)
+            var markerSingleGateway = new BMap.Marker(e.point, {
+                icon: gIcon
+            });
+            let offset = new BMap.Size(0,-15)       // 向上移，使图标点对准指定点
+            markerSingleGateway.setOffset(offset)
+            map.addOverlay(markerSingleGateway);
+        }
+        else {
             pointArr.push(e.point);         // 存放起点与终点
             if (pointArr.length === 1) {
                 var start = new BMap.Point(pointArr[0].lng, pointArr[0].lat);
@@ -411,7 +437,7 @@
             if (pointArr.length === 2) {
                 var start = new BMap.Point(pointArr[0].lng, pointArr[0].lat);
                 // map.addOverlay(new BMap.Marker(start));
-                // pts.push(start);
+                // pts.push(start);   //有bug
                 var end = new BMap.Point(pointArr[1].lng, pointArr[1].lat);
                 // map.addOverlay(new BMap.Marker(end));
                 // pts.push(end);
@@ -450,103 +476,121 @@
                     // console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
                 }
                 // all.push(pts)
-                // 绘制所有节点
-                // 删除已经标注的点
-                map.clearOverlays()
-                // 在地图上标注路口节点
-                for (let j = 0; j<cross.length; j++){
-                    let cross_point = new BMap.Point(cross[j].lng, cross[j].lat);
-                    marker1 = new BMap.Marker(cross_point, {
-                        icon: cIcon})
-                    map.addOverlay(marker1)
-                }
-                // 在地图上标注网关节点
-                for (let j = 0; j < all_gateway.length; j++) {
-                    for (let k = 0; k < all_gateway[j].length; k++){
-                        let point1 = new BMap.Point(all_gateway[j][k].lng, all_gateway[j][k].lat);
-                        marker1 = new BMap.Marker(point1, {
-                            icon: gIcon})
-                        // var offset = new BMap.Size(-10,-10) // 向左向上移
-                        var offset = new BMap.Size(0,-15)       // 向上移，使图标点对准指定点
-                        marker1.setOffset(offset)
-                        console.log(marker1.getOffset())
-                        map.addOverlay(marker1)
-                    }
-                }
-                // 在地图上标注传感器节点
-                for (var j = 0; j < all_sensor.length; j++) {
-                    var xx1 = all_sensor[j][0].lng;
-                    var yy1 = all_sensor[j][0].lat;
-                    var xx2 = all_sensor[j][all_sensor[j].length - 1].lng;
-                    var yy2 = all_sensor[j][all_sensor[j].length - 1].lat;
-                    var rad = Math.atan2((yy2 - yy1), (xx2 - xx1))  //弧度  0.6435011087932844
-                    // var theta = rad * (180 / Math.PI);  //角度  36.86989764584402
-                    var width = 0.000044
-                    var height = 0.00002
-                    var half_width = width / 2
-                    var half_height = height / 2
-                    var distance = Math.sqrt(Math.pow(half_width, 2) + Math.pow(half_height, 2))
-                    var the_alpha = Math.atan2(half_height, half_width)
-
-                    for (var k = 0; k < all_sensor[j].length; k++) {
-                        var point1 = new BMap.Point(all_sensor[j][k].lng, all_sensor[j][k].lat);
-                        // 绘制车框
-                        var ros_point = point1
-                        var vertex_points = [];
-
-                        var vertex_1 = new BMap.Point(ros_point.lng + distance * Math.cos(rad + the_alpha), ros_point.lat + distance * Math.sin(rad + the_alpha));
-                        vertex_points.push(vertex_1);
-
-                        var vertex_2 = new BMap.Point(ros_point.lng + distance * Math.cos(rad - the_alpha), ros_point.lat + distance * Math.sin(rad - the_alpha))
-                        vertex_points.push(vertex_2);
-
-                        var vertex_3 = new BMap.Point(ros_point.lng + distance * Math.cos(rad + the_alpha + Math.PI), ros_point.lat + distance * Math.sin(rad + the_alpha + Math.PI))
-                        vertex_points.push(vertex_3);
-
-                        var vertex_4 = new BMap.Point(ros_point.lng + distance * Math.cos(rad - the_alpha + Math.PI), ros_point.lat + distance * Math.sin(rad - the_alpha + Math.PI))
-                        vertex_points.push(vertex_4);
-
-                        var vertex_5 = vertex_1;
-                        vertex_points.push(vertex_5);
-
-                        var poly_test = new BMap.Polyline(vertex_points);
-                        poly_test.setStrokeColor('#ECD118');
-                        poly_test.setStrokeWeight(3);
-                        map.addOverlay(poly_test);
-                        // 车框
-                        // var marker0 = new BMap.Marker(point1, {
-                        //     icon: rIcon
-                        // });
-                        // marker0.setRotation(theta)
-                        // map.addOverlay(marker0)
-                        // 车中心红点、表示传感器
-                        // 使用api绘制红点
-                        // var circle_marker1 = new BMap.Circle(point1, 0.1, {
-                        //     strokeColor: 'red',
-                        //     strokeWeight: 2,
-                        //     strokeOpacity: 0.1, //圆形的边线透明度
-                        //     strokeStyle: 'solid',
-                        // });
-                        // circle_marker1.setFillColor('#D81E06')
-                        // map.addOverlay(circle_marker1);
-                        // 使用图标绘制红点
-                        var marker1 = new BMap.Marker(point1, {
-                            icon: sIcon
-                        });
-                        map.addOverlay(marker1)
-                    }
-                }
+                //绘制所有标注节点
+                drawAllMarked();
             }
         }
+
         // 值改变事件 无需更改
         // layui.use(['layer', 'form', 'jquery'], function () {
         //     var form = layui.form;
-        //     form.on('select(nodeType)', function (data) {
-        //         all = [];
-        //         map.clearOverlays();
+        //     form.on('select(nodeTypeLay)', function (data) {
+        //         // all = [];
+        //         pointArr = [];
+        //         // map.clearOverlays();
         //     });
         // });
     }
+
+    //绘制所有标注节点
+    function drawAllMarked(){
+        // 绘制所有节点
+        // 删除已经标注的点
+        map.clearOverlays()
+        // 在地图上标注路口节点
+        for (let j = 0; j<cross.length; j++){
+            let cross_point = new BMap.Point(cross[j].lng, cross[j].lat);
+            marker1 = new BMap.Marker(cross_point, {
+                icon: cIcon})
+            map.addOverlay(marker1)
+        }
+        // 在地图上标注网关节点
+        for (let j = 0; j < all_gateway.length; j++) {
+            for (let k = 0; k < all_gateway[j].length; k++){
+                let point1 = new BMap.Point(all_gateway[j][k].lng, all_gateway[j][k].lat);
+                marker1 = new BMap.Marker(point1, {
+                    icon: gIcon})
+                // var offset = new BMap.Size(-10,-10) // 向左向上移
+                var offset = new BMap.Size(0,-15)       // 向上移，使图标点对准指定点
+                marker1.setOffset(offset)
+                // console.log(marker1.getOffset())
+                map.addOverlay(marker1)
+            }
+        }
+        // 在地图上标注传感器节点
+        for (var j = 0; j < all_sensor.length; j++) {
+            if(all_sensor[j].length === 1){
+                let the_point = new BMap.Point(all_sensor[j][0].lng, all_sensor[j][0].lat);
+                let markerSsessor = new BMap.Marker(the_point, {
+                    icon: sIcon
+                });
+                map.addOverlay(markerSsessor)
+            }
+            else if(all_sensor[j].length !== 0){
+                var xx1 = all_sensor[j][0].lng;
+                var yy1 = all_sensor[j][0].lat;
+                var xx2 = all_sensor[j][all_sensor[j].length - 1].lng;
+                var yy2 = all_sensor[j][all_sensor[j].length - 1].lat;
+                var rad = Math.atan2((yy2 - yy1), (xx2 - xx1))  //弧度  0.6435011087932844
+                // var theta = rad * (180 / Math.PI);  //角度  36.86989764584402
+                var width = 0.000044
+                var height = 0.00002
+                var half_width = width / 2
+                var half_height = height / 2
+                var distance = Math.sqrt(Math.pow(half_width, 2) + Math.pow(half_height, 2))
+                var the_alpha = Math.atan2(half_height, half_width)
+
+                for (var k = 0; k < all_sensor[j].length; k++) {
+                    var point1 = new BMap.Point(all_sensor[j][k].lng, all_sensor[j][k].lat);
+                    // 绘制车框
+                    var ros_point = point1
+                    var vertex_points = [];
+
+                    var vertex_1 = new BMap.Point(ros_point.lng + distance * Math.cos(rad + the_alpha), ros_point.lat + distance * Math.sin(rad + the_alpha));
+                    vertex_points.push(vertex_1);
+
+                    var vertex_2 = new BMap.Point(ros_point.lng + distance * Math.cos(rad - the_alpha), ros_point.lat + distance * Math.sin(rad - the_alpha))
+                    vertex_points.push(vertex_2);
+
+                    var vertex_3 = new BMap.Point(ros_point.lng + distance * Math.cos(rad + the_alpha + Math.PI), ros_point.lat + distance * Math.sin(rad + the_alpha + Math.PI))
+                    vertex_points.push(vertex_3);
+
+                    var vertex_4 = new BMap.Point(ros_point.lng + distance * Math.cos(rad - the_alpha + Math.PI), ros_point.lat + distance * Math.sin(rad - the_alpha + Math.PI))
+                    vertex_points.push(vertex_4);
+
+                    var vertex_5 = vertex_1;
+                    vertex_points.push(vertex_5);
+
+                    var poly_test = new BMap.Polyline(vertex_points);
+                    poly_test.setStrokeColor('#ECD118');
+                    poly_test.setStrokeWeight(3);
+                    map.addOverlay(poly_test);
+                    // 车框
+                    // var marker0 = new BMap.Marker(point1, {
+                    //     icon: rIcon
+                    // });
+                    // marker0.setRotation(theta)
+                    // map.addOverlay(marker0)
+                    // 车中心红点、表示传感器
+                    // 使用api绘制红点
+                    // var circle_marker1 = new BMap.Circle(point1, 0.1, {
+                    //     strokeColor: 'red',
+                    //     strokeWeight: 2,
+                    //     strokeOpacity: 0.1, //圆形的边线透明度
+                    //     strokeStyle: 'solid',
+                    // });
+                    // circle_marker1.setFillColor('#D81E06')
+                    // map.addOverlay(circle_marker1);
+                    // 使用图标绘制红点
+                    var marker1 = new BMap.Marker(point1, {
+                        icon: sIcon
+                    });
+                    map.addOverlay(marker1)
+                }
+            }
+        }
+    }
+
 
     layui.use(function(){
         var form = layui.form;
