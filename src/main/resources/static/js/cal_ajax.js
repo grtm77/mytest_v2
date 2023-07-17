@@ -119,6 +119,39 @@ $("#calGreedy").click(function () {
 
 });
 
+// 生成完数据后，发送请求计算有向贪心
+function calLinner_raw() {
+    console.log('自定义函数被调用了');
+    // 清楚地图上已经标记的点
+    map.clearOverlays();
+
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
+    console.log('自定义函数被调用了');
+    $.ajax({
+        "url": "hhln",
+        "type": "post",
+        "data": {
+            "crosFlag": "withCros"
+        },
+        "success": function (response) {
+            console.log('自定义函数被调用了');
+            drawPoints(response);
+            layer.close(loading);
+            layer.msg("网关绘制完成");
+        },
+        "error": function (response) {
+            console.log('自定义函数被调用了');
+            layer.close(loading);
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
+        }
+    });
+};
+
 // 生成完数据后，发送请求计算 有向贪心 （计算路口）新增
 $("#calLinner").click(function () {
     // 清楚地图上已经标记的点
@@ -230,6 +263,39 @@ $("#calAco").click(function () {
         }
     });
 });
+
+// 生成完数据后，发送请求计算遗传算法
+function calByGA_raw() {
+    console.log('自定义函数被调用了');
+    // 清楚地图上已经标记的点
+    map.clearOverlays();
+
+    var loading = layer.load('Loading...', {
+        shade: [0.5,'#fff'] //0.1透明度的白色背景
+    });
+    console.log('自定义函数被调用了');
+    $.ajax({
+        "url": "calByGA",
+        "type": "post",
+        "data": {
+            "crosFlag": "withCros"
+        },
+        "success": function (response) {
+            console.log('自定义函数被调用了');
+            drawPoints(response);
+            layer.close(loading);
+            layer.msg("网关绘制完成");
+        },
+        "error": function (response) {
+            console.log('自定义函数被调用了');
+            layer.close(loading);
+            var mess = response.responseJSON.message;
+            if (mess != null)
+                layer.msg(mess)
+            else layer.msg("请求失败")
+        }
+    });
+};
 
 // 生成完数据后，发送请求计算遗传算法
 $("#calGA").click(function () {

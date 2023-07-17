@@ -45,192 +45,305 @@
 </head>
 
 <body>
-<!--用于放置地图实例-->
-<div id="container"></div>
+<div id="app3">
+    <el-container>
+        <el-header>头部内容</el-header>
+<!--        <el-aside width="200px">侧边栏内容</el-aside>-->
+        <el-main>
+            <!--用于放置地图实例-->
+            <div id="container"></div>
+            <!--按钮组所对应的模态框-->
+            <!--清空数据库 新增-->
+<!--            <div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="clearModalLabel"-->
+<!--                 aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+<!--                            <h4 class="modal-title" id="clearModalLabel">Are you sure to clear your database?</h4>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body" align="center">-->
+<!--                            <button type="button" class="btn btn-primary" id="confirm">Confirm</button>-->
+<!--                            <button type="button" class="btn btn-primary" data-dismiss="modal"-->
+<!--                                    aria-hidden="true">Cancel-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-<!--下方按钮组-->
-<div class="produce">
-    <div class="layui-form layui-form-pane" lay-filter="render">
-        <input type="checkbox" title="标注" lay-skin="tag" lay-filter="ifmark">
-        <!--输入道路名框-->
-        <!--            <div class="layui-inline">-->
-        <!--                <label class="layui-form-label">Road</label>-->
-        <!--                <div class="layui-input-inline">-->
-        <!--                    <input type="tel" id="roadName" lay-verify="required|phone" autocomplete="off" class="layui-input">-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--    标记类型 NodeType-->
-        <div class="layui-inline">
-            <label class="layui-form-label">NodeType</label>
-            <div class="layui-input-inline">
-                <select lay-filter="nodeTypeLay" id="nodeType" disabled>
-                    <option value="sensor" selected="">sensor</option>
-                    <option value="gateway">gateway</option>
-                    <option value="cros">crossing</option>
-                    <option value="sensor_single">sensor_single</option>
-                    <option value="gateway_single">gateway_single</option>
-                </select>
+<!--            &lt;!&ndash;测试数据上传 新增&ndash;&gt;-->
+<!--            <div class="modal fade" id="tdataModal" tabindex="-1" role="dialog" aria-labelledby="tdataModalLabel"-->
+<!--                 aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+<!--                            <h4 class="modal-title" id="tdataModalLabel">Which test data would you like to upload?</h4>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body" align="center">-->
+<!--                            <button type="button" class="btn btn-primary" id="tdata207">207</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="tdata461">461</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="tdata1052">1052</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="tdata1361">1361</button>-->
+
+<!--                            <button type="button" class="btn btn-primary" id="tdatag114">G114</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="tdatag228">G228</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="tdatag354">G354</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="tdatag484">G484</button>-->
+
+<!--                            &lt;!&ndash;                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash;排序 新增&ndash;&gt;-->
+<!--            <div class="modal fade" id="sortModal" tabindex="-1" role="dialog" aria-labelledby="sortModalLabel"-->
+<!--                 aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+<!--                            <h4 class="modal-title" id="sortModalLabel">Are you sure you want to sort data in the database?</h4>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body" align="center">-->
+<!--                            <button type="button" class="btn btn-primary" id="sortconfirm">Confirm</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="backup">Backup</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="restore">Restore</button>-->
+<!--                            <button type="button" class="btn btn-primary" data-dismiss="modal"-->
+<!--                                    aria-hidden="true">Cancel-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash;计算比较 &ndash;&gt;-->
+<!--            <div class="modal fade" id="calModal" tabindex="-1" role="dialog" aria-labelledby="calModalLabel"-->
+<!--                 aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+<!--                            <h4 class="modal-title" id="calModalLabel">Calculation</h4>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body" align="center" id="app">-->
+<!--                            <el-tooltip content="定向贪心" placement="top" id="calLinner">-->
+<!--                                <el-button>LD</el-button>-->
+<!--                            </el-tooltip>-->
+<!--                            <el-tooltip content="遗传算法" placement="top" id="calGA">-->
+<!--                                <el-button>GA</el-button>-->
+<!--                            </el-tooltip>-->
+<!--                            <el-tooltip content="分支限界算法" placement="top" id="calBB">-->
+<!--                                <el-button>BB</el-button>-->
+<!--                            </el-tooltip>-->
+<!--                            <el-tooltip content="朴素贪心算法" placement="top" id="calGreedy">-->
+<!--                                <el-button>GD</el-button>-->
+<!--                            </el-tooltip>-->
+<!--                            <el-tooltip content="线性规划算法" placement="top" id="calLP">-->
+<!--                                <el-button>LP</el-button>-->
+<!--                            </el-tooltip>-->
+<!--                            <el-tooltip content="蚁群算法" placement="top" id="calAco">-->
+<!--                                <el-button>ACO</el-button>-->
+<!--                            </el-tooltip>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash;                <div class="modal-body" align="center" id="app">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <button type="button" class="layui-btn layui-btn-warm" id="calBB">BB</button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">GD</button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <button type="button" class="layui-btn layui-btn-warm" id="calLP">LP</button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash;数据库上传 绘制传感器、网关、路口&ndash;&gt;-->
+<!--            <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"-->
+<!--                 aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+<!--                            <h4 class="modal-title" id="uploadModalLabel">Files Upload</h4>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body" align="center">-->
+<!--                            <button type="button" class="btn btn-primary" id="sensorupload">Sensor Upload</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="gatewayupload">Gateway Upload</button>-->
+<!--                            <button type="button" class="btn btn-primary" id="crosupload">Crossing Upload</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+        </el-main>
+        <el-footer>
+            <!--下方按钮组-->
+            <div class="produce">
+                <div class="layui-form layui-form-pane" lay-filter="render">
+                    <input type="checkbox" title="标注" lay-skin="tag" lay-filter="ifmark">
+                    <!--输入道路名框-->
+                    <!--            <div class="layui-inline">-->
+                    <!--                <label class="layui-form-label">Road</label>-->
+                    <!--                <div class="layui-input-inline">-->
+                    <!--                    <input type="tel" id="roadName" lay-verify="required|phone" autocomplete="off" class="layui-input">-->
+                    <!--                </div>-->
+                    <!--            </div>-->
+                    <!--    标记类型 NodeType-->
+                    <div class="layui-inline">
+                        <label class="layui-form-label">NodeType</label>
+                        <div class="layui-input-inline">
+                            <select lay-filter="nodeTypeLay" id="nodeType" disabled>
+                                <option value="sensor" selected="">sensor</option>
+                                <option value="gateway">gateway</option>
+                                <option value="cros">crossing</option>
+                                <option value="sensor_single">sensor_single</option>
+                                <option value="gateway_single">gateway_single</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <!--右下方按钮组  从保存按钮开始-->
+                        <div class="layui-block layui-btn-container">
+                            <button type="button" class="layui-btn layui-btn-normal layui-btn-disabled" id="save" disabled>Save
+                                Data
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-warm" id="cal" data-toggle="modal"
+                                    data-target="#calModal">Calculation
+                            </button>
+                            <button type="button" class="layui-btn" id="gshIt">Formatting</button>
+                            <button type="button" class="layui-btn" id="clear" data-toggle="modal"
+                                    data-target="#clearModal">Clear Database
+                            </button>
+                            <button type="button" class="layui-btn" id="sort" data-toggle="modal" data-target="#sortModal">Sort
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
+                                    data-target="#uploadModal">Files Upload
+                            </button>
+                            <button type="button" class="layui-btn" id="tdata" data-toggle="modal"
+                                    data-target="#tdataModal">TestData Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="layui-inline">
-            <!--右下方按钮组  从保存按钮开始-->
-            <div class="layui-block layui-btn-container">
-                <button type="button" class="layui-btn layui-btn-normal layui-btn-disabled" id="save" disabled>Save
-                    Data
-                </button>
-                <button type="button" class="layui-btn layui-btn-warm" id="cal" data-toggle="modal"
-                        data-target="#calModal">Calculation
-                </button>
-                <button type="button" class="layui-btn" id="gshIt">Formatting</button>
-                <button type="button" class="layui-btn" id="clear" data-toggle="modal"
-                        data-target="#clearModal">Clear Database
-                </button>
-                <button type="button" class="layui-btn" id="sort" data-toggle="modal" data-target="#sortModal">Sort
-                </button>
-                <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
-                        data-target="#uploadModal">Files Upload
-                </button>
-                <button type="button" class="layui-btn" id="tdata" data-toggle="modal"
-                        data-target="#tdataModal">TestData Upload
-                </button>
-            </div>
-        </div>
-    </div>
+        </el-footer>
+    </el-container>
 </div>
 
+<!--    <div id="app2">-->
+<!--        <el-switch>-->
+<!--            v-model="value1"-->
+<!--            active-text="按月付费"-->
+<!--            inactive-text="按年付费"-->
+<!--        </el-switch>-->
+<!--    </div>-->
+
+
+<!--<div class="produce2" id="app2">-->
+<!--    <el-row>-->
+<!--        <el-col :span="24">-->
+<!--            <div class="grid-content bg-purple-dark">-->
+<!--                <el-form :inline="true" :model="formInline" class="demo-form-inline">-->
+<!--                    &lt;!&ndash;                    <el-form-item label="即时配送">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        <el-switch v-model="form.delivery"></el-switch>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    </el-form-item>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                <el-switch&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        v-model="value1"&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        active-text="标注模式"&ndash;&gt;-->
+<!--                    &lt;!&ndash;                ></el-switch>&ndash;&gt;-->
+<!--                    <el-form-item label="NodeType">-->
+<!--                        <el-select v-model="formInline.region" placeholder="标记节点类型">-->
+<!--                            <el-option label="sensor" value="sensor"></el-option>-->
+<!--                            <el-option label="gateway" value="gateway"></el-option>-->
+<!--                            <el-option label="crossing" value="crossing"></el-option>-->
+<!--                            <el-option label="sensor_single" value="sensor_single"></el-option>-->
+<!--                            <el-option label="gateway_single" value="gateway_single"></el-option>-->
+<!--                        </el-select>-->
+<!--                    </el-form-item>-->
+<!--                    <el-form-item>-->
+<!--                        <el-button type="primary" @click="onSubmit">Save Data</el-button>-->
+<!--                    </el-form-item>-->
+<!--                </el-form>-->
+<!--            </div>-->
+<!--        </el-col>-->
+<!--    </el-row>-->
+<!--    &lt;!&ndash;            <el-switch&ndash;&gt;-->
+<!--    &lt;!&ndash;                    v-model="value1"&ndash;&gt;-->
+<!--    &lt;!&ndash;                    active-text="标注模式"&ndash;&gt;-->
+<!--    &lt;!&ndash;            ></el-switch>&ndash;&gt;-->
+<!--    &lt;!&ndash;            <el-button>默认按钮</el-button>&ndash;&gt;-->
+<!--    <el-row>-->
+<!--        <el-col :span="12">-->
+<!--            <div class="grid-content bg-purple"> 123456789</div>-->
+<!--        </el-col>-->
+<!--        <el-col :span="12">-->
+
+<!--            <div class="grid-content bg-purple-light">-->
+<!--                <el-form :inline="true" :model="formInline" class="demo-form-inline">-->
+<!--                    &lt;!&ndash;                    <el-form-item label="即时配送">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        <el-switch v-model="form.delivery"></el-switch>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    </el-form-item>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                <el-switch&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        v-model="value1"&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        active-text="标注模式"&ndash;&gt;-->
+<!--                    &lt;!&ndash;                ></el-switch>&ndash;&gt;-->
+<!--                    <el-form-item label="NodeType">-->
+<!--                        <el-select v-model="formInline.region" placeholder="标记节点类型">-->
+<!--                            <el-option label="sensor" value="sensor"></el-option>-->
+<!--                            <el-option label="gateway" value="gateway"></el-option>-->
+<!--                            <el-option label="crossing" value="crossing"></el-option>-->
+<!--                            <el-option label="sensor_single" value="sensor_single"></el-option>-->
+<!--                            <el-option label="gateway_single" value="gateway_single"></el-option>-->
+<!--                        </el-select>-->
+<!--                    </el-form-item>-->
+<!--                    <el-form-item>-->
+<!--                        <el-button type="primary" @click="onSubmit">Save Data</el-button>-->
+<!--                    </el-form-item>-->
+<!--                </el-form>-->
+<!--            </div>-->
+<!--        </el-col>-->
+<!--    </el-row>-->
+<!--</div>-->
 <!--null 按钮-->
 <!--<div id="123456">-->
 <!--    <button type="button" class="btn btn-primary" id="buttontest">Null</button>-->
 <!--</div>-->
 
-<!--按钮组所对应的模态框-->
-<!--清空数据库 新增-->
-<div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="clearModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="clearModalLabel">Are you sure to clear your database?</h4>
-            </div>
-            <div class="modal-body" align="center">
-                <button type="button" class="btn btn-primary" id="confirm">Confirm</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        aria-hidden="true">Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--测试数据上传 新增-->
-<div class="modal fade" id="tdataModal" tabindex="-1" role="dialog" aria-labelledby="tdataModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="tdataModalLabel">Which test data would you like to upload?</h4>
-            </div>
-            <div class="modal-body" align="center">
-                <button type="button" class="btn btn-primary" id="tdata207">207</button>
-                <button type="button" class="btn btn-primary" id="tdata461">461</button>
-                <button type="button" class="btn btn-primary" id="tdata1052">1052</button>
-                <button type="button" class="btn btn-primary" id="tdata1361">1361</button>
-
-                <button type="button" class="btn btn-primary" id="tdatag114">G114</button>
-                <button type="button" class="btn btn-primary" id="tdatag228">G228</button>
-                <button type="button" class="btn btn-primary" id="tdatag354">G354</button>
-                <button type="button" class="btn btn-primary" id="tdatag484">G484</button>
-
-                <!--                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>-->
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--排序 新增-->
-<div class="modal fade" id="sortModal" tabindex="-1" role="dialog" aria-labelledby="sortModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="sortModalLabel">Are you sure you want to sort data in the database?</h4>
-            </div>
-            <div class="modal-body" align="center">
-                <button type="button" class="btn btn-primary" id="sortconfirm">Confirm</button>
-                <button type="button" class="btn btn-primary" id="backup">Backup</button>
-                <button type="button" class="btn btn-primary" id="restore">Restore</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        aria-hidden="true">Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--计算比较 -->
-<div class="modal fade" id="calModal" tabindex="-1" role="dialog" aria-labelledby="calModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="calModalLabel">Calculation</h4>
-            </div>
-            <div class="modal-body" align="center" id="app">
-                <el-tooltip content="定向贪心" placement="top" id="calLinner">
-                    <el-button>LD</el-button>
-                </el-tooltip>
-                <el-tooltip content="遗传算法" placement="top" id="calGA">
-                    <el-button>GA</el-button>
-                </el-tooltip>
-                <el-tooltip content="分支限界算法" placement="top" id="calBB">
-                    <el-button>BB</el-button>
-                </el-tooltip>
-                <el-tooltip content="朴素贪心算法" placement="top" id="calGreedy">
-                    <el-button>GD</el-button>
-                </el-tooltip>
-                <el-tooltip content="线性规划算法" placement="top" id="calLP">
-                    <el-button>LP</el-button>
-                </el-tooltip>
-                <el-tooltip content="蚁群算法" placement="top" id="calAco">
-                    <el-button>ACO</el-button>
-                </el-tooltip>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--数据库上传 绘制传感器、网关、路口-->
-<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="uploadModalLabel">Files Upload</h4>
-            </div>
-            <div class="modal-body" align="center">
-                <button type="button" class="btn btn-primary" id="sensorupload">Sensor Upload</button>
-                <button type="button" class="btn btn-primary" id="gatewayupload">Gateway Upload</button>
-                <button type="button" class="btn btn-primary" id="crosupload">Crossing Upload</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 </body>
 
 <!-- All js code -->
 <script type="text/javascript">
     new Vue({
+        el: '#app3'
+    });
+    new Vue({
         el: '#app',
         data: function () {
             return {visible: false}
         }
     })
+    new Vue({
+        el: '#app2',
+        data() {
+            return {
+                // value1: true,
+                formInline: {
+                    user: '',
+                    region: '',
+                },
+            }
+        },
+        methods: {
+            onSubmit() {
+                console.log('submit!');
+            }
+        }
+    });
+
     // 创建自定义网关图标
     var gIcon = new BMap.Icon("icon/jian.png", new BMap.Size(32, 32));
     var gIcon_rec32 = new BMap.Icon("icon/rectangle32.png", new BMap.Size(32, 32));
@@ -619,10 +732,5 @@
 </script>
 <script type="text/javascript" src="js/cal_ajax.js"></script>
 <script type="text/javascript" src="js/data_upload.js"></script>
-<style>
-    /*去除百度地图logo、比例尺控件不显示*/
-    .anchorBL{
-        display:none;
-    }
-</style>
+
 </html>
