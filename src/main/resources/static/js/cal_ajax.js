@@ -394,7 +394,9 @@ $("#gatewayupload").click(function () {
             //在地图上标记
             for (var i = 0; i < gateways.length; i++) {
                 var point2 = new BMap.Point(gateways[i][3], gateways[i][4]);
-                var marker2 = new BMap.Marker(point2, {icon: gIcon});
+                // var marker2 = new BMap.Marker(point2, {icon: gIcon});
+                var marker2 = new BMap.Marker(point2, {icon: gIcon_rec32});
+                // var marker2 = new BMap.Marker(point2, {icon: gIcon_rec16});
                 map.addOverlay(marker2);
                 marker2.setTop(true);
             }
