@@ -1,6 +1,7 @@
 package top.bultrail.markroad.handler;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import top.bultrail.markroad.pojo.Point;
@@ -20,7 +21,27 @@ public class MessageHandler {
 
     // 一键保存
     @ResponseBody
-    @RequestMapping(value = "/hhquicksave", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhquicksaveNew", "/api/hhquicksaveNew"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @RequestMapping(value = "/hhquicksaveNew", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultEntity<String>> quicksave_new(@RequestBody QuickSave quick_save) {
+        // 将数据保存在数据库
+        try {
+            transformService.quicksaveDB(quick_save);
+            System.out.println("Data Save Success!");
+            return ResponseEntity.ok(ResultEntity.successWithoutData());
+//            if (quick_save.getCross_points() == null) {
+//                return ResultEntity.failed("You haven't set marks yet！");
+//            } else {
+//                transformService.quicksaveDB(quick_save);
+//                return ResultEntity.successWithoutData();
+//            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(ResultEntity.failed(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/hhquicksave","/api/hhquicksave"}, method = RequestMethod.POST)
     public ResultEntity<String> quicksave(QuickSave quick_save) {
         // 将数据保存在数据库
         try {
@@ -36,9 +57,11 @@ public class MessageHandler {
             return ResultEntity.failed(e.getMessage());
         }
     }
+
+
     //保存数据
     @ResponseBody
-    @RequestMapping(value = "/hha", method = RequestMethod.POST)
+    @RequestMapping(value ={"/hha","/api/hha"},  method = RequestMethod.POST)
     public ResultEntity<String> save02(Point point) {
         // 将数据保存在数据库
         try {
@@ -55,7 +78,7 @@ public class MessageHandler {
 
     //清空数据库 新增
     @ResponseBody
-    @RequestMapping(value = "/hhcl", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhcl", "/api/hhcl"}, method = RequestMethod.POST)
     public ResultEntity<String> clear() {
         transformService.clearDB();
         return ResultEntity.successWithoutData();
@@ -64,7 +87,7 @@ public class MessageHandler {
 
     //排序 新增
     @ResponseBody
-    @RequestMapping(value = "/hhst", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhst","/api/hhst"}, method = RequestMethod.POST)
     public ResultEntity<String> sort() {
         transformService.sortDB();
         return ResultEntity.successWithoutData();
@@ -72,7 +95,7 @@ public class MessageHandler {
 
     //备份
     @ResponseBody
-    @RequestMapping(value = "/hhback", method = RequestMethod.POST)
+    @RequestMapping(value ={"/hhback","/api/hhback"}, method = RequestMethod.POST)
     public ResultEntity<String> backup() {
         transformService.bkDB();
         return ResultEntity.successWithoutData();
@@ -80,7 +103,7 @@ public class MessageHandler {
 
     //1361
     @ResponseBody
-    @RequestMapping(value = "/hh1361", method = RequestMethod.POST)
+    @RequestMapping(value ={"/hh1361", "/api/hh1361"}, method = RequestMethod.POST)
     public ResultEntity<String> t1361() {
         transformService.td1361();
         return ResultEntity.successWithoutData();
@@ -88,7 +111,7 @@ public class MessageHandler {
 
     //1052
     @ResponseBody
-    @RequestMapping(value = "/hh1052", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hh1052","/api/hh1052"}, method = RequestMethod.POST)
     public ResultEntity<String> t1052() {
         transformService.td1052();
         return ResultEntity.successWithoutData();
@@ -96,7 +119,7 @@ public class MessageHandler {
 
     //207
     @ResponseBody
-    @RequestMapping(value = "/hh207", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hh207","/api/hh207"}, method = RequestMethod.POST)
     public ResultEntity<String> t207() {
         transformService.td207();
         return ResultEntity.successWithoutData();
@@ -104,7 +127,7 @@ public class MessageHandler {
 
     //461
     @ResponseBody
-    @RequestMapping(value = "/hh461", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hh461","/api/hh461"}, method = RequestMethod.POST)
     public ResultEntity<String> t461() {
         transformService.td461();
         return ResultEntity.successWithoutData();
@@ -112,7 +135,7 @@ public class MessageHandler {
 
     //g484
     @ResponseBody
-    @RequestMapping(value = "/hhg484", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhg484","/api/hhg484"}, method = RequestMethod.POST)
     public ResultEntity<String> tg484() {
         transformService.tdGuo(484);
         return ResultEntity.successWithoutData();
@@ -120,7 +143,7 @@ public class MessageHandler {
 
     //g354
     @ResponseBody
-    @RequestMapping(value = "/hhg354", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhg354","/api/hhg354"}, method = RequestMethod.POST)
     public ResultEntity<String> tg354() {
         transformService.tdGuo(354);
         return ResultEntity.successWithoutData();
@@ -128,7 +151,7 @@ public class MessageHandler {
 
     //114
     @ResponseBody
-    @RequestMapping(value = "/hhg114", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhg114","/api/hhg114"}, method = RequestMethod.POST)
     public ResultEntity<String> tg114() {
         transformService.tdGuo(114);
         return ResultEntity.successWithoutData();
@@ -136,7 +159,7 @@ public class MessageHandler {
 
     //228
     @ResponseBody
-    @RequestMapping(value = "/hhg228", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhg228","/api/hhg228"}, method = RequestMethod.POST)
     public ResultEntity<String> tg228() {
         transformService.tdGuo(228);
         return ResultEntity.successWithoutData();
@@ -144,7 +167,7 @@ public class MessageHandler {
 
     //还原 新增
     @ResponseBody
-    @RequestMapping(value = "/hhres", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhres","/api/hhres"}, method = RequestMethod.POST)
     public ResultEntity<String> restore() {
         transformService.resDB();
         return ResultEntity.successWithoutData();
@@ -152,7 +175,7 @@ public class MessageHandler {
 
     //用贪心算法计算，数据保存在txt 实现
     @ResponseBody
-    @RequestMapping(value = "/hhe", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhe","/api/hhe"}, method = RequestMethod.POST)
     public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByGreedy(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
@@ -167,7 +190,7 @@ public class MessageHandler {
 
     //有向贪心
     @ResponseBody
-    @RequestMapping(value = "/hhln", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhln","/api/hhln"}, method = RequestMethod.POST)
     public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByLinner(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
@@ -182,7 +205,7 @@ public class MessageHandler {
 
     //用分支限界算法计算，数据保存在txt
     @ResponseBody
-    @RequestMapping(value = "/hhbb", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhbb","/api/hhbb"}, method = RequestMethod.POST)
     public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByBB(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
@@ -197,7 +220,7 @@ public class MessageHandler {
 
     //用线性规划计算
     @ResponseBody
-    @RequestMapping(value = "/hhLP", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhLP","/api/hhLP"}, method = RequestMethod.POST)
     public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByLP(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
@@ -212,7 +235,7 @@ public class MessageHandler {
 
     //用蚁群算法计算
     @ResponseBody
-    @RequestMapping(value = "/hhaco", method = RequestMethod.POST)
+    @RequestMapping(value = {"/hhaco","/api/hhaco"}, method = RequestMethod.POST)
     public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByAco(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
@@ -227,7 +250,7 @@ public class MessageHandler {
 
     //用遗传算法计算
     @ResponseBody
-    @RequestMapping(value = "/calByGA", method = RequestMethod.POST)
+    @RequestMapping(value = {"/calByGA","/api/calByGA"}, method = RequestMethod.POST)
     public ResponseEntity<ResultEntity<HashMap<String, List<List<String>>>>> calByGA(@RequestParam(value = "crosFlag") String flag) {
         HashMap<String, List<List<String>>> strings = null;
         try {
