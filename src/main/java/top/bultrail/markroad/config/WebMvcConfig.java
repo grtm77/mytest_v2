@@ -14,7 +14,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //        registry.addViewController("/").setViewName("mark_en");
 
         //前后端分离
-//        registry.addViewController("/").setViewName("forward:/index.html");
+        registry.addViewController("/").setViewName("forward:/index.html");
 
     }
 }
