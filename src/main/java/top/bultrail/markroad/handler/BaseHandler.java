@@ -16,21 +16,21 @@ public class BaseHandler {
     @Autowired
     DBRelation dbRelation;
 
-    @RequestMapping("/sup")
+    @RequestMapping(value={"/sup","/api/sup"})
     @ResponseBody
     public ResultEntity<List<List<String>>> sensorUpload() {
         List<List<String>> sensorList = dbRelation.readSensor();
         return ResultEntity.sucessWithData(sensorList);
     }
 
-    @RequestMapping("/gup")
+    @RequestMapping(value={"/gup","/api/gup"})
     @ResponseBody
     public ResultEntity<List<List<String>>> gatewayUpload() {
         List<List<String>> gatewayList = dbRelation.readGateway();
         return ResultEntity.sucessWithData(gatewayList);
     }
 
-    @RequestMapping("/cup")
+    @RequestMapping(value={"/cup","/api/cup"})
     @ResponseBody
     public ResultEntity<List<List<String>>> crossingUpload() {
         List<List<String>> crossingList = dbRelation.readCrossing();
