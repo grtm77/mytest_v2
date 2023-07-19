@@ -66,7 +66,7 @@ public class ResultEntity<T> {
         return new ResultEntity<E>(SUCCESS,null,data);
     }
     public static <E> ResultEntity<E> failed(E data) {
-        return new ResultEntity<E>(FAILED,null,data  );
+        return new ResultEntity<E>(FAILED,null, data);
     }
     public static <E> ResultEntity<E> failedWithMessage(String message) {
         return new ResultEntity<E>(FAILED, message,null);
@@ -74,6 +74,11 @@ public class ResultEntity<T> {
 
 
     public static ResultEntity<List<String>> successWithData(List<String> strings,String message) {
-        return new ResultEntity<List<String>>(SUCCESS,message,strings  );
+        return new ResultEntity<List<String>>(SUCCESS, message, strings);
     }
+
+    public static ResultEntity<List<Double>> successWithDataDouble(List<Double> listDouble,String message) {
+        return new ResultEntity<List<Double>>(SUCCESS, message, listDouble);
+    }
+
 }

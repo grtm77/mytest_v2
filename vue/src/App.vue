@@ -8,7 +8,7 @@
       </el-main>
       <el-footer>
         <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="标注模式">
+          <el-form-item label="Mark Mode">
             <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
           </el-form-item>
           <el-form-item label="NodeType">
@@ -22,17 +22,26 @@
             <el-button type="primary" @click="saveData" :disabled="saveDataIsDisabled">Save Data</el-button>
           </el-form-item>
           <el-form-item>
+            <el-button type="primary" @click="saveDataset" :disabled="saveDatasetIsDisabled">Save Dataset</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="success" @click="handleDatasetUpload" class="green-color">Dataset Upload</el-button>
+          </el-form-item>-
+          <el-form-item>
+            <el-button type="danger" @click="deleteDataset">Delete Dataset</el-button>
+          </el-form-item>
+          <el-form-item>
             <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="formatting" class="green-color">Formatting</el-button>
           </el-form-item>
-          <el-form-item>
+          <!-- <el-form-item>
             <el-button type="success" @click="onSubmit" class="green-color">Clear Database</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="onSubmit" class="green-color">Sort</el-button>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
           </el-form-item>
@@ -45,22 +54,22 @@
     <!-- 计算部分 -->
     <el-dialog title="Calculation" v-model="caculate_dialogVisible" width="30%">
       <div style="display: flex; justify-content: center;">
-        <el-tooltip class="box-item" effect="dark" content="定向贪心" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="Directed greed" placement="top">
           <el-button @click="calLinner">LD</el-button>
         </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" content="遗传算法" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="Genetic algorithm" placement="top">
           <el-button @click="calByGA">GA</el-button>
         </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" content="分支限界算法" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="Branch and bound algorithm" placement="top">
           <el-button @click="calByBB">BB</el-button>
         </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" content="朴素贪心算法" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="Plain greedy algorithm" placement="top">
           <el-button @click="calByGD">GD</el-button>
         </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" content="线性规划算法" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="Linear Programming Algorithm" placement="top">
           <el-button @click="calByLP">LP</el-button>
         </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" content="蚁群算法" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="Ant Colony Algorithm" placement="top">
           <el-button @click="calByAco">ACO</el-button>
         </el-tooltip>
       </div>
@@ -92,6 +101,13 @@
         <el-button type="primary" @click="tdatag484">G484</el-button>
       </div>
     </el-dialog>
+    <!-- Dataset Upload部分 -->
+    <el-dialog title="Which dataset would you like to upload?" v-model="Dataset_dialogVisible" width="45%">
+      <div style="display: flex; justify-content: center;">
+        <el-button v-for="name in setNames" :key="name" type="primary" @click="handleDatasetButtonClick(name)">{{ name
+        }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -118,13 +134,16 @@ let pts: any[] = [];           //存放一条路所有的传感器节点或者�
 // let str = [];
 let pointIndex = 0;     //初始化节点之间的距离
 
-
 const ifmark = ref(false);
 const caculate_dialogVisible = ref(false);
 const upload_dialogVisible = ref(false);
 const TestData_dialogVisible = ref(false);
+const Dataset_dialogVisible = ref(false);
+const setNames = ref<string[]>([]);
 const nodeTypeIsDisabled = computed(() => !ifmark.value);
 const saveDataIsDisabled = computed(() => !ifmark.value);
+const saveDatasetIsDisabled = computed(() => !ifmark.value);
+
 type Option = {
   id: number
   label: string
@@ -139,6 +158,31 @@ const options = ref([
   { id: 4, label: 'gateway_single', desc: '单点网关标记' },
   { id: 5, label: 'cross', desc: '路口标记' },
 ])
+
+
+function handleDatasetButtonClick(name: string) {
+  // 在这里处理按钮点击逻辑
+  axios.post('datasetLoad', null, {
+    params: {
+      datasetName: name
+    }
+  })
+    .then((response) => {
+      let location_lng = response.data.data[0]
+      let location_lat = response.data.data[1]
+      // 清除地图上已经标记的点
+      map.clearOverlays();
+      var data_point = new BMap.Point(location_lng, location_lat);// lyj标注位置
+      map.centerAndZoom(data_point, 19);
+      sensorupload();
+    })
+    .catch(function (error: any) {
+      ElMessage({
+        message: error,
+        type: 'error',
+      })
+    });
+}
 
 const handleSwitchChange = () => {
   if (ifmark.value) {
@@ -331,9 +375,9 @@ function drawAllMarked() {
   }
 }
 
-const onSubmit = () => {
-  console.log('submit!');
-};
+// const onSubmit = () => {
+//   console.log('submit!');
+// };
 
 const formatting = () => {
   //清空所有存放数据的数组
@@ -413,6 +457,98 @@ const saveData = () => {
       });
     });
 };
+
+const deleteDataset = () => {
+  ElMessageBox.prompt('Please enter the name of the dataset you want to delete', 'Tip', {
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancel',
+    inputPattern: /^[a-zA-Z0-9]{1,8}$/,
+    inputErrorMessage: 'Input values contain only letters and numbers and are no more than 8 characters long',
+  })
+    .then(({ value }) => {
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(255, 255, 255, 0.5)',
+      })
+      // 发送网络请求
+      axios.post('deleteDataset', null, {
+        params: {
+          datasetName: value
+        }
+      })
+        .then(() => {
+          loading.close();
+          ElMessage({
+            message: 'Dataset deleted successfully',
+            type: 'success',
+          })
+        })
+        .catch((error: { response: { data: { message: any; }; }; }) => {
+          loading.close();
+          const mess = error.response.data.message;
+          if (mess != null)
+            ElMessage.error(mess)
+          else
+            ElMessage.error('请求失败')
+        });
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Input canceled',
+      })
+    })
+}
+
+const saveDataset = () => {
+  ifmark.value = !ifmark.value;
+  ElMessageBox.prompt('Please set dataset name', 'Tip', {
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancel',
+    inputPattern: /^[a-zA-Z0-9]{1,8}$/,
+    inputErrorMessage: 'Input values contain only letters and numbers and are no more than 8 characters long',
+  })
+    .then(({ value }) => {
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(255, 255, 255, 0.5)',
+      })
+      let current_location = [];
+      current_location.push(map.getCenter().lng);
+      current_location.push(map.getCenter().lat);
+      // 构建请求体数据
+      const requestData = {
+        datasetName: value,
+        current_location: current_location,
+      };
+
+      // 发送网络请求
+      axios.post('saveDataset', requestData)
+        .then(() => {
+          loading.close();
+          ElMessage({
+            message: 'Dataset saved successfully',
+            type: 'success',
+          })
+        })
+        .catch((error: { response: { data: { message: any; }; }; }) => {
+          loading.close();
+          const mess = error.response.data.message;
+          if (mess != null)
+            ElMessage.error(mess)
+          else
+            ElMessage.error('请求失败')
+        });
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Input canceled',
+      })
+    })
+}
 
 const createMap = () => {
   BMap = window.BMap;
@@ -514,6 +650,23 @@ const handleFilesUpload = () => {
 
 const handleTestUpload = () => {
   TestData_dialogVisible.value = true;
+};
+
+const handleDatasetUpload = () => {
+  // 发送网络请求
+  axios.post('searchSetnames')
+    .then((response: { data: any; }) => {
+      setNames.value = response.data.data;
+      Dataset_dialogVisible.value = true;
+    })
+    .catch((error: { response: { data: { message: any; }; }; }) => {
+      const mess = error.response.data.message;
+      if (mess != null)
+        ElMessage.error(mess)
+      else
+        ElMessage.error('请求失败')
+    });
+  Dataset_dialogVisible.value = true;
 };
 
 const calByGA = () => {
@@ -730,9 +883,13 @@ const crossingupload = () => {
   axios.post('cup')
     .then((response: { data: { data: any; }; }) => {
       var crossing = response.data.data; // 拿到的cros列表
+      cross = [];
       // 在地图上标记
       for (var i = 0; i < crossing.length; i++) {
         var point3 = new BMap.Point(crossing[i][2], crossing[i][3]);
+        let tmp = [];
+        tmp.push(point3);
+        cross.push(tmp);
         var marker3 = new BMap.Marker(point3, { icon: cIcon });
         map.addOverlay(marker3);
       }
@@ -761,9 +918,13 @@ const gatewayupload = () => {
   axios.post('gup')
     .then((response: { data: { data: any; }; }) => {
       var gateways = response.data.data; // 拿到的gateway列表
+      all_gateway = [];
       // 在地图上标记
       for (var i = 0; i < gateways.length; i++) {
         var point2 = new BMap.Point(gateways[i][3], gateways[i][4]);
+        let tmp = [];
+        tmp.push(point2);
+        all_gateway.push(tmp);
         // var marker2 = new BMap.Marker(point2, {icon: gIcon});
         var marker2 = new BMap.Marker(point2, { icon: gIcon_rec32 });
         // var marker2 = new BMap.Marker(point2, {icon: gIcon_rec16});
@@ -797,6 +958,9 @@ const sensorupload = () => {
       // 在地图上标记
       for (var i = 0; i < sensors.length; i++) {
         var point1 = new BMap.Point(sensors[i][3], sensors[i][4]);
+        let tmp = [];
+        tmp.push(point1);
+        all_sensor.push(tmp);
         var marker1 = new BMap.Marker(point1, { icon: sIcon });
         map.addOverlay(marker1);
       }
@@ -976,16 +1140,20 @@ const tdatag484 = () => {
 }
 
 .yellow-color {
-  background-color: #FFB800; /* 设置自定义的背景颜色 */
+  background-color: #FFB800;
+  /* 设置自定义的背景颜色 */
   /* color: #FFFFFF; 设置自定义的文本颜色 */
 }
+
 .green-color:hover {
-  background-color: #33ABA0; /* 设置自定义的背景颜色 */
+  background-color: #33ABA0;
+  /* 设置自定义的背景颜色 */
   /* color: #FFFFFF; 设置自定义的文本颜色 */
 }
 
 .green-color {
-  background-color: #009688; /* 设置自定义的背景颜色 */
+  background-color: #009688;
+  /* 设置自定义的背景颜色 */
   /* color: #FFFFFF; 设置自定义的文本颜色 */
 }
 </style>
