@@ -88,6 +88,7 @@ public class DBRelation {
             e.printStackTrace();
         }
     }
+
     //写入数据
     public void write_new(String roadName, List<String[]> strList1, String pointType) {
         Connection conn = setConnection();
@@ -136,8 +137,6 @@ public class DBRelation {
         }
     }
 
-//    public void quick_write_new(String roadName, List<String[]> strList1, String pointType) {
-//    public void quick_write_new(double[][] cross_points, double[][][] gateway_array, double[][][] sensor_array) {
     public void quick_write_new(String[][] cross_points, String[][][] gateway_array, String[][][] sensor_array) {
         Connection conn = setConnection();
         for (int i = 0; i < sensor_array.length; i++) {
@@ -228,6 +227,107 @@ public class DBRelation {
         }
     }
 
+    //保存数据集
+    public void saveDataset(String setName, List<Double> currentLocation) {
+        Connection conn = setConnection();
+        String[] keys = new String[]{"sensor", "gateway", "crossing"};
+        for (String key : keys) {
+            String newTableName = key + "_" + setName;
+            String sql = "CREATE TABLE " + newTableName + " LIKE " + key + ";";
+            try {
+                qr.update(conn, sql);
+                sql = "INSERT INTO " + newTableName + " SELECT * FROM " + key + ";";
+                qr.update(conn, sql);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // Insert into dataset_name table
+        String datasetNameTable = "dataset_name";
+        String sensorSize = "SELECT COUNT(*) FROM sensor_" + setName;
+        String gatewaySize = "SELECT COUNT(*) FROM gateway_" + setName;
+        String crossingSize = "SELECT COUNT(*) FROM crossing_" + setName;
+        String insertSql = "INSERT INTO " + datasetNameTable + " (name, sensor_size, gateway_size, crossing_size, location_lng, location_lat) " +
+                "VALUES (?, (" + sensorSize + "), (" + gatewaySize + "), (" + crossingSize + "), (" + currentLocation.get(0) + "), (" + currentLocation.get(1) + "))";
+        try {
+            PreparedStatement statement = conn.prepareStatement(insertSql);
+            statement.setString(1, setName);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //删除数据集
+    public void deleteDataset(String setName) {
+        Connection conn = setConnection();
+        String[] keys = new String[]{"sensor", "gateway", "crossing"};
+
+        // 删除三个数据表
+        for (String key : keys) {
+            String tableName = key + "_" + setName;
+            String sql = "DROP TABLE IF EXISTS " + tableName;
+            try {
+                qr.update(conn, sql);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // 删除 dataset_name 表中对应的条目
+        String datasetNameTable = "dataset_name";
+        String deleteSql = "DELETE FROM " + datasetNameTable + " WHERE name = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(deleteSql);
+            statement.setString(1, setName);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // 获取数据集列表
+    public List<String> searchSetnames() {
+        List<String> setNames = new ArrayList<>();
+        Connection conn = setConnection();
+        String sql = "SELECT name FROM dataset_name";
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                String setName = resultSet.getString("name");
+                setNames.add(setName);
+            }
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return setNames;
+    }
+
+
     //备份 新增
     public void bkup() {
 
@@ -267,6 +367,49 @@ public class DBRelation {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Double> datasetLoad(String setName) {
+        Connection conn = setConnection();
+        // 加载数据集
+        String[] keys = new String[]{"sensor", "gateway", "crossing"};
+        for (String key : keys) {
+            String sql = "INSERT INTO " + key + " SELECT * FROM " + key + "_" + setName;
+            try {
+                qr.update(conn, sql);
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // 获取数据集位置
+        List<Double> locationList = new ArrayList<>();
+        try {
+            String sql = "SELECT location_lng, location_lat FROM dataset_name WHERE name = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, setName);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                double locationLng = resultSet.getDouble("location_lng");
+                double locationLat = resultSet.getDouble("location_lat");
+                locationList.add(locationLng);
+                locationList.add(locationLat);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return locationList;
     }
 
     public void tdataG(String num) {

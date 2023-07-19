@@ -56,6 +56,19 @@ public class TransformService {
         dbRelation.quick_write_new(cross_points, gateway_array, sensor_array);
     }
 
+    public void saveDataset(String datasetName, List<Double> currentLocation) {
+        dbRelation.saveDataset(datasetName, currentLocation);
+    }
+
+    public void deleteDataset(String datasetName) {
+        dbRelation.deleteDataset(datasetName);
+    }
+
+    public List<String> searchSetnames() {
+        List<String> setNames;
+        setNames = dbRelation.searchSetnames();
+        return  setNames;
+    }
 
     //清空数据库 新增
     public void clearDB() {
@@ -93,6 +106,12 @@ public class TransformService {
     public void td1361() {
         dbRelation.clear();
         dbRelation.tdata("1361");
+    }
+
+    public List<Double> datasetLoad(String setName) {
+        dbRelation.clear();
+        List<Double> location = dbRelation.datasetLoad(setName);
+        return location;
     }
 
     public void tdGuo(int num) {

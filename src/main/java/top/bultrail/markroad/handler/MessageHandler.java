@@ -11,8 +11,10 @@ import top.bultrail.markroad.util.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MessageHandler {
@@ -40,6 +42,51 @@ public class MessageHandler {
         }
     }
 
+    // 保存数据集
+    @ResponseBody
+    @RequestMapping(value = {"/api/saveDataset"}, method = RequestMethod.POST)
+    public ResponseEntity<ResultEntity<String>> saveDataset(@RequestBody Map<String, Object> requestBody) {
+        String setName = (String) requestBody.get("datasetName");
+        List<Double> currentLocation = (List<Double>) requestBody.get("current_location");
+        try {
+            transformService.saveDataset(setName, currentLocation);
+            System.out.println("Success");
+        } catch (Exception e) {
+            return new ResponseEntity<>(ResultEntity.failed(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.ok(ResultEntity.successWithoutData());
+    }
+
+    // 删除数据集
+    @ResponseBody
+    @RequestMapping(value = {"/api/deleteDataset"}, method = RequestMethod.POST)
+    public ResponseEntity<ResultEntity<String>> deleteDataset(@RequestParam(value = "datasetName") String setName) {
+        try {
+            transformService.deleteDataset(setName);
+            System.out.println("Success");
+            return ResponseEntity.ok(ResultEntity.successWithoutData());
+        } catch (Exception e) {
+            return new ResponseEntity<>(ResultEntity.failedWithMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 获取数据集名称列表
+    @ResponseBody
+    @RequestMapping(value = {"/api/searchSetnames"}, method = RequestMethod.POST)
+    public ResponseEntity<ResultEntity<List<String>>> searchSetnames() {
+        try {
+            List<String> setNames;
+            setNames = transformService.searchSetnames();
+            System.out.println("Success");
+            return ResponseEntity.ok(ResultEntity.successWithData(setNames,null));
+        } catch (Exception e) {
+            List<String> tmp = new ArrayList<>();
+            tmp.add(e.getMessage());
+            return new ResponseEntity<>(ResultEntity.failed(tmp), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 一键保存
     @ResponseBody
     @RequestMapping(value = {"/hhquicksave","/api/hhquicksave"}, method = RequestMethod.POST)
     public ResultEntity<String> quicksave(QuickSave quick_save) {
@@ -99,6 +146,19 @@ public class MessageHandler {
     public ResultEntity<String> backup() {
         transformService.bkDB();
         return ResultEntity.successWithoutData();
+    }
+
+    //数据集加载
+    @ResponseBody
+    @RequestMapping(value = {"/api/datasetLoad"}, method = RequestMethod.POST)
+    public ResponseEntity<ResultEntity<List<Double>>> datasetLoad(@RequestParam(value = "datasetName") String setName) {
+        try {
+            List<Double> location = transformService.datasetLoad(setName);
+            System.out.println("Success");
+            return ResponseEntity.ok(ResultEntity.successWithDataDouble(location, null));
+        } catch (Exception e) {
+            return new ResponseEntity<>(ResultEntity.failedWithMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //1361
