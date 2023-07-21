@@ -9,5 +9,5 @@ declare global {
         BMap: any;
     }
 }
-declare const BMapGL: any
+// declare const BMapGL: any
 // interface Window{ BMap: any; }

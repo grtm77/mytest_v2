@@ -189,8 +189,10 @@ const options = ref([
 ])
 
 // 定义响应式数据
-const map = ref(null);
-let GL = ref(null);
+// const map = ref(null);
+// let GL = ref(null);
+const map: any = ref(null);
+let GL: any = ref(null);
 // 图标
 // const gIcon = ref(null);
 // let gIcon_rec32 = ref(null);
@@ -338,7 +340,7 @@ const handleSwitchChange = () => {
   }
 };
 
-function handleClick(e: { point: any; }) {
+function handleClick(e) {
   var the_nodetype = nodeType.value?.label
   if (the_nodetype === "cross") {
     cross.push(e.latlng);
@@ -347,7 +349,7 @@ function handleClick(e: { point: any; }) {
     });
     map.value.addOverlay(markerCros);
   } else if (the_nodetype === "sensor_single") {
-    let tmp = []
+    let tmp:any = []
     tmp.push(e.latlng)
     all_sensor.push(tmp)
     var markerSingleSessor = new GL.Marker(e.latlng, {
@@ -355,7 +357,7 @@ function handleClick(e: { point: any; }) {
     });
     map.value.addOverlay(markerSingleSessor);
   } else if (the_nodetype === "gateway_single") {
-    let tmp2 = []
+    let tmp2:any = []
     tmp2.push(e.latlng)
     all_gateway.push(tmp2)
     var markerSingleGateway = new GL.Marker(e.latlng, {
@@ -470,7 +472,7 @@ function drawAllMarked() {
         var point1 = new GL.Point(all_sensor[j][k].lng, all_sensor[j][k].lat);
         // 绘制车框
         var ros_point = point1
-        var vertex_points = [];
+        var vertex_points:any = [];
 
         var vertex_1 = new GL.Point(ros_point.lng + distance * Math.cos(rad + the_alpha), ros_point.lat + distance * Math.sin(rad + the_alpha));
         vertex_points.push(vertex_1);
@@ -558,19 +560,19 @@ const formatting = () => {
 const saveData = () => {
   ifmark.value = !ifmark.value;
   // 交叉路口节点数据
-  var cross_points = [];
+  var cross_points:any = [];
   for (var i = 0; i < cross.length; i++) {
-    var a = [];
+    var a:any = [];
     a.push(cross[i].lng);
     a.push(cross[i].lat);
     cross_points.push(a);
   }
   // sensor节点数据
-  var sensor_array = [];
+  var sensor_array:any = [];
   for (var i = 0; i < all_sensor.length; i++) {
     let sensor_points = [];
     for (var j = 0; j < all_sensor[i].length; j++) {
-      let a = [];
+      let a:any = [];
       a.push(all_sensor[i][j].lng);
       a.push(all_sensor[i][j].lat);
       sensor_points.push(a);
@@ -578,11 +580,11 @@ const saveData = () => {
     sensor_array.push(sensor_points);
   }
   // 网关节点数据
-  var gateway_array = [];
+  var gateway_array:any = [];
   for (var i = 0; i < all_gateway.length; i++) {
     let gateway_points = [];
     for (var j = 0; j < all_gateway[i].length; j++) {
-      let a = [];
+      let a:any = [];
       a.push(all_gateway[i][j].lng);
       a.push(all_gateway[i][j].lat);
       gateway_points.push(a);
@@ -684,7 +686,7 @@ const saveDataset = () => {
         text: 'Loading',
         background: 'rgba(255, 255, 255, 0.5)',
       })
-      let current_location = [];
+      let current_location:any = [];
       current_location.push(map.value.getCenter().lng);
       current_location.push(map.value.getCenter().lat);
       // 构建请求体数据
