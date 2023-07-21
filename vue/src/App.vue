@@ -7,48 +7,65 @@
         <div id="map"></div>
       </el-main>
       <el-footer>
-        <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="Mark Mode">
-            <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
-          </el-form-item>
-          <el-form-item label="NodeType">
-            <el-select v-model="nodeType" value-key="id" placeholder="Select" placement="top-start"
-              :popper-append-to-body="false" :teleported="false" popper-class="custom-popper"
-              :disabled="nodeTypeIsDisabled">
-              <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item" />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="saveData" :disabled="saveDataIsDisabled">Save Data</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="saveDataset" :disabled="saveDatasetIsDisabled">Save Dataset</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" @click="handleDatasetUpload" class="green-color">Dataset Upload</el-button>
-          </el-form-item>-
-          <el-form-item>
-            <el-button type="danger" @click="deleteDataset">Delete Dataset</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" @click="formatting" class="green-color">Formatting</el-button>
-          </el-form-item>
-          <!-- <el-form-item>
+        <!-- <div style="display: flex; justify-content: center;">
+          <el-form :inline="true" class="demo-form-inline">
+            <el-form-item label="Mark Mode">
+              <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
+            </el-form-item>
+            <el-form-item label="NodeType">
+              <el-select v-model="nodeType" value-key="id" placeholder="Select" placement="top-start"
+                :popper-append-to-body="false" :teleported="false" popper-class="custom-popper"
+                :disabled="nodeTypeIsDisabled">
+                <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <el-button type="primary" @click="saveData" :disabled="saveDataIsDisabled">Save Data</el-button>
+          <el-button type="success" @click="handleDataset" class="green-color">Dataset</el-button>
+          <el-button type="success" @click="formatting" class="green-color">Formatting</el-button>
+          <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
+          <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
+          <el-button type="success" @click="handleTestUpload" class="green-color">TestData Load</el-button>
+        </div> -->
+        <div style="display: flex; justify-content: center;">
+          <el-form :inline="true" class="demo-form-inline">
+            <el-form-item label="Mark Mode">
+              <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
+            </el-form-item>
+            <el-form-item label="NodeType">
+              <el-select v-model="nodeType" value-key="id" placeholder="Select" placement="top-start"
+                :popper-append-to-body="false" :teleported="false" popper-class="custom-popper"
+                :disabled="nodeTypeIsDisabled">
+                <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="saveData" :disabled="saveDataIsDisabled">Save Data</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="success" @click="handleDataset" class="green-color">Dataset</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
+            </el-form-item>
+            <el-form-item>
+              <!-- <el-button type="success" @click="formatting" class="green-color">Formatting</el-button> -->
+              <el-button type="danger" @click="formatting">Formatting</el-button>
+            </el-form-item>
+            <!-- <el-form-item>
             <el-button type="success" @click="onSubmit" class="green-color">Clear Database</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="onSubmit" class="green-color">Sort</el-button>
           </el-form-item> -->
-          <el-form-item>
-            <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" @click="handleTestUpload" class="green-color">TestData Upload</el-button>
-          </el-form-item>
-        </el-form>
+            <el-form-item>
+              <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="success" @click="handleTestUpload" class="green-color">TestData Load</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
       </el-footer>
     </el-container>
     <!-- 计算部分 -->
@@ -108,6 +125,14 @@
         }}</el-button>
       </div>
     </el-dialog>
+    <!-- Dataset 部分 -->
+    <el-dialog title="Select the data set operation you want to perform" v-model="AboutDatasetdialogVisible" width="45%">
+      <div style="display: flex; justify-content: center;">
+        <el-button type="primary" @click="saveDataset" :disabled="saveDatasetIsDisabled">Save Dataset</el-button>
+        <el-button type="success" @click="handleDatasetLoad" class="green-color">Dataset Load</el-button>
+        <el-button type="danger" @click="deleteDataset">Delete Dataset</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -139,6 +164,7 @@ const caculate_dialogVisible = ref(false);
 const upload_dialogVisible = ref(false);
 const TestData_dialogVisible = ref(false);
 const Dataset_dialogVisible = ref(false);
+const AboutDatasetdialogVisible = ref(false);
 const setNames = ref<string[]>([]);
 const nodeTypeIsDisabled = computed(() => !ifmark.value);
 const saveDataIsDisabled = computed(() => !ifmark.value);
@@ -159,6 +185,58 @@ const options = ref([
   { id: 5, label: 'cross', desc: '路口标记' },
 ])
 
+const createMap = () => {
+  BMap = window.BMap;
+  map = new BMap.Map("map");
+  const point = new BMap.Point(112.8835, 22.9082);
+  map.centerAndZoom(point, 19);
+  // map.enableScrollWheelZoom(true);
+  map.disableDoubleClickZoom(true);
+  map.addControl(new BMap.ScaleControl());
+  map.disableScrollWheelZoom(true)
+  const defaultMapType = map.getMapType();
+  const defaultTileLayer = defaultMapType.getTileLayer();
+  const newMapType = new BMap.MapType('新地图', defaultTileLayer, { minZoom: 18, maxZoom: 21 });
+  map.setMapType(newMapType);
+  // var zoomCtrl = new BMap.ZoomControl(); //添加缩放控件
+  // map.addControl(zoomCtrl);
+  map.setMapStyleV2({
+    styleJson: [
+      {
+        "featureType": "building",
+        "elementType": "all",
+        "stylers": {
+          "visibility": "off"
+        }
+      },
+      {
+        "featureType": "poilabel",
+        "elementType": "all",
+        "stylers": {
+          "visibility": "off"
+        }
+      },
+      {
+        "featureType": "manmade",
+        "elementType": "all",
+        "stylers": {
+          "visibility": "off"
+        }
+      },
+    ]
+  });
+  // 创建自定义网关图标
+  gIcon = new BMap.Icon("./assets/icon/jian.png", new BMap.Size(32, 32));
+  gIcon_rec32 = new BMap.Icon("./assets/icon/rectangle32.png", new BMap.Size(32, 32));
+  // gIcon_rec16 = new BMap.Icon("./assets/icon/rectangle16.png", new BMap.Size(16, 16));
+  // 传感器图标
+  sIcon = new BMap.Icon("./assets/icon/point16.png", new BMap.Size(16, 16));
+  // 车位图标
+  // rIcon = new BMap.Icon("./assets/icon/parkingspace.png", new BMap.Size(48, 48));
+  // 路口图标
+  cIcon = new BMap.Icon("./assets/icon/green.png", new BMap.Size(32, 32));
+
+};
 
 function handleDatasetButtonClick(name: string) {
   // 在这里处理按钮点击逻辑
@@ -182,6 +260,7 @@ function handleDatasetButtonClick(name: string) {
         type: 'error',
       })
     });
+  Dataset_dialogVisible.value = false;
 }
 
 const handleSwitchChange = () => {
@@ -380,14 +459,37 @@ function drawAllMarked() {
 // };
 
 const formatting = () => {
-  //清空所有存放数据的数组
-  all_sensor = [];
-  all_gateway = [];
-  cross = [];
-  pointArr = [];
-  pts = [];
-  // 清除地图上已经标记的点
-  map.clearOverlays();
+  ElMessageBox.confirm(
+    'All points marked on the map will be cleared，Continue?',
+    'Warning',
+    {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+      center: true,
+      lockScroll: false
+    }
+  )
+    .then(() => {
+      //清空所有存放数据的数组
+      all_sensor = [];
+      all_gateway = [];
+      cross = [];
+      pointArr = [];
+      pts = [];
+      // 清除地图上已经标记的点
+      map.clearOverlays();
+      ElMessage({
+        type: 'success',
+        message: 'Delete completed',
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Delete canceled',
+      })
+    })
 };
 
 const saveData = () => {
@@ -501,6 +603,10 @@ const deleteDataset = () => {
     })
 }
 
+const handleDataset = () => {
+  AboutDatasetdialogVisible.value = true;
+}
+
 const saveDataset = () => {
   ifmark.value = !ifmark.value;
   ElMessageBox.prompt('Please set dataset name', 'Tip', {
@@ -549,58 +655,6 @@ const saveDataset = () => {
       })
     })
 }
-
-const createMap = () => {
-  BMap = window.BMap;
-  map = new BMap.Map("map");
-  const point = new BMap.Point(112.8835, 22.9082);
-  map.centerAndZoom(point, 19);
-  map.enableScrollWheelZoom(true);
-  map.disableDoubleClickZoom(true);
-  map.addControl(new BMap.ScaleControl());
-
-  const defaultMapType = map.getMapType();
-  const defaultTileLayer = defaultMapType.getTileLayer();
-  const newMapType = new BMap.MapType('新地图', defaultTileLayer, { minZoom: 18, maxZoom: 21 });
-  map.setMapType(newMapType);
-
-  map.setMapStyleV2({
-    styleJson: [
-      {
-        "featureType": "building",
-        "elementType": "all",
-        "stylers": {
-          "visibility": "off"
-        }
-      },
-      {
-        "featureType": "poilabel",
-        "elementType": "all",
-        "stylers": {
-          "visibility": "off"
-        }
-      },
-      {
-        "featureType": "manmade",
-        "elementType": "all",
-        "stylers": {
-          "visibility": "off"
-        }
-      },
-    ]
-  });
-  // 创建自定义网关图标
-  gIcon = new BMap.Icon("./assets/icon/jian.png", new BMap.Size(32, 32));
-  gIcon_rec32 = new BMap.Icon("./assets/icon/rectangle32.png", new BMap.Size(32, 32));
-  // gIcon_rec16 = new BMap.Icon("./assets/icon/rectangle16.png", new BMap.Size(16, 16));
-  // 传感器图标
-  sIcon = new BMap.Icon("./assets/icon/point16.png", new BMap.Size(16, 16));
-  // 车位图标
-  // rIcon = new BMap.Icon("./assets/icon/parkingspace.png", new BMap.Size(48, 48));
-  // 路口图标
-  cIcon = new BMap.Icon("./assets/icon/green.png", new BMap.Size(32, 32));
-
-};
 
 function drawPoints(response: { data: { gatewayList: any; sensorList: any; }; }) {
   var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
@@ -652,7 +706,7 @@ const handleTestUpload = () => {
   TestData_dialogVisible.value = true;
 };
 
-const handleDatasetUpload = () => {
+const handleDatasetLoad = () => {
   // 发送网络请求
   axios.post('searchSetnames')
     .then((response: { data: any; }) => {
