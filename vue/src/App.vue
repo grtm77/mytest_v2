@@ -224,7 +224,7 @@ const createMap = () => {
     map.value.addControl(new GL.ScaleControl()); //添加比例尺控件
     map.value.disableDoubleClickZoom(true);
     map.value.disableScrollWheelZoom(true);
-    console.log(map.value.getViewport())
+    // console.log(map.value.getViewport())
 
     map.value.setMapStyleV2({
       styleJson: [
@@ -639,7 +639,7 @@ const saveData = () => {
     .then((response: { data: any; }) => {
       loading.close();
       // 请求成功时的处理
-      console.log(response.data);
+      // console.log(response.data);
       ElMessage({
         message: 'Success!',
         type: 'success',
