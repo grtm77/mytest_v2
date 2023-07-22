@@ -1,4 +1,4 @@
-# 交通网关部署系统
+# Transportation Gateway Deployment System
 <!-- Add banner here -->
 ![Banner](./images/1.png)
 
@@ -48,19 +48,19 @@
 <!-- Remove this note if you plan to copy this README -->
 
 
-# 目录
-- [交通网关部署系统](#交通网关部署系统)
-- [目录](#目录)
-- [演示预览](#演示预览)
+# Table of Contents
+- [Transportation Gateway Deployment System](#transportation-gateway-deployment-system)
+- [Table of Contents](#table-of-contents)
+- [Demo](#demo)
 - [Usage](#usage)
-- [环境依赖](#环境依赖)
-- [部署步骤](#部署步骤)
-- [目录结构描述](#目录结构描述)
+- [Environment dependent](#environment-dependent)
+- [Deployment steps](#deployment-steps)
+- [Directory Structure Description](#directory-structure-description)
   - [xxx](#xxx)
 - [Contributors](#contributors)
 - [License](#license)
 
-# 演示预览
+# Demo
 
 <!-- Add a demo for your project -->
 
@@ -76,68 +76,46 @@ Alternatively, you can add a demo to show what your project can do.
 Next, you have to explain how to use your project. You can create subsections under here to explain more clearly.
 
 
-# 环境依赖
-* 自行编译
-  * JDK v1.8
-  * MATLAB R2016b (9.1)
-
-* 运行环境
+# Environment dependent
+* operating environment
   * JRE v1.8
   * MATLAB Runtime R2016b (9.1)
 
 
+# Deployment steps
 
-# 部署步骤
+Clone this repository and navigate inside the project root folder.
 
-> **Note**: For longer README files, I usually add a "Back to top" buttton as shown above. It makes it easy to navigate.
-
-Clone this repository and navigate inside the project folder and install the dependencies by running:
-
+If you want to modify the style of the front end, please enter the project root directory, and then execute the following code.
 ```sh
-npm ci
+cd ./vue
+npm install
 ```
-
-After installing the dependencies, build the project by executing:
-
+After installing the dependencies, you can modify the front-end related code in /vue/src/App.vue, and then execute the following command to view the front-end interface.
+```sh
+npm run dev
+```
+After the front-end interface is modified, you can compile the static file.
 ```sh
 npm run build
 ```
-
-You can use the code snippets here as well:
-
-```shell
-command to clone your project
-command to build your project
-command to run your project in development mode
+Then a static file will be generated in the dist directory, and the spring boot project can be started after moving it to the /mytest_v2/src/main/resources/static directory, which can be moved directly through the script
+```python
+python .\move_build_output.py
 ```
-# 目录结构描述
+
+# Directory Structure Description
 ```sh
-├── Readme.md                   // help
-├── app                         // 应用
-├── config                      // 配置
-│   ├── default.json
-│   ├── dev.json                // 开发环境
-│   ├── experiment.json         // 实验
-│   ├── index.js                // 配置控制
-│   ├── local.json              // 本地
-│   ├── production.json         // 生产环境
-│   └── test.json               // 测试环境
-├── data
-├── doc                         // 文档
-├── environment
-├── gulpfile.js
-├── locales
-├── logger-service.js           // 启动日志配置
-├── node_modules
-├── package.json
-├── app-service.js              // 启动应用配置
-├── static                      // web静态资源加载
-│   └── initjson
-│       └── config.js         // 提供给前端的配置
-├── test
-├── test-service.js
-└── tools
+|-- README.md     // help
+|-- src           // Backend processing related
+|-- vue           // Front-end vue code
+|-- images
+|-- mvnw
+|-- mvnw.cmd
+|-- pom.xml
+|-- LICENSE
 ```
+
 ## xxx
 
 To install the developer version follow the steps below. To just use the extension download from [**chrome.google.com/webstore/nsfw-filter**](https://chrome.google.com/webstore/detail/nsfw-filter/kmgagnlkckiamnenbpigfaljmanlbbhh).
@@ -194,6 +172,8 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 
 # License
+> **Note**: For longer README files, I usually add a "Back to top" buttton as shown above. It makes it easy to navigate.
+
 [(Back to top)](#目录)
 
 [MIT](./LICENSE) license.
