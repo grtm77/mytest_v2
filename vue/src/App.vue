@@ -1106,6 +1106,7 @@ const sensorupload = () => {
   axios.post('sup')
     .then((response: { data: { data: any; }; }) => {
       var sensors = response.data.data; // 拿到的sensor列表
+      all_sensor = [];
       // 在地图上标记
       for (var i = 0; i < sensors.length; i++) {
         var point1 = new GL.Point(sensors[i][3], sensors[i][4]);
