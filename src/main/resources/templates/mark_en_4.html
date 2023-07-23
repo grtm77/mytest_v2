@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="icon" href="icon/bcar.png" type="image/x-icon"/>
+    <link rel="icon" href="icon/bcar.png" type="image/x-icon"/>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- 引入elementui样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <!-- 引入elementui组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <title>Marked</title>
+    <!-- 引入百度地图的 JavaScript 文件 -->
+    <script type="text/javascript"
+            src="https://api.map.baidu.com/api?v=3.0&ak=7yQLH1vsuBmKMSwd5jAKjkK0WkhGdOvy"></script>
+    <!-- 引入 layui.js -->
+    <script src="layui/layui.js"></script>
+    <script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        #mapContainer {
+            height: 90vh; /* 设置高度为视口高度的 90% */
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <!--      <el-header>头部内容</el-header>-->
+        <el-main>
+            <!-- 百度地图容器 -->
+            <div id="mapContainer"></div>
+        </el-main>
+        <el-footer>
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form-item label="标注模式">
+                    <el-switch v-model="value"></el-switch>
+                </el-form-item>
+                <el-form-item label="NodeType">
+                    <el-select v-model="formInline.region" placeholder="标记节点类型">
+                        <el-option label="sensor" value="sensor"></el-option>
+                        <el-option label="gateway" value="gateway"></el-option>
+                        <el-option label="crossing" value="crossing"></el-option>
+                        <el-option label="sensor_single" value="sensor_single"></el-option>
+                        <el-option label="gateway_single" value="gateway_single"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">Save Data</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="warning" @click="dialogVisible = true">Calculation</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="success" @click="onSubmit">Formatting</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="success" @click="onSubmit">Clear Database</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="success" @click="onSubmit">Sort</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="warning" @click="onSubmit">Files Upload</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="success" @click="onSubmit">TestData Upload</el-button>
+                </el-form-item>
+            </el-form>
+        </el-footer>
+    </el-container>
+    <!--计算比较 -->
+    <div class="modal fade" id="calModal" tabindex="-1" role="dialog" aria-labelledby="calModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="calModalLabel">Calculation</h4>
+                </div>
+                <div class="modal-body" align="center" id="app">
+                    <el-tooltip content="定向贪心" placement="top" id="calLinner">
+                        <el-button >LD</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="遗传算法" placement="top" id="calGA">
+                        <el-button>GA</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="分支限界算法" placement="top" id="calBB">
+                        <el-button>BB</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="朴素贪心算法" placement="top" id="calGreedy">
+                        <el-button>GD</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="线性规划算法" placement="top" id="calLP">
+                        <el-button>LP</el-button>
+                    </el-tooltip>
+                    <el-tooltip content="蚁群算法" placement="top" id="calAco">
+                        <el-button>ACO</el-button>
+                    </el-tooltip>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--清空数据库-->
+    <div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="clearModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="clearModalLabel">Are you sure to clear your database?</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <button type="button" class="btn btn-primary" id="confirm">Confirm</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            aria-hidden="true">Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--排序-->
+    <div class="modal fade" id="sortModal" tabindex="-1" role="dialog" aria-labelledby="sortModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="sortModalLabel">Are you sure you want to sort data in the database?</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <button type="button" class="btn btn-primary" id="sortconfirm">Confirm</button>
+                    <button type="button" class="btn btn-primary" id="backup">Backup</button>
+                    <button type="button" class="btn btn-primary" id="restore">Restore</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            aria-hidden="true">Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--数据库上传 绘制传感器、网关、路口-->
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="uploadModalLabel">Files Upload</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <button type="button" class="btn btn-primary" id="sensorupload">Sensor Upload</button>
+                    <button type="button" class="btn btn-primary" id="gatewayupload">Gateway Upload</button>
+                    <button type="button" class="btn btn-primary" id="crosupload">Crossing Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--测试数据上传-->
+    <div class="modal fade" id="tdataModal" tabindex="-1" role="dialog" aria-labelledby="tdataModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="tdataModalLabel">Which test data would you like to upload?</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <button type="button" class="btn btn-primary" id="tdata207">207</button>
+                    <button type="button" class="btn btn-primary" id="tdata461">461</button>
+                    <button type="button" class="btn btn-primary" id="tdata1052">1052</button>
+                    <button type="button" class="btn btn-primary" id="tdata1361">1361</button>
+
+                    <button type="button" class="btn btn-primary" id="tdatag114">G114</button>
+                    <button type="button" class="btn btn-primary" id="tdatag228">G228</button>
+                    <button type="button" class="btn btn-primary" id="tdatag354">G354</button>
+                    <button type="button" class="btn btn-primary" id="tdatag484">G484</button>
+
+                    <!--                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <el-dialog
+            title="Calculation"
+            :visible.sync="dialogVisible"
+            width="30%">
+        <el-tooltip content="定向贪心" placement="top" id="calLinner">
+            <el-button @click="calLinner">LD</el-button>
+        </el-tooltip>
+        <el-tooltip content="遗传算法" placement="top" id="calGA">
+            <el-button @click="calByGA">GA</el-button>
+        </el-tooltip>
+        <el-tooltip content="分支限界算法" placement="top" id="calBB">
+            <el-button>BB</el-button>
+        </el-tooltip>
+        <el-tooltip content="朴素贪心算法" placement="top" id="calGreedy">
+            <el-button>GD</el-button>
+        </el-tooltip>
+        <el-tooltip content="线性规划算法" placement="top" id="calLP">
+            <el-button>LP</el-button>
+        </el-tooltip>
+        <el-tooltip content="蚁群算法" placement="top" id="calAco">
+            <el-button @click="dialogVisible = false">ACO</el-button>
+        </el-tooltip>
+    </el-dialog>
+</div>
+
+<!-- 引入 Vue.js 和 Element UI 的 JavaScript 文件 -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        mounted() {
+            // 在 mounted 钩子中初始化百度地图
+            // this.initMap();
+        },
+        data() {
+            return {
+                // value1: true,
+                formInline: {
+                    user: '',
+                    region: '',
+                },
+                value: true,
+                dialogVisible: false,
+            }
+        },
+        methods: {
+            calLinner,
+            calByGA() {
+                // 在这里调用你的函数
+                console.log('按钮被点击了');
+                // // 或者调用一个自定义的函数
+                calByGA_raw();
+                this.dialogVisible = false;
+            },
+            onSubmit() {
+                console.log('submit!');
+            },
+        }
+    });
+    function myFunction() {
+        console.log('自定义函数被调用了');
+        // 在这里编写你的自定义逻辑
+    }
+    // 初始化map放在函数外面，作为全局变量，使得其他函数可以直接调用
+        // 使用百度地图的 API 初始化地图
+        var map = new BMap.Map("mapContainer");    // 创建地图实例
+        // // var point = new BMap.Point(113.80848202641658,22.816506505348503);// lyj标注位置
+        var point = new BMap.Point(112.8835, 22.9082);   // gxh上传
+        // var point = new BMap.Point(113.87908182502431, 22.91486091203956);  //东莞理工学院北门坐标
+        map.centerAndZoom(point, 19);// 初始化地图，设置中心点坐标和地图级别
+        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        map.disableDoubleClickZoom(true);
+        map.addControl(new BMap.ScaleControl());  //添加比例尺
+        // map.setDefaultCursor("move");
+        // map.setDefaultCursor("crosshair");
+        // map.setDraggingCursor("move");
+        //突破19级限制
+        var defaultMapType = map.getMapType();
+        var defaultTileLayer = defaultMapType.getTileLayer();//创建了一个地图图层
+        var newMapType = new BMap.MapType('新地图', defaultTileLayer, {minZoom: 18, maxZoom: 21});
+        map.setMapType(newMapType);
+        //清除商场等图层
+        map.setMapStyleV2({
+            styleJson: [
+                {
+                    "featureType": "building",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {
+                    "featureType": "poilabel",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {
+                    "featureType": "manmade",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+            ]
+        });
+    // 创建自定义网关图标
+    var gIcon = new BMap.Icon("icon/jian.png", new BMap.Size(32, 32));
+    var gIcon_rec32 = new BMap.Icon("icon/rectangle32.png", new BMap.Size(32, 32));
+    var gIcon_rec16 = new BMap.Icon("icon/rectangle16.png", new BMap.Size(16, 16));
+    // 传感器图标
+    var sIcon = new BMap.Icon("icon/point16.png", new BMap.Size(16, 16));
+    // 车位图标
+    var rIcon = new BMap.Icon("icon/parkingspace.png", new BMap.Size(48, 48));
+    // 路口图标
+    var cIcon = new BMap.Icon("icon/green.png", new BMap.Size(32, 32));
+
+    // 自定义变量
+    var all_sensor = [];    //存放地图上所有的传感器节点
+    var all_gateway = [];   //存放地图上所有的网关节点
+    var cross = [];         //存放地图上所有的交叉路口
+    var pointArr = [];      //存放一条路的起点与终点
+    var pts = [];           //存放一条路所有的传感器节点或者网关节点
+    var str = [];
+    var pointIndex = 0;     //初始化节点之间的距离
+
+    function drawPoints(response) {
+        var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
+        alert(dataGateway[0].length + " gateways have been used! ")
+        //在地图上标记网关坐标
+        for (var j = 0; j < dataGateway[0].length; j++) {
+            var temp = dataGateway[0][j].split(",");
+            var point1 = new BMap.Point(temp[0], temp[1]);
+            var marker1 = new BMap.Marker(point1, {
+                icon: gIcon
+            });
+            let offset = new BMap.Size(0, -15)       // 向上移，使图标点对准指定点
+            marker1.setOffset(offset)
+            map.addOverlay(marker1);
+            marker1.setTop(true);
+            // 绘制圆
+            // var colors = ['blue','red','green','black','blue'];
+            var circle = new BMap.Circle(point1, 68, {
+                strokeColor: 'blue',
+                strokeWeight: 2,
+                strokeOpacity: 0.4, //圆形的边线透明度
+                // strokeStyle: 'solid'
+                strokeStyle: 'dashed',  // 边线虚线样式
+                fillOpacity: 0.5    //填充透明度
+            });
+            map.addOverlay(circle);
+        }
+
+        // 标记传感器节点
+        var sensors = response.data.sensorList;//response.data计算出来的最终网关坐标
+        for (var i = 0; i < sensors.length; i++) {
+            var sensor_point = new BMap.Point(sensors[i][3], sensors[i][4]);
+            var sensor_marker = new BMap.Marker(sensor_point, {icon: sIcon});
+            // var marker0 = new BMap.Marker(point1, {icon: rIcon});
+            // map.addOverlay(marker0);
+            map.addOverlay(sensor_marker);
+        }
+    }
+</script>
+<script type="text/javascript" src="js/cal_ajax.js"></script>
+<script type="text/javascript" src="js/data_upload.js"></script>
+<script type="text/javascript" src="js/cal_ajax_element.js"></script>
+<style>
+/*去除百度地图logo*/
+    .anchorBL{
+        display:none;
+    }
+</style>
+</body>
+</html>

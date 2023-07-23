@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -7,10 +8,16 @@
     <!-- 引入 layui.css -->
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- 引入elementui样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- 引入 layui.js -->
     <script src="layui/layui.js"></script>
     <script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <!-- 引入elementui组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <title>Marked</title>
     <style type="text/css">
         html {
@@ -33,37 +40,44 @@
         }
     </style>
     <!--百度地图SDK密钥-->
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=7yQLH1vsuBmKMSwd5jAKjkK0WkhGdOvy"></script>
+    <script type="text/javascript"
+            src="https://api.map.baidu.com/api?v=3.0&ak=7yQLH1vsuBmKMSwd5jAKjkK0WkhGdOvy"></script>
 </head>
+
 <body>
 <!--用于放置地图实例-->
 <div id="container"></div>
 
 <!--下方按钮组-->
 <div class="produce">
-    <div class="layui-form layui-form-pane">
-        <!--输入框-->
-        <div class="layui-inline">
-            <label class="layui-form-label">Road</label>
-            <div class="layui-input-inline">
-                <input type="tel" id="roadName" lay-verify="required|phone" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-<!--    标记类型 NodeType-->
+    <div class="layui-form layui-form-pane" lay-filter="render">
+        <input type="checkbox" title="标注" lay-skin="tag" lay-filter="ifmark">
+        <!--输入道路名框-->
+        <!--            <div class="layui-inline">-->
+        <!--                <label class="layui-form-label">Road</label>-->
+        <!--                <div class="layui-input-inline">-->
+        <!--                    <input type="tel" id="roadName" lay-verify="required|phone" autocomplete="off" class="layui-input">-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--    标记类型 NodeType-->
         <div class="layui-inline">
             <label class="layui-form-label">NodeType</label>
             <div class="layui-input-inline">
-                <select lay-filter="nodeType" id="nodeType">
+                <select lay-filter="nodeTypeLay" id="nodeType" disabled>
                     <option value="sensor" selected="">sensor</option>
                     <option value="gateway">gateway</option>
                     <option value="cros">crossing</option>
+                    <option value="sensor_single">sensor_single</option>
+                    <option value="gateway_single">gateway_single</option>
                 </select>
             </div>
         </div>
         <div class="layui-inline">
-<!--            右下方按钮组-->
+            <!--右下方按钮组  从保存按钮开始-->
             <div class="layui-block layui-btn-container">
-                <button type="button" class="layui-btn layui-btn-normal" id="save">Save Data</button>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-disabled" id="save" disabled>Save
+                    Data
+                </button>
                 <button type="button" class="layui-btn layui-btn-warm" id="cal" data-toggle="modal"
                         data-target="#calModal">Calculation
                 </button>
@@ -71,8 +85,7 @@
                 <button type="button" class="layui-btn" id="clear" data-toggle="modal"
                         data-target="#clearModal">Clear Database
                 </button>
-                <button type="button" class="layui-btn" id="sort" data-toggle="modal"
-                        data-target="#sortModal">Sort
+                <button type="button" class="layui-btn" id="sort" data-toggle="modal" data-target="#sortModal">Sort
                 </button>
                 <button type="button" class="layui-btn layui-btn-warm" id="upload" data-toggle="modal"
                         data-target="#uploadModal">Files Upload
@@ -84,6 +97,7 @@
         </div>
     </div>
 </div>
+
 <!--null 按钮-->
 <!--<div id="123456">-->
 <!--    <button type="button" class="btn btn-primary" id="buttontest">Null</button>-->
@@ -101,7 +115,9 @@
             </div>
             <div class="modal-body" align="center">
                 <button type="button" class="btn btn-primary" id="confirm">Confirm</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        aria-hidden="true">Cancel
+                </button>
             </div>
         </div>
     </div>
@@ -117,17 +133,17 @@
                 <h4 class="modal-title" id="tdataModalLabel">Which test data would you like to upload?</h4>
             </div>
             <div class="modal-body" align="center">
-                <button type="button" class="btn btn-primary" id="tdata232">232</button>
-                <button type="button" class="btn btn-primary" id="tdata466">466</button>
-                <button type="button" class="btn btn-primary" id="tdata1056">1056</button>
-                <button type="button" class="btn btn-primary" id="tdata1500">1500</button>
+                <button type="button" class="btn btn-primary" id="tdata207">207</button>
+                <button type="button" class="btn btn-primary" id="tdata461">461</button>
+                <button type="button" class="btn btn-primary" id="tdata1052">1052</button>
+                <button type="button" class="btn btn-primary" id="tdata1361">1361</button>
 
-                <button type="button" class="btn btn-primary" id="tdata2322">G114</button>
-                <button type="button" class="btn btn-primary" id="tdata4662">G228</button>
-                <button type="button" class="btn btn-primary" id="tdata10562">G354</button>
-                <button type="button" class="btn btn-primary" id="tdata15002">G484</button>
+                <button type="button" class="btn btn-primary" id="tdatag114">G114</button>
+                <button type="button" class="btn btn-primary" id="tdatag228">G228</button>
+                <button type="button" class="btn btn-primary" id="tdatag354">G354</button>
+                <button type="button" class="btn btn-primary" id="tdatag484">G484</button>
 
-<!--                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>-->
+                <!--                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>-->
             </div>
         </div>
     </div>
@@ -146,27 +162,42 @@
                 <button type="button" class="btn btn-primary" id="sortconfirm">Confirm</button>
                 <button type="button" class="btn btn-primary" id="backup">Backup</button>
                 <button type="button" class="btn btn-primary" id="restore">Restore</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        aria-hidden="true">Cancel
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <!--计算比较 -->
-<div class="modal fade" id="calModal" tabindex="-1" role="dialog" aria-labelledby="calModalLabel" aria-hidden="true">
+<div class="modal fade" id="calModal" tabindex="-1" role="dialog" aria-labelledby="calModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="calModalLabel">Calculation</h4>
             </div>
-            <div class="modal-body" align="center">
-                <button type="button" class="layui-btn layui-btn-warm" id="calLinner">LD</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calGA">GA</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calBB">BB</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calGreedy">GD</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calFive">LP</button>
-                <button type="button" class="layui-btn layui-btn-warm" id="calAco">ACO</button>
+            <div class="modal-body" align="center" id="app">
+                <el-tooltip content="定向贪心" placement="top" id="calLinner">
+                    <el-button>LD</el-button>
+                </el-tooltip>
+                <el-tooltip content="遗传算法" placement="top" id="calGA">
+                    <el-button>GA</el-button>
+                </el-tooltip>
+                <el-tooltip content="分支限界算法" placement="top" id="calBB">
+                    <el-button>BB</el-button>
+                </el-tooltip>
+                <el-tooltip content="朴素贪心算法" placement="top" id="calGreedy">
+                    <el-button>GD</el-button>
+                </el-tooltip>
+                <el-tooltip content="线性规划算法" placement="top" id="calLP">
+                    <el-button>LP</el-button>
+                </el-tooltip>
+                <el-tooltip content="蚁群算法" placement="top" id="calAco">
+                    <el-button>ACO</el-button>
+                </el-tooltip>
             </div>
         </div>
     </div>
@@ -194,8 +225,16 @@
 
 <!-- All js code -->
 <script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {visible: false}
+        }
+    })
     // 创建自定义网关图标
     var gIcon = new BMap.Icon("icon/jian.png", new BMap.Size(32, 32));
+    var gIcon_rec32 = new BMap.Icon("icon/rectangle32.png", new BMap.Size(32, 32));
+    var gIcon_rec16 = new BMap.Icon("icon/rectangle16.png", new BMap.Size(16, 16));
     // 传感器图标
     var sIcon = new BMap.Icon("icon/point16.png", new BMap.Size(16, 16));
     // 车位图标
@@ -204,13 +243,15 @@
     var cIcon = new BMap.Icon("icon/green.png", new BMap.Size(32, 32));
 
     // 自定义变量
-    var all_sensor = [];
-    var pointArr = [];//存放一条路的起点与终点
-    var pts = [];//存放一条路所有的传感器节点
+    var all_sensor = [];    //存放地图上所有的传感器节点
+    var all_gateway = [];   //存放地图上所有的网关节点
+    var cross = [];         //存放地图上所有的交叉路口
+    var pointArr = [];      //存放一条路的起点与终点
+    var pts = [];           //存放一条路所有的传感器节点或者网关节点
     var str = [];
-    var pointIndex = 0;//初始化节点之间的距离
-    var all = [];//存放地图上所有标记的节点
-    var map = new BMap.Map("container");// 创建地图实例
+    var pointIndex = 0;     //初始化节点之间的距离
+    // var all = [];           //存放地图上所有标记的节点
+    var map = new BMap.Map("container");    // 创建地图实例
     // var point = new BMap.Point(113.80848202641658,22.816506505348503);// lyj标注位置
     var point = new BMap.Point(112.8835, 22.9082);   // gxh上传
     // var point = new BMap.Point(113.87908182502431, 22.91486091203956);  //东莞理工学院北门坐标
@@ -218,17 +259,21 @@
     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
     map.disableDoubleClickZoom(true);
     map.addControl(new BMap.ScaleControl());  //添加比例尺
+    // map.setDefaultCursor("move");
+    // map.setDefaultCursor("crosshair");
+    // map.setDraggingCursor("move");
     //突破19级限制
     var defaultMapType = map.getMapType();
     var defaultTileLayer = defaultMapType.getTileLayer();//创建了一个地图图层
     var newMapType = new BMap.MapType('新地图', defaultTileLayer, {minZoom: 18, maxZoom: 21});
     map.setMapType(newMapType);
-    map.addControl(new BMap.MapTypeControl({
-        mapTypes: [
-            BMAP_NORMAL_MAP,//正常
-            BMAP_HYBRID_MAP//混合
-        ]
-    }));
+    // 此控件添加后点击会存在突破缩放的问题
+    // map.addControl(new BMap.MapTypeControl({
+    //     mapTypes: [
+    //         BMAP_NORMAL_MAP,//正常
+    //         // BMAP_HYBRID_MAP//混合
+    //     ]
+    // }));
 
     // // 添加自定义组件
     // // 定义一个控件类，即function
@@ -283,7 +328,7 @@
 
     function drawPoints(response) {
         var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
-        alert(dataGateway[0].length + " gateways have been used! " )
+        alert(dataGateway[0].length + " gateways have been used! ")
         //在地图上标记网关坐标
         for (var j = 0; j < dataGateway[0].length; j++) {
             var temp = dataGateway[0][j].split(",");
@@ -291,6 +336,8 @@
             var marker1 = new BMap.Marker(point1, {
                 icon: gIcon
             });
+            let offset = new BMap.Size(0, -15)       // 向上移，使图标点对准指定点
+            marker1.setOffset(offset)
             map.addOverlay(marker1);
             marker1.setTop(true);
             // 绘制圆
@@ -298,8 +345,10 @@
             var circle = new BMap.Circle(point1, 68, {
                 strokeColor: 'blue',
                 strokeWeight: 2,
-                strokeOpacity: 0.5, //圆形的边线透明度
-                strokeStyle: 'solid'
+                strokeOpacity: 0.4, //圆形的边线透明度
+                // strokeStyle: 'solid'
+                strokeStyle: 'dashed',  // 边线虚线样式
+                fillOpacity: 0.5    //填充透明度
             });
             map.addOverlay(circle);
         }
@@ -307,7 +356,7 @@
         // 标记传感器节点
         var sensors = response.data.sensorList;//response.data计算出来的最终网关坐标
         for (var i = 0; i < sensors.length; i++) {
-            var sensor_point = new BMap.Point(sensors[i][2], sensors[i][3]);
+            var sensor_point = new BMap.Point(sensors[i][3], sensors[i][4]);
             var sensor_marker = new BMap.Marker(sensor_point, {icon: sIcon});
             // var marker0 = new BMap.Marker(point1, {icon: rIcon});
             // map.addOverlay(marker0);
@@ -315,27 +364,79 @@
         }
     }
 
-    //JS
-    $(function () {
-        map.addEventListener('click', function (e) {
-            var cros = $("#nodeType").val();
-
-            if (cros == "cros") {
-
-                pts.push(e.point);
-                var markerCros = new BMap.Marker(e.point, {
-                    icon: sIcon
-                });
-
-                map.addOverlay(markerCros);
-            } else {
-                pointArr.push(e.point);
+    // function drawPoints(response) {
+    //     var dataGateway = response.data.gatewayList;//response.data计算出来的最终网关坐标
+    //     alert(dataGateway[0].length + " gateways have been used! ")
+    //     //在地图上标记网关坐标
+    //     for (var j = 0; j < dataGateway[0].length; j++) {
+    //         var temp = dataGateway[0][j].split(",");
+    //         var point1 = new BMap.Point(temp[0], temp[1]);
+    //         var marker1 = new BMap.Marker(point1, {
+    //             icon: gIcon
+    //         });
+    //         map.addOverlay(marker1);
+    //         marker1.setTop(true);
+    //         // 绘制圆
+    //         // var colors = ['blue','red','green','black','blue'];
+    //         var circle = new BMap.Circle(point1, 68, {
+    //             strokeColor: 'blue',
+    //             strokeWeight: 2,
+    //             strokeOpacity: 0.5, //圆形的边线透明度
+    //             // strokeStyle: 'solid'
+    //             strokeStyle: 'dashed'
+    //         });
+    //         map.addOverlay(circle);
+    //     }
+    //
+    //     // 标记传感器节点
+    //     var sensors = response.data.sensorList;//response.data计算出来的最终网关坐标
+    //     for (var i = 0; i < sensors.length; i++) {
+    //         var sensor_point = new BMap.Point(sensors[i][2], sensors[i][3]);
+    //         var sensor_marker = new BMap.Marker(sensor_point, { icon: sIcon });
+    //         // var marker0 = new BMap.Marker(point1, {icon: rIcon});
+    //         // map.addOverlay(marker0);
+    //         map.addOverlay(sensor_marker);
+    //     }
+    // }
+    function handleClick(e) {
+        var nodetype = $("#nodeType").val();
+        if (nodetype == "cros") {
+            cros_point = e.point;
+            cross.push(cros_point);
+            var markerCros = new BMap.Marker(e.point, {
+                icon: cIcon
+            });
+            map.addOverlay(markerCros);
+        } else if (nodetype === "sensor_single") {
+            let tmp = []
+            tmp.push(e.point)
+            all_sensor.push(tmp)
+            var markerSingleSessor = new BMap.Marker(e.point, {
+                icon: sIcon
+            });
+            map.addOverlay(markerSingleSessor);
+        } else if (nodetype === "gateway_single") {
+            let tmp2 = []
+            tmp2.push(e.point)
+            all_gateway.push(tmp2)
+            var markerSingleGateway = new BMap.Marker(e.point, {
+                icon: gIcon
+            });
+            let offset = new BMap.Size(0, -15)       // 向上移，使图标点对准指定点
+            markerSingleGateway.setOffset(offset)
+            map.addOverlay(markerSingleGateway);
+        } else {
+            pointArr.push(e.point);         // 存放起点与终点
+            if (pointArr.length === 1) {
                 var start = new BMap.Point(pointArr[0].lng, pointArr[0].lat);
                 map.addOverlay(new BMap.Marker(start));
-                // pts.push(start);
-
+            }
+            if (pointArr.length === 2) {
+                var start = new BMap.Point(pointArr[0].lng, pointArr[0].lat);
+                // map.addOverlay(new BMap.Marker(start));
+                // pts.push(start);   //有bug
                 var end = new BMap.Point(pointArr[1].lng, pointArr[1].lat);
-                map.addOverlay(new BMap.Marker(end));
+                // map.addOverlay(new BMap.Marker(end));
                 // pts.push(end);
                 pointArr = []
 
@@ -345,73 +446,183 @@
                 var y2 = end.lat;
 
                 var bool = $("#nodeType").val();
-                if (bool == "sensor") {
+                if (bool == "sensor") {     // 如果标注的是sensor节点，则点距为5
                     pointIndex = 5;
                 } else {
                     pointIndex = 15;
                 }
-
-                var chang = map.getDistance(start, end).toFixed(2);
                 //利用相似三角形求出等距离的点的坐标
+                // var chang = map.getDistance(start, end).toFixed(2);
+                var chang = map.getDistance(start, end);
                 for (var i = pointIndex; i < chang; i += pointIndex) {
                     var x3 = i / chang * (x1 - x2) + x2;
-                    x3 = x3.toFixed(6);
+                    // x3 = x3.toFixed(6);
                     var y3 = i / chang * (y1 - y2) + y2;
-                    y3 = y3.toFixed(6);
+                    // y3 = y3.toFixed(6);
                     var point = new BMap.Point(x3, y3);
                     pts.push(point);
                 }
-
                 //二维数组，存放多条街道的坐标点
                 if (bool == "sensor") {
                     all_sensor.push(pts)
-                    console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
+                    pts = []
+                    // console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
+                } else {
+                    all_gateway.push(pts)
+                    pts = []
+                    // console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
                 }
-                all.push(pts)
-                //pts = []//计算时需注释
-                // 删除已经标注的点
-                map.clearOverlays()
-                //在地图上标注这些点
-                // for (let j = pts.length; j >1; j--) {
-                for (var j = 0; j < all.length; j++) {
-                    for (var k = 0; k < all[j].length; k++) {
-                        var point1 = new BMap.Point(all[j][k].lng, all[j][k].lat);
-                        var myNode = $("#nodeType").val();
-                        if (myNode == "sensor") {
-                            var xx1 = all[j][0].lng;
-                            var yy1 = all[j][0].lat;
-                            var xx2 = all[j][all[j].length - 1].lng;
-                            var yy2 = all[j][all[j].length - 1].lat;
-                            var angle = Math.atan2((yy1 - yy2), (xx2 - xx1))  //弧度  0.6435011087932844
-                            var theta = angle * (180 / Math.PI);  //角度  36.86989764584402
-                            var marker0 = new BMap.Marker(point1, {
-                                icon: rIcon
-                            });
-                            var marker1 = new BMap.Marker(point1, {
-                                icon: sIcon
-                            });
-                            marker0.setRotation(theta)
-                            map.addOverlay(marker0)
-                        } else {
-                            marker1 = new BMap.Marker(point1, {
-                                icon: gIcon
-                            });
-                        }
-                        map.addOverlay(marker1)
-                    }
+                // all.push(pts)
+                //绘制所有标注节点
+                drawAllMarked();
+            }
+        }
+
+        // 值改变事件 无需更改
+        // layui.use(['layer', 'form', 'jquery'], function () {
+        //     var form = layui.form;
+        //     form.on('select(nodeTypeLay)', function (data) {
+        //         // all = [];
+        //         pointArr = [];
+        //         // map.clearOverlays();
+        //     });
+        // });
+    }
+
+    //绘制所有标注节点
+    function drawAllMarked() {
+        // 绘制所有节点
+        // 删除已经标注的点
+        map.clearOverlays()
+        // 在地图上标注路口节点
+        for (let j = 0; j < cross.length; j++) {
+            let cross_point = new BMap.Point(cross[j].lng, cross[j].lat);
+            marker1 = new BMap.Marker(cross_point, {
+                icon: cIcon
+            })
+            map.addOverlay(marker1)
+        }
+        // 在地图上标注网关节点
+        for (let j = 0; j < all_gateway.length; j++) {
+            for (let k = 0; k < all_gateway[j].length; k++) {
+                let point1 = new BMap.Point(all_gateway[j][k].lng, all_gateway[j][k].lat);
+                marker1 = new BMap.Marker(point1, {
+                    icon: gIcon
+                })
+                // var offset = new BMap.Size(-10,-10) // 向左向上移
+                var offset = new BMap.Size(0, -15)       // 向上移，使图标点对准指定点
+                marker1.setOffset(offset)
+                // console.log(marker1.getOffset())
+                map.addOverlay(marker1)
+            }
+        }
+        // 在地图上标注传感器节点
+        for (var j = 0; j < all_sensor.length; j++) {
+            if (all_sensor[j].length === 1) {
+                let the_point = new BMap.Point(all_sensor[j][0].lng, all_sensor[j][0].lat);
+                let markerSsessor = new BMap.Marker(the_point, {
+                    icon: sIcon
+                });
+                map.addOverlay(markerSsessor)
+            } else if (all_sensor[j].length !== 0) {
+                var xx1 = all_sensor[j][0].lng;
+                var yy1 = all_sensor[j][0].lat;
+                var xx2 = all_sensor[j][all_sensor[j].length - 1].lng;
+                var yy2 = all_sensor[j][all_sensor[j].length - 1].lat;
+                var rad = Math.atan2((yy2 - yy1), (xx2 - xx1))  //弧度  0.6435011087932844
+                // var theta = rad * (180 / Math.PI);  //角度  36.86989764584402
+                var width = 0.000044
+                var height = 0.00002
+                var half_width = width / 2
+                var half_height = height / 2
+                var distance = Math.sqrt(Math.pow(half_width, 2) + Math.pow(half_height, 2))
+                var the_alpha = Math.atan2(half_height, half_width)
+
+                for (var k = 0; k < all_sensor[j].length; k++) {
+                    var point1 = new BMap.Point(all_sensor[j][k].lng, all_sensor[j][k].lat);
+                    // 绘制车框
+                    var ros_point = point1
+                    var vertex_points = [];
+
+                    var vertex_1 = new BMap.Point(ros_point.lng + distance * Math.cos(rad + the_alpha), ros_point.lat + distance * Math.sin(rad + the_alpha));
+                    vertex_points.push(vertex_1);
+
+                    var vertex_2 = new BMap.Point(ros_point.lng + distance * Math.cos(rad - the_alpha), ros_point.lat + distance * Math.sin(rad - the_alpha))
+                    vertex_points.push(vertex_2);
+
+                    var vertex_3 = new BMap.Point(ros_point.lng + distance * Math.cos(rad + the_alpha + Math.PI), ros_point.lat + distance * Math.sin(rad + the_alpha + Math.PI))
+                    vertex_points.push(vertex_3);
+
+                    var vertex_4 = new BMap.Point(ros_point.lng + distance * Math.cos(rad - the_alpha + Math.PI), ros_point.lat + distance * Math.sin(rad - the_alpha + Math.PI))
+                    vertex_points.push(vertex_4);
+
+                    var vertex_5 = vertex_1;
+                    vertex_points.push(vertex_5);
+
+                    var poly_test = new BMap.Polyline(vertex_points);
+                    poly_test.setStrokeColor('#ECD118');
+                    poly_test.setStrokeWeight(3);
+                    map.addOverlay(poly_test);
+                    // 车框
+                    // var marker0 = new BMap.Marker(point1, {
+                    //     icon: rIcon
+                    // });
+                    // marker0.setRotation(theta)
+                    // map.addOverlay(marker0)
+                    // 车中心红点、表示传感器
+                    // 使用api绘制红点
+                    // var circle_marker1 = new BMap.Circle(point1, 0.1, {
+                    //     strokeColor: 'red',
+                    //     strokeWeight: 2,
+                    //     strokeOpacity: 0.1, //圆形的边线透明度
+                    //     strokeStyle: 'solid',
+                    // });
+                    // circle_marker1.setFillColor('#D81E06')
+                    // map.addOverlay(circle_marker1);
+                    // 使用图标绘制红点
+                    var marker1 = new BMap.Marker(point1, {
+                        icon: sIcon
+                    });
+                    map.addOverlay(marker1)
                 }
             }
-        });
-        //值改变事件 无需更改
-        layui.use(['layer', 'form', 'jquery'], function () {
-            var form = layui.form;
-            form.on('select(nodeType)', function (data) {
-                all = [];
-                map.clearOverlays();
-            });
+        }
+    }
+
+
+    layui.use(function () {
+        var form = layui.form;
+        // checkbox 事件
+        form.on('checkbox(ifmark)', function (data) {
+            var elem = data.elem; // 获得 checkbox 原始 DOM 对象
+            if (elem.checked) {
+                map.setDefaultCursor("crosshair");
+                map.addEventListener('click', handleClick);
+                // 启用nodeType选择按钮
+                $("#nodeType").prop("disabled", false);
+                // 启用save按钮
+                $('#save').prop('disabled', false);
+                // 移除禁用状态的类名
+                $('#save').removeClass('layui-btn-disabled');
+            } else {
+                map.setDefaultCursor("url(https://api.map.baidu.com/images/openhand.cur) 8 8,default");
+                map.removeEventListener('click', handleClick);
+                // 禁用nodeType选择按钮
+                $("#nodeType").prop("disabled", true);
+                // 禁用保存按钮
+                $('#save').prop('disabled', true);
+                $('#save').addClass('layui-btn-disabled');
+            }
+            form.render('select', 'render'); // 重新渲染select元素
         });
     });
 </script>
 <script type="text/javascript" src="js/cal_ajax.js"></script>
 <script type="text/javascript" src="js/data_upload.js"></script>
+<style>
+    /*去除百度地图logo、比例尺控件不显示*/
+    .anchorBL{
+        display:none;
+    }
+</style>
 </html>

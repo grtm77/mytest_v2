@@ -59,6 +59,90 @@ public class Detection {
         return select;
     }
 
+    /**
+     * 使用有向贪心计算
+     *
+     * @return
+     */
+    public static int[] calByLinner_new(List<String> sensors, List<String> gateways, HashMap<Integer, HashSet<Integer>> hash_int2ints) {
+        //存放所有sensor节点id
+        LinkedList<Integer> sortList = new LinkedList<>();
+        for(int i=0;i<sensors.size();i++){
+            String[] tmpStrings= sensors.get(i).split(",");
+            int tmpIds = Integer.parseInt(tmpStrings[0]);
+            sortList.add(tmpIds);
+        }
+
+        // 存放所有网关id
+        LinkedList<Integer> sortGateway = new LinkedList<>();
+//        HashMap<String, Integer> sortHelp = new HashMap<>();
+        for(int i=0;i<gateways.size();i++){
+            String[] tmpStrings= gateways.get(i).split(",");
+            int tmpGatewayIds = Integer.parseInt(tmpStrings[0]);
+            sortGateway.add(tmpGatewayIds);
+//            sortHelp.put(tmpStrings[0],i);
+        }
+
+        // 与hash_string2strings一样，但此处为LinkedHashMap，表示有序吧
+        LinkedHashMap<Integer, HashSet<Integer>> sortMap = new LinkedHashMap<>();
+        for(int i = 0;i<sortGateway.size();i++){
+            Integer gateway_id = sortGateway.get(i);
+            sortMap.put(gateway_id,hash_int2ints.get(gateway_id));
+        }
+
+        // 已删除的传感器节点列表
+        ArrayList<Integer> del = new ArrayList<>();
+        // 存储选中的网关id
+        ArrayList<Integer> result = new ArrayList<>();
+        for(int i=0;i<sortList.size();i++){
+            //遍历至当前sensor节点
+            Integer cur_Sensor = sortList.get(i);
+
+            Integer tmpSelected = null;
+            int maxL = 0;
+
+            // 遍历网关节点，选择与当前传感器节点连接的传感器节点数量最多的网关节点
+            for(Map.Entry<Integer, HashSet<Integer>> entry:sortMap.entrySet()){
+
+                HashSet<Integer> values = entry.getValue();
+                // 判断当前网关节点是否连接当前传感器
+                if(values.contains(cur_Sensor)){
+                    // 计算当前网关节点连接的传感器节点数量（除去已删除的传感器节点）
+                    int length = Detection.helpCal_new(del,values);
+                    if(length > maxL){
+                        tmpSelected = entry.getKey();
+                        maxL = length;
+                    }
+//                    if(value.size() < maxL && !"".equals(tmpSelected)
+//                            && entry.getKey().substring(0, 3).equals(tmpSortSensor.substring(0, 3))
+//                            && sortHelp.get(entry.getKey()) < sortHelp.get(tmpSelected)){
+//                        sortMap.put(entry.getKey(),new HashSet<>());
+//                    }
+                }
+            }
+            result.add(tmpSelected);
+
+            // 将选定的网关节点连接的传感器节点从列表中删除
+            for(Integer tmpSet : sortMap.get(tmpSelected)){
+                if(sortList.contains(tmpSet)){
+                    del.add(tmpSet);
+                    sortList.remove(tmpSet);
+                }
+            }
+
+            // 清空选定的网关节点连接的传感器节点列表，避免重复选择
+            sortMap.put(tmpSelected,new HashSet<>());
+            i=-1;
+        }
+
+        // 0、1数组，1代表选中
+        int[] sol = new int[gateways.size()];
+        for (int i = 0; i < result.size(); i++) {
+            sol[result.get(i)-1] = 1;
+        }
+        return sol;
+    }
+
 
     /**
      * 使用有向贪心计算
@@ -67,28 +151,31 @@ public class Detection {
      */
     public static ArrayList<String> calByLinner(List<String> sensors, List<String> gateways, HashMap<String, HashSet<String>> lampposts) {
 
+        //存放所有sensor节点名
         LinkedList<String> sortList = new LinkedList<>();
         for(int i=0;i<sensors.size();i++){
             String[] tmpStrings= sensors.get(i).split(",");
             sortList.add(tmpStrings[0]);
         }
 
+        // 存放所有网关名
         LinkedList<String> sortGateway = new LinkedList<>();
-
-        HashMap<String, Integer> sortHelp = new HashMap<>();
+//        HashMap<String, Integer> sortHelp = new HashMap<>();
 
         for(int i=0;i<gateways.size();i++){
             String[] tmpStrings= gateways.get(i).split(",");
             sortGateway.add(tmpStrings[0]);
-            sortHelp.put(tmpStrings[0],i);
+//            sortHelp.put(tmpStrings[0],i);
         }
 
+        // 与hash_string2strings一样，但此处为LinkedHashMap，表示有序吧
         LinkedHashMap<String, HashSet<String>> sortMap = new LinkedHashMap<>();
         for(int i = 0;i<sortGateway.size();i++){
             String poll = sortGateway.get(i);
             sortMap.put(poll,lampposts.get(poll));
         }
 
+        // 已删除的传感器节点列表
         ArrayList<String> del = new ArrayList<>();
 
         ArrayList<String> result = new ArrayList<>();
@@ -102,11 +189,13 @@ public class Detection {
             String tmpSelected = "";
             int maxL = 0;
 
+            // 遍历网关节点，选择与当前传感器节点连接的传感器节点数量最多的网关节点
             for(Map.Entry<String, HashSet<String>> entry:sortMap.entrySet()){
 
                 HashSet<String> value = entry.getValue();
-
-                if((value.contains(tmpSortSensor) && value.contains(tmpSortSensor2)) || value.contains(tmpSortSensor)){
+                // 判断当前网关节点是否连接当前传感器节点或下一个传感器节点
+                if(value.contains(tmpSortSensor)){
+                    // 计算当前网关节点连接的传感器节点数量（除去已删除的传感器节点）
                     int length = Detection.helpCal(del,value);
                     if(length > maxL){
                         tmpSelected = entry.getKey();
@@ -121,6 +210,7 @@ public class Detection {
             }
             result.add(tmpSelected);
 
+            // 将选定的网关节点连接的传感器节点从列表中删除
             for(String tmpSet : sortMap.get(tmpSelected)){
                 if(sortList.contains(tmpSet)){
                     del.add(tmpSet);
@@ -128,6 +218,7 @@ public class Detection {
                 }
             }
 
+            // 清空选定的网关节点连接的传感器节点列表，避免重复选择
             sortMap.put(tmpSelected,new HashSet<>());
             i=-1;
         }
@@ -135,12 +226,38 @@ public class Detection {
         return result;
     }
 
-    public static int helpCal(ArrayList<String> del , HashSet<String> hs){
-        int i=0;
-        for(String s : hs){
-            if(!del.contains(s))i++;
+    /**
+     * 辅助方法，计算传感器节点与网关节点连接的传感器节点数量（除去已删除的传感器节点）
+     *
+     * @param del 已删除的传感器节点列表
+     * @param hs  网关节点连接的传感器节点集合
+     * @return 返回传感器节点与网关节点连接的传感器节点数量
+     */
+    public static int helpCal(ArrayList<String> del, HashSet<String> hs) {
+        int count = 0;
+        for (String s : hs) {
+            if (!del.contains(s)) {
+                count++;
+            }
         }
-        return i;
+        return count;
+    }
+
+    /**
+     * 辅助方法，计算传感器节点与网关节点连接的传感器节点数量（除去已删除的传感器节点）
+     *
+     * @param del 已删除的传感器节点列表
+     * @param hs  网关节点连接的传感器节点集合
+     * @return 返回传感器节点与网关节点连接的传感器节点数量
+     */
+    public static int helpCal_new(ArrayList<Integer> del, HashSet<Integer> hs) {
+        int count = 0;
+        for (Integer s : hs) {
+            if (!del.contains(s)) {
+                count++;
+            }
+        }
+        return count;
     }
 
 
@@ -158,7 +275,6 @@ public class Detection {
                 resultMap.put(key.toString(), source.get(key));
             }
         }
-
         return resultMap;
     }
-    }
+}

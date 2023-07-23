@@ -1,7 +1,7 @@
-//232 新增
-$("#tdata232").click(function () {
+//207
+$("#tdata207").click(function () {
     $.ajax({
-        "url": "hh232",
+        "url": "hh207",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点
@@ -17,10 +17,10 @@ $("#tdata232").click(function () {
     });
 });
 
-//466 新增
-$("#tdata466").click(function () {
+//461
+$("#tdata461").click(function () {
     $.ajax({
-        "url": "hh466",
+        "url": "hh461",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点
@@ -36,10 +36,10 @@ $("#tdata466").click(function () {
     });
 });
 
-//1056 新增
-$("#tdata1056").click(function () {
+//1052
+$("#tdata1052").click(function () {
     $.ajax({
-        "url": "hh1056",
+        "url": "hh1052",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点
@@ -55,10 +55,10 @@ $("#tdata1056").click(function () {
     });
 });
 
-//1500
-$("#tdata1500").click(function () {
+//1361
+$("#tdata1361").click(function () {
     $.ajax({
-        "url": "hh1500",
+        "url": "hh1361",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点
@@ -74,10 +74,10 @@ $("#tdata1500").click(function () {
     });
 });
 
-//232 2 新增
-$("#tdata2322").click(function () {
+//g114
+$("#tdatag114").click(function () {
     $.ajax({
-        "url": "hh2322",
+        "url": "hhg114",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点
@@ -93,10 +93,10 @@ $("#tdata2322").click(function () {
     });
 });
 
-//466 2 新增
-$("#tdata4662").click(function () {
+//g228
+$("#tdatag228").click(function () {
     $.ajax({
-        "url": "hh4662",
+        "url": "hhg228",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点
@@ -112,10 +112,10 @@ $("#tdata4662").click(function () {
     });
 });
 
-//518 2 新增
-$("#tdata10562").click(function () {
+//g354
+$("#tdatag354").click(function () {
     $.ajax({
-        "url": "hh10562",
+        "url": "hhg354",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点
@@ -131,10 +131,10 @@ $("#tdata10562").click(function () {
     });
 });
 
-//1500 2
-$("#tdata15002").click(function () {
+//g484
+$("#tdatag484").click(function () {
     $.ajax({
-        "url": "hh15002",
+        "url": "hhg484",
         "type": "post",
         "success": function (response) {
             // 清楚地图上已经标记的点

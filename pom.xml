@@ -139,6 +139,11 @@
             <scope>system</scope>
             <systemPath>${basedir}/src/main/resources/lib/aco-scp.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.1-jre</version>
+        </dependency>
     </dependencies>
 
     <build>
