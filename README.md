@@ -15,6 +15,12 @@
     <img alt="jdk release" src="https://img.shields.io/badge/jdk-1.8-blue">
   </a>
   <a href="" target="_blank">
+    <img alt="Nodejs" src="https://img.shields.io/badge/Nodejs-v16.5.1-blue">
+  </a>
+  <a href="" target="_blank">
+    <img alt="npm" src="https://img.shields.io/badge/npm-9.6.5-blue">
+  </a>
+  <a href="" target="_blank">
     <img alt="matlab release" src="https://img.shields.io/badge/matlab-R2016b-blue">
   </a>
   </br>
@@ -53,10 +59,11 @@
 - [Table of Contents](#table-of-contents)
 - [Demo](#demo)
 - [Usage](#usage)
-- [Environment dependent](#environment-dependent)
+- [Environment Configuration](#environment-configuration)
+  - [runtime environment](#runtime-environment)
+  - [development environment](#development-environment)
 - [Deployment steps](#deployment-steps)
 - [Directory Structure Description](#directory-structure-description)
-  - [xxx](#xxx)
 - [Contributors](#contributors)
 - [License](#license)
 
@@ -64,23 +71,33 @@
 
 <!-- Add a demo for your project -->
 
-I believe that you should bring value to the reader as soon as possible. You should be able to get the user up and running with your project with minimal friction.
+This system is an experimental platform for simulating and analyzing roadside traffic. It uses the data resources and traffic information provided by Baidu Maps API to simulate the roadside traffic environment and collect relevant data. It can be used to evaluate the implementation effect of the relay node deployment algorithm in actual traffic scenarios.
 
 ![Banner](./images/test.gif)
 
-If you have a quickstart guide, this is where it should be.
+Gateway deployment planning consists of two key steps: roadside sensor node coordinate collection and relay node optimal deployment location calculation. This system provides 8 test data sets that can be used for testing. You can also use the mark mode in the system to mark node coordinates for relay node calculations.
 
-Alternatively, you can add a demo to show what your project can do.
 
 # Usage
-Next, you have to explain how to use your project. You can create subsections under here to explain more clearly.
+If you only need to run this project for traffic gateway deployment, then only need to configure [runtime environment](#runtime-environment)。You can download the version that does not include the matlab algorithm in the release. After downloading, execute the following code to deploy the gateway by accessing `localhost:8081`.
+```sh
+java xxx.jar -ak xxxxx
+```
+
+This project supports calling matlab algorithm for calculation, but needs to configure the [matlab runtime environment]().
 
 
-# Environment dependent
-* operating environment
-  * JRE v1.8
-  * MATLAB Runtime R2016b (9.1)
+# Environment Configuration
+## runtime environment
+* JRE 1.8
+* MATLAB Runtime R2016b (9.1)
 
+## development environment
+If you need to modify the back-end code or modify the front-end page, you need to configure the following environment
+* Java Version: Temurin JDK 1.8
+* Node.js Version：v16.15.1
+* npm Version：9.6.5
+* vite Version: 4.4.4
 
 # Deployment steps
 
@@ -91,7 +108,7 @@ If you want to modify the style of the front end, please enter the project root 
 cd ./vue
 npm install
 ```
-After installing the dependencies, you can modify the front-end related code in /vue/src/App.vue, and then execute the following command to view the front-end interface.
+After installing the dependencies, you can modify the front-end related code in `mytestv2/vue/src/App.vue`, and then execute the following command to view the front-end interface.
 ```sh
 npm run dev
 ```
@@ -99,7 +116,7 @@ After the front-end interface is modified, you can compile the static file.
 ```sh
 npm run build
 ```
-Then a static file will be generated in the dist directory, and the spring boot project can be started after moving it to the /mytest_v2/src/main/resources/static directory, which can be moved directly through the script
+Then a static file will be generated in the dist directory, and the spring boot project can be started after moving it to the`mytest_v2/src/main/resources/static `directory, which can be moved directly through the script
 ```python
 python .\move_build_output.py
 ```
@@ -115,28 +132,6 @@ python .\move_build_output.py
 |-- pom.xml
 |-- LICENSE
 ```
-
-## xxx
-
-To install the developer version follow the steps below. To just use the extension download from [**chrome.google.com/webstore/nsfw-filter**](https://chrome.google.com/webstore/detail/nsfw-filter/kmgagnlkckiamnenbpigfaljmanlbbhh).
-
-To run development version in clean environment use command:
-
-```sh
-npm run dev:chrome
-```
-
-1. 添加系统环境变量
-    export $PORTAL_VERSION="production" // production, test, dev
-
-
-2. npm install  //安装node运行环境
-
-3. gulp build   //前端编译
-
-4. 启动两个配置(已forever为例)
-    eg: forever start app-service.js
-        forever start logger-service.js
 
 # Contributors
 
