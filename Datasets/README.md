@@ -94,8 +94,8 @@ You are free to utilize this dataset for academic, research, or commercial purpo
 - Coordinate System: WGS 84 (World Geodetic System 1984)
 
 ## Data License
+[CC-BY 4.0](./LICENSE) license.
 
-Specify the license under which the data is released (e.g., MIT, CC-BY 4.0, etc.)
 
 ## Citation
 
