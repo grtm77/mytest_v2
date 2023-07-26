@@ -172,6 +172,7 @@ const setNames = ref<string[]>([]);
 const nodeTypeIsDisabled = computed(() => !ifmark.value);
 const saveDataIsDisabled = computed(() => !ifmark.value);
 const saveDatasetIsDisabled = computed(() => !ifmark.value);
+const undoDisabled = computed(() => !ifmark.value);
 
 type Option = {
   id: number
@@ -206,8 +207,7 @@ let gIcon_rec32: any;
 let sIcon: any;
 // let rIcon: any;
 let cIcon: any;
-
-
+let guard_undo: string;
 // 生命周期钩子：在mounted阶段初始化地图
 onMounted(() => {
   createMap();
@@ -283,6 +283,22 @@ const createMap = () => {
 }
 
 
+
+const undo = () => {
+  if(guard_undo === "sensor"){
+    all_sensor.pop();
+  }
+  if(guard_undo === "cross"){
+    cross.pop();
+  }
+  if(guard_undo === "gateway"){
+    all_gateway.pop();
+  }
+  if(guard_undo === "pointArr_first"){
+    pointArr.pop();
+  }
+  drawAllMarked();
+};
 
 
 // 方法：缩小地图一级
@@ -361,9 +377,9 @@ const handleSwitchChange = () => {
 
 function handleClick(e) {
   var the_nodetype = nodeType.value?.label
-  var dontclear = true;
   if (the_nodetype === "cross") {
     cross.push(e.latlng);
+    guard_undo = 'cross';
     var markerCros = new GL.Marker(e.latlng, {
       icon: cIcon
     });
@@ -374,6 +390,7 @@ function handleClick(e) {
     let tmp: any = []
     tmp.push(e.latlng)
     all_sensor.push(tmp)
+    guard_undo = 'sensor';
     var markerSingleSessor = new GL.Marker(e.latlng, {
       icon: sIcon
     });
@@ -384,6 +401,7 @@ function handleClick(e) {
     let tmp2: any = []
     tmp2.push(e.latlng)
     all_gateway.push(tmp2)
+    guard_undo = 'gateway';
     var markerSingleGateway = new GL.Marker(e.latlng, {
       icon: gIcon
     });
@@ -397,6 +415,7 @@ function handleClick(e) {
     if (pointArr.length === 1) {
       var start = new GL.Point(pointArr[0].lng, pointArr[0].lat);
       map.value.addOverlay(new GL.Marker(start));
+      guard_undo = 'pointArr_first';
     }
     if (pointArr.length === 2) {
       var start = new GL.Point(pointArr[0].lng, pointArr[0].lat);
@@ -431,10 +450,12 @@ function handleClick(e) {
       //二维数组，存放多条街道的坐标点
       if (the_nodetype == "sensor") {
         all_sensor.push(pts)
+        guard_undo = 'sensor';
         pts = []
         // console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
       } else {
         all_gateway.push(pts)
+        guard_undo = 'gateway';
         pts = []
         // console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
       }
