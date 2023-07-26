@@ -11,62 +11,54 @@
         </div> -->
       </el-main>
       <el-footer>
-        <!-- <div style="display: flex; justify-content: center;">
+        <div style="display: flex; justify-content: center;" v-if="!ifmark">
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="Mark Mode">
               <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
             </el-form-item>
-            <el-form-item label="NodeType">
-              <el-select v-model="nodeType" value-key="id" placeholder="Select" placement="top-start"
-                :popper-append-to-body="false" :teleported="false" popper-class="custom-popper"
-                :disabled="nodeTypeIsDisabled">
-                <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <el-button type="primary" @click="saveData" :disabled="saveDataIsDisabled">Save Data</el-button>
-          <el-button type="success" @click="handleDataset" class="green-color">Dataset</el-button>
-          <el-button type="success" @click="formatting" class="green-color">Formatting</el-button>
-          <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
-          <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
-          <el-button type="success" @click="handleTestUpload" class="green-color">TestData Load</el-button>
-        </div> -->
-        <div style="display: flex; justify-content: center;">
-          <el-form :inline="true" class="demo-form-inline">
-            <el-form-item label="Mark Mode">
-              <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
-            </el-form-item>
-            <el-form-item label="NodeType">
-              <el-select v-model="nodeType" value-key="id" placeholder="Select" placement="top-start"
-                :popper-append-to-body="false" :teleported="false" popper-class="custom-popper"
-                :disabled="nodeTypeIsDisabled">
-                <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item" />
-              </el-select>
-            </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="saveData" :disabled="saveDataIsDisabled">Save Data</el-button>
+              <el-button type="danger" @click="formatting">Formatting</el-button>
             </el-form-item>
-            <el-form-item>
+            <el-form-item >
               <el-button type="success" @click="handleDataset" class="green-color">Dataset</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
             </el-form-item>
             <el-form-item>
-              <!-- <el-button type="success" @click="formatting" class="green-color">Formatting</el-button> -->
-              <el-button type="danger" @click="formatting">Formatting</el-button>
-            </el-form-item>
-            <!-- <el-form-item>
-            <el-button type="success" @click="onSubmit" class="green-color">Clear Database</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" @click="onSubmit" class="green-color">Sort</el-button>
-          </el-form-item> -->
-            <el-form-item>
-              <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
+              <el-button type="warning" @click="handleFilesUpload" class="yellow-color" >Files Upload</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="success" @click="handleTestUpload" class="green-color">TestData Load</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div style="display: flex; justify-content: center;" v-if="ifmark">
+          <el-form :inline="true" class="demo-form-inline">
+            <el-form-item label="Mark Mode">
+              <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
+            </el-form-item>
+            <el-form-item label="NodeType">
+              <el-select v-model="nodeType" value-key="id" placeholder="Select" placement="top-start"
+                :popper-append-to-body="false" :teleported="false" popper-class="custom-popper"
+                :disabled="nodeTypeIsDisabled">
+                <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="warning" @click="undo" class="yellow-color">Undo</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="danger" @click="formatting">Formatting</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="saveData">Save Data</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="saveDataset" :disabled="saveDatasetIsDisabled">Save Dataset</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -132,12 +124,11 @@
     <!-- Dataset 部分 -->
     <el-dialog title="Select the data set operation you want to perform" v-model="AboutDatasetdialogVisible" width="45%">
       <div style="display: flex; justify-content: center;">
-        <el-button type="primary" @click="saveDataset" :disabled="saveDatasetIsDisabled">Save Dataset</el-button>
         <el-button type="success" @click="handleDatasetLoad" class="green-color">Dataset Load</el-button>
         <el-button type="danger" @click="deleteDataset">Delete Dataset</el-button>
       </div>
     </el-dialog>
-  </div>
+  </div>-
 </template>
 
 <script setup lang="ts">
@@ -464,7 +455,6 @@ function handleClick(e) {
       drawAllMarked();
     }
   }
-
 }
 
 //绘制所有标注节点
@@ -611,7 +601,6 @@ const formatting = () => {
 };
 
 const saveData = () => {
-  ifmark.value = !ifmark.value;
   // 交叉路口节点数据
   var cross_points: any = [];
   for (var i = 0; i < cross.length; i++) {
