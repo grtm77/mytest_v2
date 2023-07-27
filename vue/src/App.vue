@@ -11,6 +11,7 @@
         </div> -->
       </el-main>
       <el-footer>
+        <!-- 非标注视图 -->
         <div style="display: flex; justify-content: center;" v-if="!ifmark">
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="Mark Mode">
@@ -19,22 +20,29 @@
             <el-form-item>
               <el-button type="danger" @click="formatting">Formatting</el-button>
             </el-form-item>
-            <el-form-item >
+            <el-form-item>
               <el-button type="success" @click="handleDataset" class="green-color">Dataset</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
             </el-form-item>
             <el-form-item>
-              <el-button type="warning" @click="handleFilesUpload" class="yellow-color" >Files Upload</el-button>
+              <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="success" @click="handleTestUpload" class="green-color">TestData Load</el-button>
             </el-form-item>
           </el-form>
         </div>
+        <!-- 标注视图 -->
         <div style="display: flex; justify-content: center;" v-if="ifmark">
           <el-form :inline="true" class="demo-form-inline">
+            <el-form-item label="Sensors">
+              {{ sensorsValue }}
+            </el-form-item>
+            <el-form-item label="Gateways">
+              {{ gatewaysValue }}
+            </el-form-item>
             <el-form-item label="Mark Mode">
               <el-switch v-model="ifmark" @change="handleSwitchChange"></el-switch>
             </el-form-item>
@@ -117,8 +125,11 @@
     <!-- Dataset Upload部分 -->
     <el-dialog title="Which dataset would you like to upload?" v-model="Dataset_dialogVisible" width="45%">
       <div style="display: flex; justify-content: center;">
-        <el-button v-for="name in setNames" :key="name" type="primary" @click="handleDatasetButtonClick(name)">{{ name
-        }}</el-button>
+        <el-tooltip v-for="dataset in setNames" :key="dataset.name" class="box-item" effect="dark" :content="getTooltipContent(dataset)" placement="top">
+        <el-button type="primary" @click="handleDatasetButtonClick(dataset.name)">
+          {{ dataset.name }}
+        </el-button>
+      </el-tooltip>
       </div>
     </el-dialog>
     <!-- Dataset 部分 -->
@@ -128,7 +139,7 @@
         <el-button type="danger" @click="deleteDataset">Delete Dataset</el-button>
       </div>
     </el-dialog>
-  </div>-
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -146,12 +157,16 @@ import axios from 'axios';
 
 
 // 自定义变量
-let all_sensor: any[][] = [];    //存放地图上所有的传感器节点
-let all_gateway: any[][] = [];   //存放地图上所有的网关节点
+// let all_sensor: any[][] = [];    //存放地图上所有的传感器节点
+// let all_gateway: any[][] = [];   //存放地图上所有的网关节点
+// 使用 ref 声明响应式数据
+const all_sensor = ref<any[][]>([]);    // 存放地图上所有的传感器节点
+const all_gateway = ref<any[][]>([]);   // 存放地图上所有的网关节点
 let cross: any[] = [];         //存放地图上所有的交叉路口
 let pointArr: any[] = [];      //存放一条路的起点与终点
 let pts: any[] = [];           //存放一条路所有的传感器节点或者网关节点
 let pointIndex = 0;     //初始化节点之间的距离
+
 
 const ifmark = ref(false);
 const caculate_dialogVisible = ref(false);
@@ -159,11 +174,32 @@ const upload_dialogVisible = ref(false);
 const TestData_dialogVisible = ref(false);
 const Dataset_dialogVisible = ref(false);
 const AboutDatasetdialogVisible = ref(false);
-const setNames = ref<string[]>([]);
+// 存放数据集信息
+const setNames = ref<Array<{ name: string; sensorSize: number; gatewaySize: number }>>([]);
 const nodeTypeIsDisabled = computed(() => !ifmark.value);
-const saveDataIsDisabled = computed(() => !ifmark.value);
 const saveDatasetIsDisabled = computed(() => !ifmark.value);
-const undoDisabled = computed(() => !ifmark.value);
+
+// 计算所有传感器节点的个数并累加
+const sensorsValue = computed(() => {
+  let totalSensors = 0;
+  for (const row of all_sensor.value) {
+    totalSensors += row.length;
+  }
+  return totalSensors;
+});
+
+const getTooltipContent = (dataset: { name: string; sensorSize: number; gatewaySize: number }) => {
+  return `Sensor Size: ${dataset.sensorSize}, Gateway Size: ${dataset.gatewaySize}`;
+};
+
+// 计算所有网关节点的个数并累加
+const gatewaysValue = computed(() => {
+  let totalGateways = 0;
+  for (const row of all_gateway.value) {
+    totalGateways += row.length;
+  }
+  return totalGateways;
+});
 
 type Option = {
   id: number
@@ -276,16 +312,16 @@ const createMap = () => {
 
 
 const undo = () => {
-  if(guard_undo === "sensor"){
-    all_sensor.pop();
+  if (guard_undo === "sensor") {
+    all_sensor.value.pop();
   }
-  if(guard_undo === "cross"){
+  if (guard_undo === "cross") {
     cross.pop();
   }
-  if(guard_undo === "gateway"){
-    all_gateway.pop();
+  if (guard_undo === "gateway") {
+    all_gateway.value.pop();
   }
-  if(guard_undo === "pointArr_first"){
+  if (guard_undo === "pointArr_first") {
     pointArr.pop();
   }
   drawAllMarked();
@@ -380,7 +416,7 @@ function handleClick(e) {
   } else if (the_nodetype === "sensor_single") {
     let tmp: any = []
     tmp.push(e.latlng)
-    all_sensor.push(tmp)
+    all_sensor.value.push(tmp)
     guard_undo = 'sensor';
     var markerSingleSessor = new GL.Marker(e.latlng, {
       icon: sIcon
@@ -391,7 +427,7 @@ function handleClick(e) {
   } else if (the_nodetype === "gateway_single") {
     let tmp2: any = []
     tmp2.push(e.latlng)
-    all_gateway.push(tmp2)
+    all_gateway.value.push(tmp2)
     guard_undo = 'gateway';
     var markerSingleGateway = new GL.Marker(e.latlng, {
       icon: gIcon
@@ -440,12 +476,12 @@ function handleClick(e) {
       }
       //二维数组，存放多条街道的坐标点
       if (the_nodetype == "sensor") {
-        all_sensor.push(pts)
+        all_sensor.value.push(pts)
         guard_undo = 'sensor';
         pts = []
         // console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
       } else {
-        all_gateway.push(pts)
+        all_gateway.value.push(pts)
         guard_undo = 'gateway';
         pts = []
         // console.log(all_sensor[0][0].lng, all_sensor[0][0].lat);
@@ -471,9 +507,9 @@ function drawAllMarked() {
     map.value.addOverlay(marker1)
   }
   // 在地图上标注网关节点
-  for (let j = 0; j < all_gateway.length; j++) {
-    for (let k = 0; k < all_gateway[j].length; k++) {
-      let point1 = new GL.Point(all_gateway[j][k].lng, all_gateway[j][k].lat);
+  for (let j = 0; j < all_gateway.value.length; j++) {
+    for (let k = 0; k < all_gateway.value[j].length; k++) {
+      let point1 = new GL.Point(all_gateway.value[j][k].lng, all_gateway.value[j][k].lat);
       marker1 = new GL.Marker(point1, {
         icon: gIcon
       })
@@ -485,9 +521,9 @@ function drawAllMarked() {
     }
   }
   // 在地图上标注传感器节点
-  for (var j = 0; j < all_sensor.length; j++) {
-    if (all_sensor[j].length === 1) {
-      let the_point = new GL.Point(all_sensor[j][0].lng, all_sensor[j][0].lat);
+  for (var j = 0; j < all_sensor.value.length; j++) {
+    if (all_sensor.value[j].length === 1) {
+      let the_point = new GL.Point(all_sensor.value[j][0].lng, all_sensor.value[j][0].lat);
       let markerSsessor = new GL.Marker(the_point, {
         icon: sIcon
       });
@@ -497,11 +533,11 @@ function drawAllMarked() {
       //   let lng = e.currentTarget.latLng.lng
       //   alert(lat + '  ' + lng);
       // });
-    } else if (all_sensor[j].length !== 0) {
-      var xx1 = all_sensor[j][0].lng;
-      var yy1 = all_sensor[j][0].lat;
-      var xx2 = all_sensor[j][all_sensor[j].length - 1].lng;
-      var yy2 = all_sensor[j][all_sensor[j].length - 1].lat;
+    } else if (all_sensor.value[j].length !== 0) {
+      var xx1 = all_sensor.value[j][0].lng;
+      var yy1 = all_sensor.value[j][0].lat;
+      var xx2 = all_sensor.value[j][all_sensor.value[j].length - 1].lng;
+      var yy2 = all_sensor.value[j][all_sensor.value[j].length - 1].lat;
       var rad = Math.atan2((yy2 - yy1), (xx2 - xx1))  //弧度  0.6435011087932844
       // var theta = rad * (180 / Math.PI);  //角度  36.86989764584402
       var width = 0.000044
@@ -511,8 +547,8 @@ function drawAllMarked() {
       var distance = Math.sqrt(Math.pow(half_width, 2) + Math.pow(half_height, 2))
       var the_alpha = Math.atan2(half_height, half_width)
 
-      for (var k = 0; k < all_sensor[j].length; k++) {
-        var point1 = new GL.Point(all_sensor[j][k].lng, all_sensor[j][k].lat);
+      for (var k = 0; k < all_sensor.value[j].length; k++) {
+        var point1 = new GL.Point(all_sensor.value[j][k].lng, all_sensor.value[j][k].lat);
         // 绘制车框
         var ros_point = point1
         var vertex_points: any = [];
@@ -580,8 +616,8 @@ const formatting = () => {
   )
     .then(() => {
       //清空所有存放数据的数组
-      all_sensor = [];
-      all_gateway = [];
+      all_sensor.value = [];
+      all_gateway.value = [];
       cross = [];
       pointArr = [];
       pts = [];
@@ -611,24 +647,24 @@ const saveData = () => {
   }
   // sensor节点数据
   var sensor_array: any = [];
-  for (var i = 0; i < all_sensor.length; i++) {
+  for (var i = 0; i < all_sensor.value.length; i++) {
     let sensor_points = [];
-    for (var j = 0; j < all_sensor[i].length; j++) {
+    for (var j = 0; j < all_sensor.value[i].length; j++) {
       let a: any = [];
-      a.push(all_sensor[i][j].lng);
-      a.push(all_sensor[i][j].lat);
+      a.push(all_sensor.value[i][j].lng);
+      a.push(all_sensor.value[i][j].lat);
       sensor_points.push(a);
     }
     sensor_array.push(sensor_points);
   }
   // 网关节点数据
   var gateway_array: any = [];
-  for (var i = 0; i < all_gateway.length; i++) {
+  for (var i = 0; i < all_gateway.value.length; i++) {
     let gateway_points = [];
-    for (var j = 0; j < all_gateway[i].length; j++) {
+    for (var j = 0; j < all_gateway.value[i].length; j++) {
       let a: any = [];
-      a.push(all_gateway[i][j].lng);
-      a.push(all_gateway[i][j].lat);
+      a.push(all_gateway.value[i][j].lng);
+      a.push(all_gateway.value[i][j].lat);
       gateway_points.push(a);
     }
     gateway_array.push(gateway_points);
@@ -813,21 +849,47 @@ const handleTestUpload = () => {
   TestData_dialogVisible.value = true;
 };
 
+// const handleDatasetLoad = () => {
+//   // 发送网络请求
+//   axios.post('searchSetnames')
+//     .then((response: { data: any; }) => {
+//       setNames.value = response.data.data;
+//       Dataset_dialogVisible.value = true;
+//     })
+//     .catch((error: { response: { data: { message: any; }; }; }) => {
+//       const mess = error.response.data.message;
+//       if (mess != null)
+//         ElMessage.error(mess)
+//       else
+//         ElMessage.error('请求失败')
+//     });
+//   Dataset_dialogVisible.value = true;
+// };
+
 const handleDatasetLoad = () => {
   // 发送网络请求
-  axios.post('searchSetnames')
-    .then((response: { data: any; }) => {
-      setNames.value = response.data.data;
+  axios.post('searchDatasetInfo')
+    .then((response: { data: { data: Array<any> } }) => {
+      const datasetInfoList = response.data.data;
+      const setNamesData = datasetInfoList.map((datasetInfo: any) => {
+        return {
+          name: datasetInfo.name,
+          sensorSize: datasetInfo.sensorSize,
+          gatewaySize: datasetInfo.gatewaySize
+        };
+      });
+
+      // 更新 setNames 的值
+      setNames.value = setNamesData;
       Dataset_dialogVisible.value = true;
     })
-    .catch((error: { response: { data: { message: any; }; }; }) => {
+    .catch((error: { response: { data: { message: any } } }) => {
       const mess = error.response.data.message;
       if (mess != null)
-        ElMessage.error(mess)
+        ElMessage.error(mess);
       else
-        ElMessage.error('请求失败')
+        ElMessage.error('请求失败');
     });
-  Dataset_dialogVisible.value = true;
 };
 
 const calByGA = () => {
@@ -1079,13 +1141,13 @@ const gatewayupload = () => {
   axios.post('gup')
     .then((response: { data: { data: any; }; }) => {
       var gateways = response.data.data; // 拿到的gateway列表
-      all_gateway = [];
+      all_gateway.value = [];
       // 在地图上标记
       for (var i = 0; i < gateways.length; i++) {
         var point2 = new GL.Point(gateways[i][3], gateways[i][4]);
         let tmp = [];
         tmp.push(point2);
-        all_gateway.push(tmp);
+        all_gateway.value.push(tmp);
         // var marker2 = new GL.Marker(point2, {icon: gIcon});
         var marker2 = new GL.Marker(point2, { icon: gIcon_rec32 });
         // var marker2 = new GL.Marker(point2, {icon: gIcon_rec16});
@@ -1116,13 +1178,13 @@ const sensorupload = () => {
   axios.post('sup')
     .then((response: { data: { data: any; }; }) => {
       var sensors = response.data.data; // 拿到的sensor列表
-      all_sensor = [];
+      all_sensor.value = [];
       // 在地图上标记
       for (var i = 0; i < sensors.length; i++) {
         var point1 = new GL.Point(sensors[i][3], sensors[i][4]);
         let tmp = [];
         tmp.push(point1);
-        all_sensor.push(tmp);
+        all_sensor.value.push(tmp);
         var marker1 = new GL.Marker(point1, { icon: sIcon });
         map.value.addOverlay(marker1);
       }
