@@ -20,14 +20,20 @@
             <el-form-item>
               <el-button type="danger" @click="formatting">Formatting</el-button>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
               <el-button type="success" @click="handleDataset" class="green-color">Dataset</el-button>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
               <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
             </el-form-item>
+            <!-- <el-form-item>
+              <el-button type="danger" @click="deleteDataset">Delete Dataset</el-button>
+            </el-form-item> -->
             <el-form-item>
               <el-button type="warning" @click="handleFilesUpload" class="yellow-color">Files Upload</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="success" @click="handleDatasetLoad" class="green-color">Dataset</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="success" @click="handleTestUpload" class="green-color">TestData Load</el-button>
@@ -66,7 +72,7 @@
               <el-button type="primary" @click="saveDataset" :disabled="saveDatasetIsDisabled">Save Dataset</el-button>
             </el-form-item>
             <el-form-item>
-              <el-button type="warning" @click="handleCalculation" class="yellow-color">Calculation</el-button>
+              <el-button type="success" @click="handleDatasetLoad" class="green-color">Dataset</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -98,15 +104,9 @@
     <!-- upload部分 -->
     <el-dialog title="Upload" v-model="upload_dialogVisible" width="30%">
       <div style="display: flex; justify-content: center;">
-        <el-tooltip class="box-item" effect="dark" content="Sensor Upload" placement="top">
-          <el-button @click="sensorupload">Sensor Upload</el-button>
-        </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" content="Gateway Upload" placement="top">
-          <el-button @click="gatewayupload">Gateway Upload</el-button>
-        </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" content="Crossing Upload" placement="top">
-          <el-button @click="crossingupload">Crossing Upload</el-button>
-        </el-tooltip>
+        <el-button @click="sensorupload">Sensor Upload</el-button>
+        <el-button @click="gatewayupload">Gateway Upload</el-button>
+        <el-button @click="crossingupload">Crossing Upload</el-button>
       </div>
     </el-dialog>
     <!-- Testdata Upload部分 -->
@@ -124,13 +124,25 @@
     </el-dialog>
     <!-- Dataset Upload部分 -->
     <el-dialog title="Which dataset would you like to upload?" v-model="Dataset_dialogVisible" width="45%">
-      <div style="display: flex; justify-content: center;">
+      <!-- <div style="display: flex; justify-content: center;">
         <el-tooltip v-for="dataset in setNames" :key="dataset.name" class="box-item" effect="dark" :content="getTooltipContent(dataset)" placement="top">
         <el-button type="primary" @click="handleDatasetButtonClick(dataset.name)">
           {{ dataset.name }}
         </el-button>
       </el-tooltip>
-      </div>
+      </div> -->
+      <el-table :data="setNames" height="250" style="width: 100%">
+        <el-table-column type="index" width="50" />
+        <el-table-column label="Name" width="150" prop="name" />
+        <el-table-column label="Sensor Size" width="100" prop="sensorSize" />
+        <el-table-column label="Gateway Size" width="130" prop="gatewaySize" />
+        <el-table-column label="Operations">
+          <template #default="scope">
+            <el-button size="small" @click="handleLoad(scope.row.name)">Load</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row.name)">Delete</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
     <!-- Dataset 部分 -->
     <el-dialog title="Select the data set operation you want to perform" v-model="AboutDatasetdialogVisible" width="45%">
@@ -148,17 +160,6 @@ import { lazyBMapApiLoaderInstance } from 'vue-bmap-gl';
 //@ts-ignore
 import axios from 'axios';
 
-// 自定义变量
-// const all_sensor = [];    //存放地图上所有的传感器节点
-// const all_gateway = [];   //存放地图上所有的网关节点
-// const cross = [];         //存放地图上所有的交叉路口
-// const pointArr = [];      //存放一条路的起点与终点
-// const pts = [];           //存放一条路所有的传感器节点或者网关节点
-
-
-// 自定义变量
-// let all_sensor: any[][] = [];    //存放地图上所有的传感器节点
-// let all_gateway: any[][] = [];   //存放地图上所有的网关节点
 // 使用 ref 声明响应式数据
 const all_sensor = ref<any[][]>([]);    // 存放地图上所有的传感器节点
 const all_gateway = ref<any[][]>([]);   // 存放地图上所有的网关节点
@@ -309,7 +310,85 @@ const createMap = () => {
   })
 }
 
+const handleLoad = (name: string) => {
+  // 在这里处理按钮点击逻辑
+  axios.post('datasetLoad', null, {
+    params: {
+      datasetName: name
+    }
+  })
+    .then((response) => {
+      let location_lng = response.data.data[0]
+      let location_lat = response.data.data[1]
+      // 清除地图上已经标记的点
+      map.value.clearOverlays();
+      var data_point = new GL.Point(location_lng, location_lat);// lyj标注位置
+      map.value.centerAndZoom(data_point, 19);
+      sensorupload();
+      Dataset_dialogVisible.value = false;
+    })
+    .catch(function (error: any) {
+      ElMessage({
+        message: error,
+        type: 'error',
+      })
+    });
+}
 
+const handleDelete = (index: number, name: string) => {
+  ElMessageBox.confirm(
+    'Are you sure you want to delete the dataset?',
+    'Warning',
+    {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+      center: true,
+      lockScroll: false
+    }
+  )
+    .then(() => {
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(255, 255, 255, 0.5)',
+      })
+      // 发送网络请求
+      axios.post('deleteDataset', null, {
+        params: {
+          datasetName: name
+        }
+      })
+        .then(() => {
+          if (index >= 0 && index < setNames.value.length) {
+            setNames.value.splice(index, 1);
+          }
+          loading.close();
+          ElMessage({
+            message: 'Dataset deleted successfully',
+            type: 'success',
+          })
+        })
+        .catch((error: { response: { data: { message: any; }; }; }) => {
+          loading.close();
+          const mess = error.response.data.message;
+          if (mess != null)
+            ElMessage.error(mess)
+          else
+            ElMessage.error('请求失败')
+        });
+      // ElMessage({
+      //   type: 'success',
+      //   message: 'Delete completed',
+      // })
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Delete canceled',
+      })
+    })
+}
 
 const undo = () => {
   if (guard_undo === "sensor") {
@@ -751,7 +830,6 @@ const handleDataset = () => {
 }
 
 const saveDataset = () => {
-  ifmark.value = !ifmark.value;
   ElMessageBox.prompt('Please set dataset name', 'Tip', {
     confirmButtonText: 'OK',
     cancelButtonText: 'Cancel',
