@@ -12,14 +12,23 @@ You are free to utilize this dataset for academic, research, or commercial purpo
 ## Dataset Details
 | Dataset Name   | Sensor Nodes | Relay Nodes | Data Format | Sensor File         | Relay File          | Coordinate System |
 |----------------|--------------|-------------|-------------|---------------------|---------------------|-------------------|
+| #114 Dataset   | 114          | 41          | CSV         | sensor_114.xls   | relay_114.xls    | WGS 84            |
 | #207 Dataset   | 207          | 70          | CSV         | sensor_207.xls      | relay_207.xls       | WGS 84            |
+| #228 Dataset   | 228          | 81          | CSV         | sensor_228.xls   | relay_228.xls    | WGS 84            |
+| #354 Dataset   | 354          | 127         | CSV         | sensor_354.xls   | relay_354.xls    | WGS 84            |
 | #461 Dataset   | 461          | 148         | CSV         | sensor_461.xls      | relay_461.xls       | WGS 84            |
+| #484 Dataset   | 484          | 175         | CSV         | sensor_484.xls   | relay_484.xls    | WGS 84            |
 | #1052 Dataset  | 1052         | 336         | CSV         | sensor_1052.xls     | relay_1052.xls      | WGS 84            |
 | #1361 Dataset  | 1361         | 459         | CSV         | sensor_1361.xls     | relay_1361.xls      | WGS 84            |
-| G114 Dataset   | 114          | 41          | CSV         | sensor_guo114.xls   | relay_guo114.xls    | WGS 84            |
-| G228 Dataset   | 228          | 81          | CSV         | sensor_guo228.xls   | relay_guo228.xls    | WGS 84            |
-| G354 Dataset   | 354          | 127         | CSV         | sensor_guo354.xls   | relay_guo354.xls    | WGS 84            |
-| G484 Dataset   | 484          | 175         | CSV         | sensor_guo484.xls   | relay_guo484.xls    | WGS 84            |
+
+### #114 Dataset
+- Number of sensor nodes: 114
+- Number of relay nodes: 41
+- Data format: CSV (Comma-Separated Values)
+- Files:
+  - `sensor_114.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+  - `relay_114.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+- Coordinate System: WGS 84 (World Geodetic System 1984)
 
 ### #207 Dataset
 - Number of sensor nodes: 207
@@ -30,6 +39,24 @@ You are free to utilize this dataset for academic, research, or commercial purpo
   - `relay_207.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
 - Coordinate System: WGS 84 (World Geodetic System 1984)
 
+### #228 Dataset
+- Number of sensor nodes: 228
+- Number of relay nodes: 81
+- Data format: CSV (Comma-Separated Values)
+- Files:
+  - `sensor_228.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+  - `relay_228.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+- Coordinate System: WGS 84 (World Geodetic System 1984)
+
+### #354 Dataset
+- Number of sensor nodes: 354
+- Number of relay nodes: 127
+- Data format: CSV (Comma-Separated Values)
+- Files:
+  - `sensor_354.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+  - `relay_354.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+- Coordinate System: WGS 84 (World Geodetic System 1984)
+
 ### #461 Dataset
 - Number of sensor nodes: 461
 - Number of relay nodes: 148
@@ -37,6 +64,15 @@ You are free to utilize this dataset for academic, research, or commercial purpo
 - Files:
   - `sensor_461.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
   - `relay_461.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+- Coordinate System: WGS 84 (World Geodetic System 1984)
+
+### #484 Dataset
+- Number of sensor nodes: 484
+- Number of relay nodes: 175
+- Data format: CSV (Comma-Separated Values)
+- Files:
+  - `sensor_484.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+  - `relay_484.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
 - Coordinate System: WGS 84 (World Geodetic System 1984)
 
 ### #1052 Dataset
@@ -54,43 +90,7 @@ You are free to utilize this dataset for academic, research, or commercial purpo
 - Data format: CSV (Comma-Separated Values)
 - Files:
   - `sensor_1361.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-  - `gateway_1361.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-- Coordinate System: WGS 84 (World Geodetic System 1984)
-
-### G114 Dataset
-- Number of sensor nodes: 114
-- Number of relay nodes: 41
-- Data format: CSV (Comma-Separated Values)
-- Files:
-  - `sensor_guo114.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-  - `relay_guo114.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-- Coordinate System: WGS 84 (World Geodetic System 1984)
-
-### G228 Dataset
-- Number of sensor nodes: 228
-- Number of relay nodes: 81
-- Data format: CSV (Comma-Separated Values)
-- Files:
-  - `sensor_guo228.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-  - `relay_guo228.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-- Coordinate System: WGS 84 (World Geodetic System 1984)
-
-### G354 Dataset
-- Number of sensor nodes: 354
-- Number of relay nodes: 127
-- Data format: CSV (Comma-Separated Values)
-- Files:
-  - `sensor_guo354.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-  - `relay_guo354.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-- Coordinate System: WGS 84 (World Geodetic System 1984)
-
-### G484 Dataset
-- Number of sensor nodes: 484
-- Number of relay nodes: 175
-- Data format: CSV (Comma-Separated Values)
-- Files:
-  - `sensor_guo484.xls`: Contains sensor node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
-  - `relay_guo484.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
+  - `relay_1361.xls`: Contains relay node information with columns "id", "Lng" (longitude), and "Lat" (latitude).
 - Coordinate System: WGS 84 (World Geodetic System 1984)
 
 ## Data License
@@ -106,8 +106,6 @@ If you utilize this dataset in your research or project, we kindly request you t
 
 ## Contact Information
 
-If you have any inquiries or require further assistance regarding the dataset, please feel free to contact us:
-
-- Email: 
+If you have any inquiries or require further assistance regarding the dataset, please feel free to contact us.
 
 
