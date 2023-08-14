@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.*;
 import java.util.*;
-
+import top.bultrail.markroad.util.MatrixToMatFile;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -790,6 +790,7 @@ public class CountSet {
     public int[] calByorLP_new(List<String> all_gateway, List<String> all_sensor) throws Exception {
         // 由网关集与传感器集获得matrix
         double[][] matrix = getMatrix(all_gateway, all_sensor);
+        MatrixToMatFile.saveDoubleMatrixToMatFile(matrix,"RN#1.mat");
         int[] sol = cal_LP.linprog(matrix);
         return sol;
     }

@@ -59,6 +59,13 @@
             <systemPath>${basedir}/src/main/resources/lib/select_linprog.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com</groupId>
+            <artifactId>jmatio</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/jmatio.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
