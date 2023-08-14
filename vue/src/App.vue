@@ -135,7 +135,7 @@
         <el-table-column type="index" width="50" />
         <el-table-column label="Name" width="150" prop="name" />
         <el-table-column label="Sensor Size" width="100" prop="sensorSize" />
-        <el-table-column label="Gateway Size" width="130" prop="gatewaySize" />
+        <el-table-column label="Relay Size" width="130" prop="gatewaySize" />
         <el-table-column label="Operations">
           <template #default="scope">
             <el-button size="small" @click="handleLoad(scope.row.name)">Load</el-button>
