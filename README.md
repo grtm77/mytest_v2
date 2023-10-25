@@ -169,6 +169,6 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 # License
 > **Note**: For longer README files, I usually add a "Back to top" buttton as shown above. It makes it easy to navigate.
 
-[(Back to top)](#目录)
+<!-- [(Back to top)](#目录) -->
 
 [MIT](./LICENSE) license.
