@@ -9,8 +9,8 @@ import top.bultrail.markroad.calculate.cal_LP;
 import top.bultrail.markroad.config.RelatedProperties;
 import top.bultrail.markroad.calculate.CountSet;
 import top.bultrail.markroad.pojo.Coordinates;
-import top.bultrail.markroad.pojo.DatasetInfo;
 import top.bultrail.markroad.pojo.Point;
+import top.bultrail.markroad.pojo.DatasetInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -41,96 +41,97 @@ public class TransformService {
 
 
     //保存文件数据到数据库 新增
-    public void saveDB(Point points) {
-        String roadName = points.getRoadName();
-        String pointType = points.getPointType();
-        String[][] points1 = points.getPoints();
-        List<String[]> strings = Arrays.asList(points1);
-        dbRelation.write_new(roadName, strings, pointType);
-    }
+//    public void saveDB(Point points) {
+//        String roadName = points.getRoadName();
+//        String pointType = points.getPointType();
+//        String[][] points1 = points.getPoints();
+//        List<String[]> strings = Arrays.asList(points1);
+//        dbRelation.write_new(roadName, strings, pointType);
+//    }
 
     public void quicksaveDB(QuickSave quickSave) {
         String[][] cross_points = quickSave.getCross_points();
         String[][][] sensor_array = quickSave.getSensor_array();
         String[][][] gateway_array = quickSave.getGateway_array();
-        dbRelation.clear();
-        dbRelation.quick_write_new(cross_points, gateway_array, sensor_array);
+        dbRelation.clear2();
+//        dbRelation.quick_write_new(cross_points, gateway_array, sensor_array);
+        dbRelation.quick_write_new2(cross_points, gateway_array, sensor_array);
     }
 
     public void saveDataset(String datasetName, List<Double> currentLocation) {
-        dbRelation.saveDataset(datasetName, currentLocation);
+        dbRelation.saveDataset2(datasetName, currentLocation);
     }
 
     public void deleteDataset(String datasetName) {
-        dbRelation.deleteDataset(datasetName);
+        dbRelation.deleteDataset2(datasetName);
     }
 
-    public List<String> searchSetnames() {
-        List<String> setNames;
-        setNames = dbRelation.searchSetnames();
-        return  setNames;
-    }
+//    public List<String> searchSetnames() {
+//        List<String> setNames;
+//        setNames = dbRelation.searchSetnames();
+//        return  setNames;
+//    }
 
     public List<DatasetInfo> searchDatasetInfo() {
         List<DatasetInfo> datasetInfos;
-        datasetInfos = dbRelation.searchDatasetInfo();
+        datasetInfos = dbRelation.searchDatasetInfo2();
         return  datasetInfos;
     }
 
     //清空数据库 新增
     public void clearDB() {
-        dbRelation.clear();
+        dbRelation.clear2();
     }
 
     //排序 新增
-    public void sortDB() {
-        dbRelation.sort();
-    }
+//    public void sortDB() {
+//        dbRelation.sort();
+//    }
 
     //备份 新增
-    public void bkDB() {
-        dbRelation.bkup();
-    }
+//    public void bkDB() {
+//        dbRelation.bkup();
+//    }
 
     //162 新增
     public void td207() {
-        dbRelation.clear();
-        dbRelation.tdata("207");
+        dbRelation.clear2();
+        dbRelation.tdata2("207");
     }
 
     //461 新增
     public void td461() {
-        dbRelation.clear();
-        dbRelation.tdata("461");
+        dbRelation.clear2();
+        dbRelation.tdata2("461");
     }
 
     //518 新增
     public void td1052() {
-        dbRelation.clear();
-        dbRelation.tdata("1052");
+        dbRelation.clear2();
+        dbRelation.tdata2("1052");
     }
 
     public void td1361() {
-        dbRelation.clear();
-        dbRelation.tdata("1361");
+        dbRelation.clear2();
+        dbRelation.tdata2("1361");
     }
 
     public List<Double> datasetLoad(String setName) {
-        dbRelation.clear();
-        List<Double> location = dbRelation.datasetLoad(setName);
+        dbRelation.clear2();
+        List<Double> location = dbRelation.datasetLoad2(setName);
         return location;
     }
 
     public void tdGuo(int num) {
-        dbRelation.clear();
+        dbRelation.clear2();
         dbRelation.tdataG(num + "");
     }
 
-    //还原 新增
-    public void resDB() {
-        dbRelation.clear();
-        dbRelation.res();
-    }
+//    //还原 新增
+//    public void resDB() {
+//        dbRelation.clear2();
+//        dbRelation.res();
+//    }
 
     /**
      * 使用各种算法计算
@@ -140,8 +141,8 @@ public class TransformService {
     public HashMap<String,List<List<String>>> calAlgorithm(String algorithm) throws Exception {
 
         // 从数据库读出的sensor、gateway数据
-        List<List<String>> sensor = dbRelation.readSensor();
-        List<List<String>> gateway = dbRelation.readGateway();
+        List<List<String>> sensor = dbRelation.readSensor2();
+        List<List<String>> gateway = dbRelation.readGateway2();
         // 进行处理，在属性间添加逗号形成字符串
         List<String> all_sensor = new ArrayList<String>();
         List<String> all_gateway = new ArrayList<String>();
@@ -227,8 +228,8 @@ public class TransformService {
      */
     public HashMap<String,List<List<String>>> calByLinner_upload(String flag) throws Exception {
         // 从数据库读出的sensor、gateway数据
-        List<List<String>> sensor = dbRelation.readSensor();
-        List<List<String>> gateway = dbRelation.readGateway();
+        List<List<String>> sensor = dbRelation.readSensor2();
+        List<List<String>> gateway = dbRelation.readGateway2();
         // 进行处理，在属性间添加逗号形成字符串
         List<String> all_sensor = new ArrayList<String>();
         List<String> all_gateway = new ArrayList<String>();

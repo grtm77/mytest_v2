@@ -79,12 +79,12 @@ public class ResultEntity<T> {
         return new ResultEntity<List<String>>(SUCCESS, message, strings);
     }
 
-    public static ResultEntity<List<DatasetInfo>> successWithDatasetInfo(List<DatasetInfo> datasetInfos, String message) {
-        return new ResultEntity<List<DatasetInfo>>(SUCCESS, message, datasetInfos);
-    }
-
     public static ResultEntity<List<Double>> successWithDataDouble(List<Double> listDouble,String message) {
         return new ResultEntity<List<Double>>(SUCCESS, message, listDouble);
+    }
+
+    public static ResultEntity<List<DatasetInfo>> successWithDatasetInfo(List<DatasetInfo> datasetInfos, String message) {
+        return new ResultEntity<List<DatasetInfo>>(SUCCESS, message, datasetInfos);
     }
 
 }

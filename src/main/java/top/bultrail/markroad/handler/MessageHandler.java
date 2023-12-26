@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import top.bultrail.markroad.pojo.DatasetInfo;
+
+
+
 @Controller
 public class MessageHandler {
     @Autowired
@@ -50,7 +53,7 @@ public class MessageHandler {
         List<Double> currentLocation = (List<Double>) requestBody.get("current_location");
         try {
             transformService.saveDataset(setName, currentLocation);
-            System.out.println("Success");
+            System.out.println("Dataset saved successfully");
         } catch (Exception e) {
             return new ResponseEntity<>(ResultEntity.failed(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -63,7 +66,7 @@ public class MessageHandler {
     public ResponseEntity<ResultEntity<String>> deleteDataset(@RequestParam(value = "datasetName") String setName) {
         try {
             transformService.deleteDataset(setName);
-            System.out.println("Success");
+            System.out.println("Dataset deleted successfully");
             return ResponseEntity.ok(ResultEntity.successWithoutData());
         } catch (Exception e) {
             return new ResponseEntity<>(ResultEntity.failedWithMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,7 +80,7 @@ public class MessageHandler {
         try {
             List<DatasetInfo> datasetInfos;
             datasetInfos = transformService.searchDatasetInfo();
-            System.out.println("Success");
+            System.out.println("Search Datasets Information Successfully");
             return ResponseEntity.ok(ResultEntity.successWithDatasetInfo(datasetInfos,null));
         } catch (Exception e) {
             ResultEntity<List<DatasetInfo>> errorResponse = ResultEntity.failedWithMessage(e.getMessage());
@@ -85,21 +88,22 @@ public class MessageHandler {
         }
     }
 
-    // 获取数据集名称列表
-    @ResponseBody
-    @RequestMapping(value = {"/api/searchSetnames"}, method = RequestMethod.POST)
-    public ResponseEntity<ResultEntity<List<String>>> searchSetnames() {
-        try {
-            List<String> setNames;
-            setNames = transformService.searchSetnames();
-            System.out.println("Success");
-            return ResponseEntity.ok(ResultEntity.successWithData(setNames,null));
-        } catch (Exception e) {
-            List<String> tmp = new ArrayList<>();
-            tmp.add(e.getMessage());
-            return new ResponseEntity<>(ResultEntity.failed(tmp), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+
+//    // 获取数据集名称列表
+//    @ResponseBody
+//    @RequestMapping(value = {"/api/searchSetnames"}, method = RequestMethod.POST)
+//    public ResponseEntity<ResultEntity<List<String>>> searchSetnames() {
+//        try {
+//            List<String> setNames;
+//            setNames = transformService.searchSetnames();
+//            System.out.println("Success");
+//            return ResponseEntity.ok(ResultEntity.successWithData(setNames,null));
+//        } catch (Exception e) {
+//            List<String> tmp = new ArrayList<>();
+//            tmp.add(e.getMessage());
+//            return new ResponseEntity<>(ResultEntity.failed(tmp), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     // 一键保存
     @ResponseBody
@@ -122,21 +126,21 @@ public class MessageHandler {
 
 
     //保存数据
-    @ResponseBody
-    @RequestMapping(value ={"/hha","/api/hha"},  method = RequestMethod.POST)
-    public ResultEntity<String> save02(Point point) {
-        // 将数据保存在数据库
-        try {
-            if (point.getPoints() == null) {
-                return ResultEntity.failed("You haven't set marks yet！");
-            } else {
-                transformService.saveDB(point);
-                return ResultEntity.successWithoutData();
-            }
-        } catch (Exception e) {
-            return ResultEntity.failed(e.getMessage());
-        }
-    }
+//    @ResponseBody
+//    @RequestMapping(value ={"/hha","/api/hha"},  method = RequestMethod.POST)
+//    public ResultEntity<String> save02(Point point) {
+//        // 将数据保存在数据库
+//        try {
+//            if (point.getPoints() == null) {
+//                return ResultEntity.failed("You haven't set marks yet！");
+//            } else {
+//                transformService.saveDB(point);
+//                return ResultEntity.successWithoutData();
+//            }
+//        } catch (Exception e) {
+//            return ResultEntity.failed(e.getMessage());
+//        }
+//    }
 
     //清空数据库 新增
     @ResponseBody
@@ -148,20 +152,20 @@ public class MessageHandler {
     }
 
     //排序 新增
-    @ResponseBody
-    @RequestMapping(value = {"/hhst","/api/hhst"}, method = RequestMethod.POST)
-    public ResultEntity<String> sort() {
-        transformService.sortDB();
-        return ResultEntity.successWithoutData();
-    }
+//    @ResponseBody
+//    @RequestMapping(value = {"/hhst","/api/hhst"}, method = RequestMethod.POST)
+//    public ResultEntity<String> sort() {
+//        transformService.sortDB();
+//        return ResultEntity.successWithoutData();
+//    }
 
-    //备份
-    @ResponseBody
-    @RequestMapping(value ={"/hhback","/api/hhback"}, method = RequestMethod.POST)
-    public ResultEntity<String> backup() {
-        transformService.bkDB();
-        return ResultEntity.successWithoutData();
-    }
+//    //备份
+//    @ResponseBody
+//    @RequestMapping(value ={"/hhback","/api/hhback"}, method = RequestMethod.POST)
+//    public ResultEntity<String> backup() {
+//        transformService.bkDB();
+//        return ResultEntity.successWithoutData();
+//    }
 
     //数据集加载
     @ResponseBody
@@ -169,7 +173,7 @@ public class MessageHandler {
     public ResponseEntity<ResultEntity<List<Double>>> datasetLoad(@RequestParam(value = "datasetName") String setName) {
         try {
             List<Double> location = transformService.datasetLoad(setName);
-            System.out.println("Success");
+            System.out.println("Dataset Load Success");
             return ResponseEntity.ok(ResultEntity.successWithDataDouble(location, null));
         } catch (Exception e) {
             return new ResponseEntity<>(ResultEntity.failedWithMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -240,13 +244,13 @@ public class MessageHandler {
         return ResultEntity.successWithoutData();
     }
 
-    //还原 新增
-    @ResponseBody
-    @RequestMapping(value = {"/hhres","/api/hhres"}, method = RequestMethod.POST)
-    public ResultEntity<String> restore() {
-        transformService.resDB();
-        return ResultEntity.successWithoutData();
-    }
+//    //还原 新增
+//    @ResponseBody
+//    @RequestMapping(value = {"/hhres","/api/hhres"}, method = RequestMethod.POST)
+//    public ResultEntity<String> restore() {
+//        transformService.resDB();
+//        return ResultEntity.successWithoutData();
+//    }
 
     //用贪心算法计算，数据保存在txt 实现
     @ResponseBody

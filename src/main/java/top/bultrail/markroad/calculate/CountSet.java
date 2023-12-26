@@ -13,7 +13,6 @@ import eu.andredick.tools.MatConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.bultrail.markroad.pojo.Coordinates;
-import top.bultrail.markroad.pojo.MatrixResult;
 import top.bultrail.markroad.util.doubleToBool;
 
 import java.beans.PropertyVetoException;
@@ -22,10 +21,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.*;
 import java.util.*;
-import top.bultrail.markroad.util.MatrixToMatFile;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 @Component
 public class CountSet {
@@ -331,104 +326,6 @@ public class CountSet {
      */
     private BigDecimal sqrtIteration(BigDecimal x, BigDecimal n) {
         return x.add(n.divide(x, MathContext.DECIMAL128)).divide(new BigDecimal("2"), MathContext.DECIMAL128);
-    }
-
-    /**
-     * 通过网关集与传感器集计算覆盖矩阵、当id不是递增时，要处理映射关系
-     * @param strList1  网关集合  “DMXLS0,113.807255,22.816363”
-     * @param strList2  传感器集合
-     */
-    public MatrixResult getMatrix_new(List<String> strList1, List<String> strList2) throws Exception {
-        // 编号与位置对应
-        HashMap<Integer, Vector<Double>> hash_num2index1 = new HashMap<>();
-        HashMap<Integer, Vector<Double>> hash_num2index2 = new HashMap<>();
-
-        // 节点编号与矩阵行列的对应关系
-        BiMap<Integer, Integer> hash_row2sensorIndex = HashBiMap.create();
-        BiMap<Integer, Integer> hash_col2gatewayIndex = HashBiMap.create();
-
-        // 所有的传感器集合
-        HashSet<Integer> sensor_ints = new HashSet<>();
-
-        // 网关集
-        for (int i = 0; i < strList1.size(); i++) {
-            Vector<Double> vc = new Vector<>();
-            String[] split = strList1.get(i).split(",");
-            vc.add(Double.parseDouble(split[2]));
-            vc.add(Double.parseDouble(split[3]));
-            hash_num2index1.put(Integer.parseInt(split[0]), vc);
-            hash_col2gatewayIndex.put(i, Integer.parseInt(split[0]));
-        }
-
-        // 传感器集
-        for (int i = 0; i < strList2.size(); i++) {
-            Vector<Double> vc = new Vector<>();
-            String[] split = strList2.get(i).split(",");
-            vc.add(Double.parseDouble(split[2]));
-            vc.add(Double.parseDouble(split[3]));
-            sensor_ints.add(Integer.parseInt(split[0]));
-            hash_num2index2.put(Integer.parseInt(split[0]), vc);
-            hash_row2sensorIndex.put(i, Integer.parseInt(split[0]));
-        }
-
-        double raius = relatedProperties.getGatewayRadius();
-        // 计算网关所覆盖的sensor集合    网关编号-sensor集
-        Map<Integer, Map<Integer, Vector<Double>>> hash_int2map = null;
-        hash_int2map = countSet_my(hash_num2index1, hash_num2index2, raius);
-
-        // 网关节点编号 - 覆盖的传感器集（编号表示）
-        HashMap<Integer, HashSet<Integer>> hash_int2ints = new HashMap<>();
-        for (Map.Entry<Integer, Map<Integer, Vector<Double>>> entryt : hash_int2map.entrySet()) {
-            Map<Integer, Vector<Double>> valu2e = entryt.getValue();
-            HashSet<Integer> hashss = new HashSet<>();
-            for (Map.Entry<Integer, Vector<Double>> maps : valu2e.entrySet()) {
-                Integer key = maps.getKey();
-                hashss.add(key);
-            }
-            hash_int2ints.put(entryt.getKey(), hashss);
-        }
-
-        //计算当前的所有灯柱能否包含所有传感器
-        //当前所有网关覆盖的集合
-        HashSet<Integer> coverd_sessors = new HashSet<>();
-        for (Map.Entry<Integer, HashSet<Integer>> entry : hash_int2ints.entrySet()) {
-            HashSet<Integer> value = entry.getValue();
-            coverd_sessors.addAll(value);
-        }
-
-        // 判断传感器有没有被全部覆盖到
-        if (coverd_sessors.size() != sensor_ints.size()) {
-            //找出未被覆盖的sensor
-            int num=0;
-            for (Integer value : sensor_ints) {
-                int f = 0;
-                for (Integer key : coverd_sessors) {
-                    if (value == key) {
-                        f = 1;
-                        break;
-                    }
-                }
-                if (f == 0) {
-                    num = num +1;
-                    if (num == 1)
-                        System.out.println("以下传感器未被覆盖：");
-                    System.out.print(value+" ");
-                }
-            }
-            System.out.print("\n");
-            throw new Exception("传感器没有被全部覆盖到!");
-        }
-
-        // sensor_size x gateway_size
-        double[][] matrix = new double[strList2.size()][strList1.size()];
-        for (Integer key : hash_int2ints.keySet()) {
-            Integer col = hash_col2gatewayIndex.inverse().get(key);
-            for (Integer i : hash_int2ints.get(key)) {
-                Integer row = hash_row2sensorIndex.inverse().get(i);
-                matrix[row][col] = 1.0;
-            }
-        }
-        return new MatrixResult(matrix, hash_col2gatewayIndex, hash_row2sensorIndex);
     }
 
     /**
@@ -790,7 +687,6 @@ public class CountSet {
     public int[] calByorLP_new(List<String> all_gateway, List<String> all_sensor) throws Exception {
         // 由网关集与传感器集获得matrix
         double[][] matrix = getMatrix(all_gateway, all_sensor);
-        MatrixToMatFile.saveDoubleMatrixToMatFile(matrix,"RN#1.mat");
         int[] sol = cal_LP.linprog(matrix);
         return sol;
     }
